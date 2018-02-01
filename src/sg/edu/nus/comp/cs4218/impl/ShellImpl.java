@@ -139,7 +139,7 @@ public class ShellImpl implements Shell {
 	 * 
 	 * @throws ShellException
 	 *             If file is not found.
-	 *
+	 */
 	public static InputStream openInputRedir(String inputStreamS)
 			throws ShellException {
 		File inputFile = new File(inputStreamS);
