@@ -116,7 +116,7 @@ public class CallCommand implements Command {
 		} catch (ShellException e) {
 			result = false;
 		}
-		if (str.substring(endIdx).trim().isEmpty()) {
+		if (str.substring(endIdx).matches("\\s*")) {
 			result = true;
 		} else {
 			result = false;
@@ -258,7 +258,7 @@ public class CallCommand implements Command {
 		String inputRedirS = "";
 		int cmdVectorIndex = cmdVector.size() - 2;
 
-		while (!substring.trim().isEmpty()) {
+		while (!substring.matches("\\s*")) {
 			inputRedirM = inputRedirP.matcher(substring);
 			inputRedirS = "";
 			if (inputRedirM.find()) {
@@ -313,7 +313,7 @@ public class CallCommand implements Command {
 		Matcher inputRedirM;
 		String inputRedirS = "";
 		int cmdVectorIdx = cmdVector.size() - 1;
-		while (!substring.trim().isEmpty()) {
+		while (!substring.matches("\\s*")) {
 
 			inputRedirM = inputRedirP.matcher(substring);
 			inputRedirS = "";
