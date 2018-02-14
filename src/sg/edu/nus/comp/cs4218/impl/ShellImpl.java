@@ -1,6 +1,7 @@
 package sg.edu.nus.comp.cs4218.impl;
 
 import java.io.*;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +11,10 @@ import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
+import sg.edu.nus.comp.cs4218.impl.app.CdApplication;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
+import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
+import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 
 /**
  * A Shell is a command interpreter and forms the backbone of the entire
@@ -61,7 +65,7 @@ public class ShellImpl implements Shell {
 		String[] resultArr = new String[argsArray.length];
 		System.arraycopy(argsArray, 0, resultArr, 0, argsArray.length);
 		String patternBQ = "`([^\\n`]*)`";
-//		Pattern patternBQp = Pattern.compile(patternBQ);
+		Pattern patternBQp = Pattern.compile(patternBQ);
 
 		for (int i = 0; i < argsArray.length; i++) {
 			Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
@@ -72,7 +76,7 @@ public class ShellImpl implements Shell {
 				// System.out.println("backquote" + bqStr);
 				OutputStream bqOutputStream = new ByteArrayOutputStream();
 				ShellImpl shell = new ShellImpl();
-				//shell.parseAndEvaluate(bqStr, bqOutputStream);
+				shell.parseAndEvaluate(bqStr, bqOutputStream);
 
 				ByteArrayOutputStream outByte = (ByteArrayOutputStream) bqOutputStream;
 				byte[] byteArray = outByte.toByteArray();
@@ -118,10 +122,12 @@ public class ShellImpl implements Shell {
 			absApp = new CatApplication();
 		} else if (("echo").equals(app)) {// echo [args]...
 			absApp = new EchoApplication();
-		} else if (("head").equals(app)) {// head [OPTIONS] [FILE]
-			absApp = new HeadApplication()
-		} else if (("tail").equals(app)) {// tail [OPTIONS] [FILE]
-			absApp = new TailApplication();
+		} else if (("ls").equals(app)) {// ls [-d][FOLDER][-R]
+			absApp = new LsApplication();
+		} else if (("cd").equals(app)) {// cd PATH
+			absApp = new CdApplication();
+		} else if (("sed").equals(app)) {// sed REPLACEMENT [FILE]
+			absApp = new SedApplication();
 		} else { // invalid command
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
@@ -164,7 +170,8 @@ public class ShellImpl implements Shell {
 	 * @throws ShellException
 	 *             If file destination cannot be opened or inaccessible.
 	 */
-	public static OutputStream openOutputRedir(String outputStreamS){
+	public static OutputStream openOutputRedir(String outputStreamS) 
+			throws ShellException{
 		File outputFile = new File(outputStreamS);
 		FileOutputStream fOutputStream = null;
 		try {
@@ -283,10 +290,105 @@ public class ShellImpl implements Shell {
 				if (("").equals(readLine)) {
 					continue;
 				}
-				//shell.parseAndEvaluate(readLine, System.out);
+				shell.parseAndEvaluate(readLine, System.out);
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void parseAndEvaluate(String cmdline, OutputStream stdout)
+			throws AbstractApplicationException, ShellException {
+	}
+
+	@Override
+	public String pipeTwoCommands(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String pipeMultipleCommands(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String pipeWithException(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String globNoPaths(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String globOneFile(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String globFilesDirectories(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String globWithException(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectInput(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectOutput(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectInputWithNoFile(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectOutputWithNoFile(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectInputWithException(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String redirectOutputWithException(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String performCommandSubstitution(String args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String performCommandSubstitutionWithException(String args) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
