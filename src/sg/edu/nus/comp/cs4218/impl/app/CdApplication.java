@@ -1,0 +1,87 @@
+package sg.edu.nus.comp.cs4218.impl.app;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import sg.edu.nus.comp.cs4218.Environment;
+import sg.edu.nus.comp.cs4218.app.CdItf;
+import sg.edu.nus.comp.cs4218.exception.CdException;
+
+/**
+ * The cat command concatenates the content of given files and prints on the
+ * standard output.
+ * 
+ * <p>
+ * <b>Command format:</b> <code>cat [FILE]...</code>
+ * <dl>
+ * <dt>FILE</dt>
+ * <dd>the name of the file(s). If no files are specified, use stdin.</dd>
+ * </dl>
+ * </p>
+ */
+public class CdApplication implements CdItf {
+	
+	/**
+	 * The cd command changes the current working directory.
+	 * 
+	 * @param args
+	 *            Array of arguments for the application. Array element is
+	 *            the path to a file. If there is more than one element or
+	 *            path does not exist, exception will be thrown.
+	 * @param stdin
+	 *            An InputStream, not used.
+	 * @param stdout
+	 *            An OutputStream, not used.
+	 * 
+	 * @throws CdException
+	 *             If the path specified do not exist, unreadable or is 
+	 *             not a directory or if more than one argument is specified.
+	 */
+	@Override
+	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CdException {
+		if (args == null || args.length == 0) {
+			return;
+		}
+		
+		if (args.length > 1) {
+			throw new CdException("too many arguments");
+		}
+		
+		changeToDirectory(args[0], new Environment());
+	}
+	
+	/**
+	 * Change the environment context to a different directory. 
+	 * @param path 
+	 * 				String of the path to a directory
+	 * @param env 
+	 * 				Environment context 
+	 * @throws Exception
+	 * 				If the path specified do not exist, unreadable or is 
+	 *             	not a directory.
+	 */
+	@Override
+	public void changeToDirectory(String path, Environment env) throws CdException {
+		File dir = new File(path);
+		if (!dir.isAbsolute()) {
+			dir = new File(env.currentDirectory + "/" + path);
+		}
+		
+		if (!dir.exists()) {
+			throw new CdException(path + "': No such file or directory");
+		}
+		
+		if (!dir.isDirectory()) {
+			throw new CdException(path + ": Not a directory");
+		}
+		
+		try {
+			env.currentDirectory = dir.getCanonicalPath();
+		} catch (IOException e) {
+			throw new CdException("IOException");
+		}
+	}
+
+}
