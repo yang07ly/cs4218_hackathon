@@ -9,7 +9,7 @@ public final class Environment {
 	public static volatile String currentDirectory = System.getProperty("user.dir");
 	
 	
-	private Environment() {
+	public Environment() {
 	};
 	
 }
