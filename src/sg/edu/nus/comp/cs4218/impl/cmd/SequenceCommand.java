@@ -52,7 +52,7 @@ public class SequenceCommand implements Command {
 		if (error) {
 			throw new ShellException(errorMsg);
 		}
-		outputArgsArray();
+		
 		for (int i = 0; i < argsArray.size(); i++) {
 			String args = argsArray.get(i);
 			if (args.contains(PIPE_OPERATOR)) {

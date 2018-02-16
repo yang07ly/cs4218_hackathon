@@ -15,6 +15,7 @@ import sg.edu.nus.comp.cs4218.impl.app.CdApplication;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
 import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
+import sg.edu.nus.comp.cs4218.impl.cmd.SequenceCommand;
 
 /**
  * A Shell is a command interpreter and forms the backbone of the entire
@@ -300,6 +301,10 @@ public class ShellImpl implements Shell {
 	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
+		InputStream stdin = System.in;
+		SequenceCommand sequenceCommand = new SequenceCommand(cmdline);
+		sequenceCommand.parse();
+		sequenceCommand.evaluate(stdin, stdout);
 	}
 
 	@Override
