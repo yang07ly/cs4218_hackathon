@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -45,8 +47,33 @@ public class PipeCommand implements Command{
 	}
 
 	@Override
-	public void evaluate(InputStream stdin, OutputStream stdout) {
+	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
+		InputStream inputStream = stdin;
+		OutputStream outputStream = stdout;
+		InputStream inputStreamTemp = null;
+
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		
+		if (argsArray.size() == 1) {
+			String command = argsArray.get(0);
+			CallCommand callCommand = new CallCommand(command);
+			callCommand.parse();
+			callCommand.evaluate(inputStream, outputStream);
+			
+			ShellImpl.writeToStdout(byteArrayOutputStream, stdout);
+			ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
+			return;
+		}
+		
+		for (int i = 0; i < argsArray.size(); i++) {
+			String command = argsArray.get(i);
+			CallCommand callCommand = new CallCommand(command);
+			inputStreamTemp = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+			byteArrayOutputStream = new ByteArrayOutputStream();
+			callCommand.parse();
+			callCommand.evaluate(inputStreamTemp, byteArrayOutputStream);
+		}
 	}
 
 	public void parse() throws ShellException {
