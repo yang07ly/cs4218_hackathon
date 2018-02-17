@@ -47,10 +47,11 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param args
-	 * @param flags
-	 * @param files
-	 * @throws CmpException
+	 * Sets the flags for the cmp application
+	 * @param args Array of String for the arguments
+	 * @param flags Array of Boolean for the corresponding flags
+	 * @param files Vector of String for the files
+	 * @throws CmpException if invalid flags or files
 	 */
 	private void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
 		for (int i = 0; i < args.length; i++) {
@@ -111,13 +112,14 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param fileNameA
-	 * @param fileNameB
-	 * @param isPrintCharDiff
-	 * @param isPrintSimplify
-	 * @param isPrintOctalDiff
-	 * @param readerA
-	 * @param readerB
+	 * Compares 2 files and print the messages corresponding to the flags
+	 * @param fileNameA String of first filepath
+	 * @param fileNameB String of second filepath
+	 * @param isPrintCharDiff Boolean to print the differing characters and their octal value
+	 * @param isPrintSimplify Boolean to print only whether files differ by printing a message “Files differ”
+	 * @param isPrintOctalDiff Boolean to print the (decimal) offsets and (octal) values of all differing bytes.
+	 * @param readerA The buffered reader to the first file
+	 * @param readerB The buffered reader to the second file
 	 * @return
 	 * @throws IOException
 	 */
@@ -168,7 +170,7 @@ public class CmpApplication implements CmpItf {
 		checkIfFileIsReadable(filePath);
 		BufferedReader readerA = new BufferedReader(new InputStreamReader(stdin));
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePath.toString())));
-		String msg = cmpFiles(Paths.get("BlankFile"), filePath, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
+		String msg = cmpFiles(Paths.get("-"), filePath, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
 				readerB);
 		readerA.close();
 		readerB.close();

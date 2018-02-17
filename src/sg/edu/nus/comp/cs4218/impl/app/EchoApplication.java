@@ -31,8 +31,7 @@ public class EchoApplication implements Application {
 	 * @throws EchoException
 	 *             If an I/O exception occurs.
 	 */
-	public void run(String[] args, InputStream stdin, OutputStream stdout)
-			throws EchoException {
+	public void run(String[] args, InputStream stdin, OutputStream stdout) throws EchoException {
 		if (args == null) {
 			throw new EchoException("Null arguments");
 		}

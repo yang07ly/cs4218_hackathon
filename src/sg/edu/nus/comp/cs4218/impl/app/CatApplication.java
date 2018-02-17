@@ -29,8 +29,8 @@ public class CatApplication implements Application {
 	 * Runs the cat application with the specified arguments.
 	 * 
 	 * @param args
-	 *            Array of arguments for the application. Each array element is
-	 *            the path to a file. If no files are specified stdin is used.
+	 *            Array of arguments for the application. Each array element is the
+	 *            path to a file. If no files are specified stdin is used.
 	 * @param stdin
 	 *            An InputStream. The input for the command is read from this
 	 *            InputStream if no files are specified.
@@ -42,8 +42,7 @@ public class CatApplication implements Application {
 	 *             If the file(s) specified do not exist or are unreadable.
 	 */
 	@Override
-	public void run(String[] args, InputStream stdin, OutputStream stdout)
-			throws CatException {
+	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CatException {
 
 		if (args == null || args.length == 0) {
 			if (stdin == null || stdout == null) {
@@ -79,12 +78,10 @@ public class CatApplication implements Application {
 				if (filePathArray.length != 0) {
 					for (int j = 0; j < filePathArray.length - 1; j++) {
 						try {
-							byte[] byteFileArray = Files
-									.readAllBytes(filePathArray[j]);
+							byte[] byteFileArray = Files.readAllBytes(filePathArray[j]);
 							stdout.write(byteFileArray);
 						} catch (IOException e) {
-							throw new CatException(
-									"Could not write to output stream");
+							throw new CatException("Could not write to output stream");
 						}
 					}
 
@@ -103,7 +100,7 @@ public class CatApplication implements Application {
 	 *             If the file is not readable
 	 */
 	boolean checkIfFileIsReadable(Path filePath) throws CatException {
-		
+
 		if (Files.isDirectory(filePath)) {
 			throw new CatException("This is a directory");
 		}

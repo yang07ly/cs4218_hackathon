@@ -28,11 +28,11 @@ import sg.edu.nus.comp.cs4218.exception.SplitException;
 public class SplitApplication implements SplitItf {
 
 	/**
-	 * Runs the cat application with the specified arguments.
+	 * Runs the split application with the specified arguments.
 	 * 
 	 * @param args
 	 *            Array of arguments for the application. Each array element is the
-	 *            path to a file. If no files are specified stdin is used.
+	 *            path to a file. If a file is not specified stdin is used.
 	 * @param stdin
 	 *            An InputStream. The input for the command is read from this
 	 *            InputStream if no files are specified.
@@ -80,6 +80,15 @@ public class SplitApplication implements SplitItf {
 		}
 	}
 
+	/**
+	 * Splits a file into several files by the number of lines or bytes. 
+	 * The output files will be named starting with the given prefix. 
+	 * @param file String of the source filepath
+	 * @param prefix String of prefix for the output files
+	 * @param lines Int of the number of lines to split the file by
+	 * @param bytes String of the number of lines to split the file by
+	 * @throws SplitException if more than 1 line and byte is specified.
+	 */
 	private void splitFile(String file, String prefix, int lines, String bytes) throws SplitException {
 		String outputPrefix = prefix;
 		if (lines != -1 && bytes.length() != 0) {
@@ -105,7 +114,12 @@ public class SplitApplication implements SplitItf {
 		}
 	}
 
-	private String getNextName(String currCounter) throws SplitException {
+	/**
+	 * Takes in the current counter for naming output files and returns the next lexicographical name. 
+	 * @param currCounter String of current counter
+	 * @return String of the next counter for the file name
+	 */
+	private String getNextName(String currCounter) {
 		char[] name = currCounter.toCharArray();
 		String newCounter;
 		boolean hasIncremented = false;
@@ -188,6 +202,12 @@ public class SplitApplication implements SplitItf {
 		}
 	}
 
+	/**
+	 * Gets the number of bytes by multiplying with the appended letter
+	 * @param bytes String of the number of bytes e.g (100k, 100m)
+	 * @return
+	 * @throws SplitException if invalid string of bytes
+	 */
 	private int getBytes(String bytes) throws SplitException {
 		int numBytes;
 		try {
