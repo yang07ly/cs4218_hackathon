@@ -13,6 +13,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
 import sg.edu.nus.comp.cs4218.impl.app.CdApplication;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
+import sg.edu.nus.comp.cs4218.impl.app.ExitApplication;
 import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 import sg.edu.nus.comp.cs4218.impl.cmd.SequenceCommand;
@@ -129,6 +130,8 @@ public class ShellImpl implements Shell {
 			absApp = new CdApplication();
 		} else if (("sed").equals(app)) {// sed REPLACEMENT [FILE]
 			absApp = new SedApplication();
+		} else if (("exit").equals(app)) { // exit
+			absApp = new ExitApplication();
 		} else { // invalid command
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
@@ -316,6 +319,7 @@ public class ShellImpl implements Shell {
 	@Override
 	public String pipeMultipleCommands(String args) {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

@@ -52,7 +52,6 @@ public class SequenceCommand implements Command {
 		if (error) {
 			throw new ShellException(errorMsg);
 		}
-		
 		for (int i = 0; i < argsArray.size(); i++) {
 			String args = argsArray.get(i);
 			if (args.contains(PIPE_OPERATOR)) {
@@ -79,7 +78,6 @@ public class SequenceCommand implements Command {
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
-		
 		int sizeBQ = 0;
 		int sizeDQ = 0;
 		int sizeSQ = 0;
@@ -104,7 +102,9 @@ public class SequenceCommand implements Command {
 				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)
 				argsArray.add(cmdline.substring(index, i));
 				index = i + 1;
-			} else if (i == cmdline.length() - 1) {
+			} 
+			
+			if (i == cmdline.length() - 1) {
 				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0) {
 					argsArray.add(cmdline.substring(index, i + 1));
 					break;
@@ -112,6 +112,8 @@ public class SequenceCommand implements Command {
 			}
 			
 		}
+		
+		
 	}
 	
 	public void outputArgsArray() {

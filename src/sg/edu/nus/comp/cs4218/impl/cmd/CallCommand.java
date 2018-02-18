@@ -102,6 +102,7 @@ public class CallCommand implements Command {
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
+
 		Vector<String> cmdVector = new Vector<String>();
 		Boolean result = true;
 		int endIdx = 0;
@@ -129,7 +130,6 @@ public class CallCommand implements Command {
 			}
 			throw new ShellException(errorMsg);
 		}
-
 		String[] cmdTokensArray = cmdVector
 				.toArray(new String[cmdVector.size()]);
 		this.app = cmdTokensArray[0];
@@ -156,7 +156,7 @@ public class CallCommand implements Command {
 	 * Parses the sub-command's arguments to the call command and splits it into
 	 * its different components, namely the application name and the arguments
 	 * (if any), based on rules: Unquoted: any char except for whitespace
-	 * characters, quotes, newlines, semicolons “;”, “|”, “<” and “>”. Double
+	 * characters, quotes, newlines, semicolons ï¿½;ï¿½, ï¿½|ï¿½, ï¿½<ï¿½ and ï¿½>ï¿½. Double
 	 * quoted: any char except \n, ", ` Single quoted: any char except \n, '
 	 * Back quotes in Double Quote for command substitution: DQ rules for
 	 * outside BQ + `anything but \n` in BQ.
