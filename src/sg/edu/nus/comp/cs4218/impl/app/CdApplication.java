@@ -41,7 +41,7 @@ public class CdApplication implements CdItf {
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CdException {
-		if (args == null || args.length == 0) {
+		if (args == null) {
 			return;
 		}
 		
@@ -49,7 +49,11 @@ public class CdApplication implements CdItf {
 			throw new CdException("too many arguments");
 		}
 		
-		changeToDirectory(args[0], new Environment());
+		if (args.length == 0) {
+			changeToDirectory(System.getProperty("user.dir"), new Environment());
+		} else {
+			changeToDirectory(args[0], new Environment());	
+		}
 	}
 	
 	/**
