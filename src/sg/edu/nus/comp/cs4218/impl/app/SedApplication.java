@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.print.DocFlavor.READER;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.SedItf;
@@ -88,11 +85,10 @@ public class SedApplication implements SedItf {
 					dir = new File(Environment.currentDirectory + "/" + args[i]);
 				}
 				if (dir.isDirectory()) {
-					outputStr += "sed: read error on " + args[i] + ": Is a directory\n";
+					throw new SedException("sed: read error on " + args[i] + ": Is a directory");
 				}
 				if (!dir.exists() || !dir.canRead()) {
-					outputStr += "sed: can't read " + args[i] + ": No such file or directory\n";
-					continue;
+					throw new SedException("sed: can't read " + args[i] + ": No such file or directory");
 				}
 				
 				outputStr += replaceSubstringInFile(regexp, replexp, matchIndex, args[i]);
