@@ -99,9 +99,10 @@ public class SequenceCommand implements Command {
 			} else if (cmdline.charAt(i) == CHAR_SQ) {
 				sizeSQ++;
 			} else if (cmdline.charAt(i) == SEMICOLON_OPERATOR) {
-				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)
-				argsArray.add(cmdline.substring(index, i));
-				index = i + 1;
+				if (sizeBQ % 2 == 0) {
+					argsArray.add(cmdline.substring(index, i));
+					index = i + 1;
+				}
 			} 
 			
 			if (i == cmdline.length() - 1) {
@@ -112,7 +113,6 @@ public class SequenceCommand implements Command {
 			}
 			
 		}
-		
 		
 	}
 	

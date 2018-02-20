@@ -222,6 +222,7 @@ public class LsApplication implements LsItf {
 				outputStr += getFormattedDirName(files.get(i)) + "  ";
 			}
 		}
+		outputStr = outputStr.trim();
 		if (!files.isEmpty()) {
 			outputStr += "\n";
 		}
