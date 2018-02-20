@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
@@ -87,17 +88,15 @@ public class LsApplication implements LsItf {
 	public String listFolderContent(Boolean isFoldersOnly, Boolean isRecursive, String... folderName) 
 			throws LsException {
 		String outputStr = "";
-		Vector<String> validPaths = new Vector<String>();
+		Vector<String> validPaths = getValidPaths(folderName);
 		Vector<String> files = new Vector<String>();
 		Vector<String> folders = new Vector<String>();
-		
-		outputStr += getValidPaths(folderName, validPaths);
 		sortFileAndDirectory(validPaths, files, folders);
 		if (isFoldersOnly) {
 			outputStr += printFiles(validPaths, Environment.currentDirectory);
 		} else {
 			outputStr += printFiles(files, Environment.currentDirectory);
-			if (!files.isEmpty()) {
+			if (!files.isEmpty() && !folders.isEmpty()) {
 				outputStr += "\n";
 			}
 			if (files.isEmpty() && !isRecursive && folderName.length <= 1 && folders.size() == 1) {
@@ -160,17 +159,18 @@ public class LsApplication implements LsItf {
 	 * be accessed. "." is added to validPaths if there is no inputPaths.
 	 * @param inputPaths 
 	 * 				Array of String of file/folder path specified in args.
-	 * @param paths 
+	 * @return paths 
 	 * 				Vector of String containing accessible files or folders.
-	 * @return String
-	 * 				Error message of inaccessible files/folders.
+	 * @throws LsException
+	 * 				If there is/are files/folders that cannot be access.
 	 */
-	private String getValidPaths(String[] inputPaths, Vector<String> validPaths) {
-		String outputStr = "";
+	private Vector<String> getValidPaths(String... inputPaths)
+			throws LsException {
+		Vector<String> validPaths = new Vector<String>();
 		
 		if (inputPaths.length == 0) {
 			validPaths.add(".");
-			return outputStr;
+			return validPaths;
 		}
 
 		for (int i = 0; i < inputPaths.length; i++) {
@@ -178,10 +178,10 @@ public class LsApplication implements LsItf {
 			if (dir.exists()) {
 				validPaths.add(inputPaths[i]);
 			} else {
-				outputStr += "ls: cannot access '" + inputPaths[i] + "': No such file or directory\n";
+				throw new LsException("ls: cannot access '" + inputPaths[i] + "': No such file or directory");
 			}
 		}
-		return outputStr;
+		return validPaths;
 	}
 	
 	/**
@@ -203,6 +203,8 @@ public class LsApplication implements LsItf {
 				files.add(paths.get(i));
 			}
 		}
+		Collections.sort(files);
+		Collections.sort(folders);
 	}
 	
 	/**
@@ -216,6 +218,7 @@ public class LsApplication implements LsItf {
 	 */
 	private String printFiles(Vector<String> files, String folder) {
 		String outputStr = "";
+		Collections.sort(files);
 		for (int i = 0; i < files.size(); i++) {
 			File dir = getFileFromPath(files.get(i), folder);
 			if (!dir.isHidden()) {

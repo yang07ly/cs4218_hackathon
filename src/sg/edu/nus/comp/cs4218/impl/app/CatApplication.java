@@ -43,7 +43,6 @@ public class CatApplication implements Application {
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CatException {
-
 		if (args == null || args.length == 0) {
 			if (stdin == null || stdout == null) {
 				throw new CatException("Null Pointer Exception");
@@ -53,6 +52,7 @@ public class CatApplication implements Application {
 				while ((intCount = stdin.read()) != -1) {
 					stdout.write(intCount);
 				}
+				stdout.write("\n".getBytes());
 			} catch (Exception exIO) {
 				throw new CatException("Exception Caught");
 			}
@@ -76,23 +76,15 @@ public class CatApplication implements Application {
 
 				// file could be read. perform cat command
 				if (filePathArray.length != 0) {
-					for (int j = 0; j < filePathArray.length; j++) {
-						try {
-							byte[] byteFileArray = Files.readAllBytes(filePathArray[j]);
-							stdout.write(byteFileArray);
-						} catch (IOException e) {
-							throw new CatException("Could not write to output stream");
-						} 
-					}
-					String newLine = "\n";
 					try {
-						stdout.write(newLine.getBytes());
+						for (int j = 0; j < filePathArray.length; j++) {
+								byte[] byteFileArray = Files.readAllBytes(filePathArray[j]);
+								stdout.write(byteFileArray);
+						}
+						stdout.write("\n".getBytes());
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw new CatException("Could not write to output stream");
 					}
-					
-
 				}
 			}
 		}
