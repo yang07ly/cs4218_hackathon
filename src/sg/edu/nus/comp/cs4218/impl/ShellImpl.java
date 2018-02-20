@@ -12,10 +12,12 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
 import sg.edu.nus.comp.cs4218.impl.app.CdApplication;
+import sg.edu.nus.comp.cs4218.impl.app.CmpApplication;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
 import sg.edu.nus.comp.cs4218.impl.app.ExitApplication;
 import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
+import sg.edu.nus.comp.cs4218.impl.app.SplitApplication;
 import sg.edu.nus.comp.cs4218.impl.cmd.SequenceCommand;
 
 /**
@@ -68,7 +70,8 @@ public class ShellImpl implements Shell {
 		System.arraycopy(argsArray, 0, resultArr, 0, argsArray.length);
 		String patternBQ = "`([^\\n`]*)`";
 		Pattern patternBQp = Pattern.compile(patternBQ);
-
+		Vector<String> results = new Vector<String>();
+		boolean bqFlag = false;
 		for (int i = 0; i < argsArray.length; i++) {
 			Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
 			if (matcherBQ.find()) {// found backquoted
@@ -84,11 +87,26 @@ public class ShellImpl implements Shell {
 				byte[] byteArray = outByte.toByteArray();
 				String bqResult = new String(byteArray).replace("\n", "")
 						.replace("\r", "");
-
+				String[] parts = bqResult.trim().split("\\s+");
+				for (int j = 0; j < parts.length; j++) {
+					results.add(parts[j]);
+				}
+				
 				// replace substring of back quote with result
 				String replacedStr = argsArray[i].replace("`" + bqStr + "`",
 						bqResult);
+				
 				resultArr[i] = replacedStr;
+				bqFlag = true;
+
+				
+			}
+		}
+		if (bqFlag) {
+			resultArr = new String[results.size()];
+	
+			for (int i = 0; i < results.size(); i++) {
+				resultArr[i] = results.get(i);
 			}
 		}
 		return resultArr;
@@ -132,10 +150,17 @@ public class ShellImpl implements Shell {
 			absApp = new SedApplication();
 		} else if (("exit").equals(app)) { // exit
 			absApp = new ExitApplication();
-		} else { // invalid command
+		} else if (("cmp").equals(app)) { // exit
+			absApp = new CmpApplication();
+		} 
+		else if (("split").equals(app)) { // exit
+			absApp = new SplitApplication();
+		} 
+		else { // invalid command
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
 		absApp.run(argsArray, inputStream, outputStream);
+//		cat articles/text1.txt | grep “Interesting String”
 	}
 
 	/**
