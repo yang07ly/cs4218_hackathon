@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -172,10 +174,17 @@ public class LsApplication implements LsItf {
 			validPaths.add(".");
 			return validPaths;
 		}
-
+		
+		Path filePath;
+		Path currentDir = Paths.get(Environment.currentDirectory);
 		for (int i = 0; i < inputPaths.length; i++) {
-			File dir = getFileFromPath(inputPaths[i], Environment.currentDirectory);
-			if (dir.exists()) {
+			try {
+				filePath = currentDir.resolve(inputPaths[i]);
+			} catch (InvalidPathException e) {
+				throw new LsException("ls: cannot access '" + inputPaths[i] + "': No such file or directory");
+			}
+			
+			if (Files.exists(filePath) && !inputPaths[i].isEmpty()) {
 				validPaths.add(inputPaths[i]);
 			} else {
 				throw new LsException("ls: cannot access '" + inputPaths[i] + "': No such file or directory");
@@ -313,14 +322,13 @@ public class LsApplication implements LsItf {
 	}
 	
 	/**
-	 * Return the file of the specified accessible file/folder name.
-	 * for display. "''" is added if name contain space or *.
+	 * Return the file of the specified file/folder name.
 	 * @param fileName
-	 * 				String of the accessible file/folder path name.
+	 * 				String of the file/folder path name.
 	 * @param pathToFile
-	 * 				String of the accessible containing folder 
+	 * 				String of the containing folder 
 	 * 				of the specified file/folder path name.
-	 * @return String
+	 * @return File
 	 * 				The file of the file/folder.
 	 */
 	private File getFileFromPath(String fileName, String pathToFile) {
