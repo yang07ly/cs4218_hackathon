@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,16 +83,21 @@ public class SedApplication implements SedItf {
 		
 		String outputStr = "";
 		if (args.length > 1) {
+			Path filePath;
+			Path currentDir = Paths.get(Environment.currentDirectory);
 			for (int i = 1; i < args.length; i++) {
-				File dir = new File(args[i]);
-				if (!dir.isAbsolute()) {
-					dir = new File(Environment.currentDirectory + "/" + args[i]);
-				}
-				if (dir.isDirectory()) {
-					throw new SedException("sed: read error on " + args[i] + ": Is a directory");
-				}
-				if (!dir.exists() || !dir.canRead()) {
+				try {
+					filePath = currentDir.resolve(args[i]);
+				} catch (InvalidPathException e) {
 					throw new SedException("sed: can't read " + args[i] + ": No such file or directory");
+				}
+
+				if (args[i].isEmpty() || !Files.exists(filePath) || !Files.isReadable(filePath)) {
+					throw new SedException("sed: can't read " + args[i] + ": No such file or directory");
+				}
+
+				if (Files.isDirectory(filePath)) {
+					throw new SedException("sed: read error on " + args[i] + ": Is a directory");
 				}
 				
 				outputStr += replaceSubstringInFile(regexp, replexp, matchIndex, args[i]);
@@ -97,7 +106,6 @@ public class SedApplication implements SedItf {
 			if (stdin == null) {
 				throw new SedException("Null Pointer Exception");
 			}
-			
 			outputStr += replaceSubstringInStdin(regexp, replexp, matchIndex, stdin);
 		}
 		
