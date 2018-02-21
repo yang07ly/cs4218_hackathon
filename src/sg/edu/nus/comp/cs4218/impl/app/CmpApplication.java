@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
@@ -47,14 +48,16 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * Sets the flags for the cmp application
-	 * @param args Array of String for the arguments
-	 * @param flags Array of Boolean for the corresponding flags
-	 * @param files Vector of String for the files
-	 * @throws CmpException if invalid flags or files
+	 * @param args
+	 * @param flags
+	 * @param files
+	 * @throws CmpException
 	 */
-	private void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
+	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
 		for (int i = 0; i < args.length; i++) {
+			if(args[i].length() == 0) {
+				throw new CmpException("can't have empty argument");
+			}
 			if(args[i].equals("-")) {
 				continue;
 			}else if (args[i].charAt(0) == ('-')) {
@@ -92,14 +95,8 @@ public class CmpApplication implements CmpItf {
 	public String cmpTwoFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
 
-		Path filePathA = Paths.get(fileNameA);
-		if (!filePathA.isAbsolute()) {
-			filePathA = Paths.get(Environment.currentDirectory).resolve(fileNameA);
-		}
-		Path filePathB = Paths.get(fileNameB);
-		if (!filePathB.isAbsolute()) {
-			filePathB = Paths.get(Environment.currentDirectory).resolve(fileNameB);
-		}
+		Path filePathA = getAbsolutePath(fileNameA);
+		Path filePathB = getAbsolutePath(fileNameB);
 		checkIfFileIsReadable(filePathA);
 		checkIfFileIsReadable(filePathB);
 		BufferedReader readerA = new BufferedReader(new FileReader(new File(filePathA.toString())));
@@ -163,10 +160,7 @@ public class CmpApplication implements CmpItf {
 	@Override
 	public String cmpFileAndStdin(String fileName, InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
-		Path filePath = Paths.get(fileName);
-		if (!filePath.isAbsolute()) {
-			filePath = Paths.get(Environment.currentDirectory).resolve(fileName);
-		}
+		Path filePath = getAbsolutePath(fileName);
 		checkIfFileIsReadable(filePath);
 		BufferedReader readerA = new BufferedReader(new InputStreamReader(stdin));
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePath.toString())));
@@ -190,7 +184,25 @@ public class CmpApplication implements CmpItf {
 		reader.close();
 		return cmpTwoFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff);
 	}
-
+	
+	/**
+	 * gets the absolute filepath of a file
+	 * @param file String of file name or file path
+	 * @return Path of file path
+	 * @throws CmpException
+	 */
+	Path getAbsolutePath(String file) throws CmpException {
+		try {
+			Path filePathB = Paths.get(file);
+			if (!filePathB.isAbsolute()) {
+				filePathB = Paths.get(Environment.currentDirectory).resolve(file);
+			}
+			return filePathB;
+		}catch(InvalidPathException exPath) {
+			throw new CmpException("invalid file: " + file);
+		}
+	}
+	
 	/**
 	 * Checks if a file is readable.
 	 * 

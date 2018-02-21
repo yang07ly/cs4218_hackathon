@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.SplitItf;
 import sg.edu.nus.comp.cs4218.exception.CatException;
+import sg.edu.nus.comp.cs4218.exception.CmpException;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
 /**
@@ -56,6 +58,9 @@ public class SplitApplication implements SplitItf {
 			boolean hasFlag = false;
 			for (int i = 0; i < args.length; i++) {
 				try {
+					if(args[i].length() == 0) {
+						throw new SplitException("can't have empty argument");
+					}
 					if (args[i].equals("-b")) {
 						hasFlag = true;
 						bytes = args[i + 1];
@@ -91,24 +96,19 @@ public class SplitApplication implements SplitItf {
 	 */
 	private void splitFile(String file, String prefix, int lines, String bytes) throws SplitException {
 		String outputPrefix = prefix;
-		if (lines != -1 && bytes.length() != 0) {
+		int numLines = lines;
+		if (numLines != -1 && bytes.length() != 0) {
 			throw new SplitException("cannot split in more than one way");
 		}
 		
-		Path filePath = Paths.get(file);
-		if (!filePath.isAbsolute()) {
-			filePath = Paths.get(Environment.currentDirectory).resolve(file);
-		}
-		checkIfFileIsReadable(filePath);
-
 		if (outputPrefix.length() == 0) {
 			outputPrefix = "x";
 		}
 		if (bytes.length() == 0) {
-			if(lines == -1) {
-				lines = 1000;
+			if(numLines == -1) {
+				numLines = 1000;
 			}
-			splitFileByLines(file, outputPrefix, lines);
+			splitFileByLines(file, outputPrefix, numLines);
 		} else {
 			splitFileByBytes(file, outputPrefix, bytes);
 		}
@@ -146,7 +146,10 @@ public class SplitApplication implements SplitItf {
 		if(lines == 0) {
 			throw new SplitException(lines + ": invalid number of lines");
 		}
-		String filePath = Paths.get(Environment.currentDirectory).resolve(file).toString();
+		Path path = getAbsolutePath(file);
+		checkIfFileIsReadable(path);
+		String filePath = path.toString();
+		
 		String line, currCounter = "aa";
 		int count = 1;
 		try {
@@ -180,7 +183,11 @@ public class SplitApplication implements SplitItf {
 	public void splitFileByBytes(String file, String prefix, String bytes) throws SplitException {
 		int numBytes = getBytes(bytes);
 		char[] buffer = new char[numBytes];
-		String filePath = Paths.get(Environment.currentDirectory).resolve(file).toString();
+		Path path = getAbsolutePath(file);
+		
+		checkIfFileIsReadable(path);
+		
+		String filePath = path.toString();
 		String currCounter = "aa";
 		int count = 0;
 		try {
@@ -240,6 +247,24 @@ public class SplitApplication implements SplitItf {
 			throw new SplitException(bytes + ": invalid number of bytes");
 		}
 		return numBytes;
+	}
+	
+	/**
+	 * gets the absolute filepath of a file
+	 * @param file String of file name or file path
+	 * @return Path of file path
+	 * @throws SplitException
+	 */
+	Path getAbsolutePath(String file) throws SplitException {
+		try {
+			Path filePathB = Paths.get(file);
+			if (!filePathB.isAbsolute()) {
+				filePathB = Paths.get(Environment.currentDirectory).resolve(file);
+			}
+			return filePathB;
+		}catch(InvalidPathException exPath) {
+			throw new SplitException("invalid file: " + file);
+		}
 	}
 
 	/**
