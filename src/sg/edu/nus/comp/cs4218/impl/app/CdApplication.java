@@ -1,9 +1,12 @@
 package sg.edu.nus.comp.cs4218.impl.app;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.CdItf;
@@ -22,7 +25,7 @@ import sg.edu.nus.comp.cs4218.exception.CdException;
  * </p>
  */
 public class CdApplication implements CdItf {
-	
+
 	/**
 	 * The cd command changes the current working directory.
 	 * 
@@ -44,18 +47,18 @@ public class CdApplication implements CdItf {
 		if (args == null) {
 			return;
 		}
-		
+
 		if (args.length > 1) {
 			throw new CdException("too many arguments");
 		}
-		
+
 		if (args.length == 0) {
 			changeToDirectory(System.getProperty("user.dir"), new Environment());
 		} else {
 			changeToDirectory(args[0], new Environment());	
 		}
 	}
-	
+
 	/**
 	 * Change the environment context to a different directory. 
 	 * @param path 
@@ -68,21 +71,24 @@ public class CdApplication implements CdItf {
 	 */
 	@Override
 	public void changeToDirectory(String path, Environment env) throws CdException {
-		File dir = new File(path);
-		if (!dir.isAbsolute()) {
-			dir = new File(env.currentDirectory + "/" + path);
+		Path filePath;
+		Path currentDir = Paths.get(Environment.currentDirectory);
+		try {
+			filePath = currentDir.resolve(path);
+		} catch (InvalidPathException e) {
+			throw new CdException(path + ": No such file or directory");
 		}
-		
-		if (!dir.exists()) {
-			throw new CdException(path + "': No such file or directory");
+
+		if (!Files.exists(filePath)) {
+			throw new CdException(path + ": No such file or directory");
 		}
-		
-		if (!dir.isDirectory()) {
+
+		if (!Files.isDirectory(filePath)) {
 			throw new CdException(path + ": Not a directory");
 		}
-		
+
 		try {
-			env.currentDirectory = dir.getCanonicalPath();
+			env.currentDirectory = filePath.toFile().getCanonicalPath();
 		} catch (IOException e) {
 			throw new CdException("IOException");
 		}
