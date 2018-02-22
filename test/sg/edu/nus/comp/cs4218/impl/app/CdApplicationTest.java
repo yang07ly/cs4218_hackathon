@@ -11,7 +11,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.CdException;
 public class CdApplicationTest {
 	public static final String DIR_USER = "user.dir";
-	public static final String DIR_TEST_SYSTEM = "test_system";
+	public static final String DIR_TEST_SYSTEM = "test_system" + File.separator + "cd_test_system";
 	public static final String DIR_FOLDER1 = "folder1";
 	public static final String DIR_FOLDER2 = "folder2";
 	
@@ -75,7 +75,7 @@ public class CdApplicationTest {
 
 	@Test
 	public void testParentDirectoryChange() {
-		expected = System.getProperty(DIR_USER);
+		expected = System.getProperty(DIR_USER) + File.separator + "test_system";
 		try {
 			cdApp.changeToDirectory("..", new Environment());
 			result = Environment.currentDirectory;

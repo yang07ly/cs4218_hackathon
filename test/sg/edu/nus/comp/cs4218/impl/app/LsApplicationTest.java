@@ -28,7 +28,7 @@ public class LsApplicationTest {
 
 	@Before
 	public void setup() {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system";
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "ls_test_system";;
 		lsApp = new LsApplication();
 		stdout = new ByteArrayOutputStream();
 	}
@@ -36,7 +36,7 @@ public class LsApplicationTest {
 	@Test
 	public void testListCurrentFolder() {
 		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ FOLDER1 + "  folder2  sedTestFile1.txt  sedTestFile2.txt\n";
+				+ FOLDER1 + "  folder2\n";
 		try {
 			result = lsApp.listFolderContent(false, false);
 		} catch (LsException e) {
@@ -202,7 +202,7 @@ public class LsApplicationTest {
 	public void testRecursiveListCurrentFolder() {
 		expected = ".:\n" + 
 				"'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ "folder1  folder2  sedTestFile1.txt  sedTestFile2.txt\n\n" + 
+				+ "folder1  folder2\n\n" + 
 				"'." + File.separator + "folder name with space':\n" + 
 				"file1_in_folder_spaces.txt  file2_in_folder_spaces.txt\n\n" + 
 				".\\folder1:\n" + 
@@ -410,7 +410,7 @@ public class LsApplicationTest {
 	@Test
 	public void testNullArgs() {
 		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ FOLDER1 + "  folder2  sedTestFile1.txt  sedTestFile2.txt\n";
+				+ FOLDER1 + "  folder2\n";
 		try {
 			lsApp.run(null, null, stdout);
 			result = stdout.toString();
