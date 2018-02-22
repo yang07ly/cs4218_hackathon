@@ -31,7 +31,8 @@ public class EchoApplication implements Application {
 	 * @throws EchoException
 	 *             If an I/O exception occurs.
 	 */
-	public void run(String[] args, InputStream stdin, OutputStream stdout) throws EchoException {
+	public void run(String[] args, InputStream stdin, OutputStream stdout)
+			throws EchoException {
 		if (args == null) {
 			throw new EchoException("Null arguments");
 		}
@@ -40,7 +41,7 @@ public class EchoApplication implements Application {
 		}
 		try {
 			if (args.length == 0) {
-				stdout.write("\n\n".getBytes());
+				stdout.write("\n".getBytes());
 			} else {
 				for (int i = 0; i < args.length - 1; i++) {
 					stdout.write((args[i] + " ").getBytes());
