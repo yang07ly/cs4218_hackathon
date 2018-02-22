@@ -65,6 +65,10 @@ public class CdApplication implements CdItf {
 	 */
 	@Override
 	public void changeToDirectory(String path, Environment env) throws CdException {
+		if (env == null) {
+			throw new CdException("Null Pointer Exception");
+		}
+		
 		Path filePath;
 		Path currentDir = Paths.get(Environment.currentDirectory);
 		try {
