@@ -352,7 +352,7 @@ public class SedApplicationTest {
 	}
 	
 	@Test
-	public void testOtherSeparactingChar() {
+	public void testOtherSeparatingCharNumeric() {
 		expected = TESTFILE1_HEADER + 
 				"1. replaced\n" + 
 				"2. replaced replaced\n" + 
@@ -363,6 +363,19 @@ public class SedApplicationTest {
 		try {
 			String[] strArr = {"s1test1replaced1", TESTFILE1};
 			sedApp.run(strArr, null, stdout);
+			result = stdout.toString();
+		} catch (SedException e) {
+			result = e.getMessage();
+		}
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testOtherSeparatingCharAlpha() {
+		expected = "Text from Inputreplaced\nreplaced of texts in replaced\n";
+		try {
+			String[] strArr = {"szstreamzreplacedz"};
+			sedApp.run(strArr, stdin, stdout);
 			result = stdout.toString();
 		} catch (SedException e) {
 			result = e.getMessage();
@@ -396,6 +409,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidNonExistentFileInValidFiles() {
 		expected = "sed: can't read nonExistentFile: No such file or directory";
 		try {
@@ -408,6 +422,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidEmptyArguments() {
 		expected = "sed: REPLACEMENT is not specified";
 		try {
@@ -420,6 +435,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidCommand() {
 		expected = "sed: char 1: unknown command: 'i'";
 		try {
@@ -432,6 +448,20 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
+	public void testInvalidMissingSeparatingChar() {
+		expected = "sed: char 1: unterminated: 's'";
+		try {
+			String[] strArr = {"s", TESTFILE1};
+			sedApp.run(strArr, null, stdout);
+			result = stdout.toString();
+		} catch (SedException e) {
+			result = e.getMessage();
+		}
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void testInvalidUnterminatedCommand() {
 		expected = "sed: char 3: unterminated: 's'";
 		try {
@@ -444,6 +474,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidEmptyRegExp() {
 		expected = "sed: char 0: no previous regular expression";
 		try {
@@ -456,6 +487,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidReplaceIndexChar() {
 		expected = "sed: char 15: unknown options to 's'";
 		try {
@@ -468,6 +500,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidReplaceIndex() {
 		expected = "sed: char 15: number option to 's' command may not be zero";
 		try {
@@ -480,8 +513,9 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidCommandPosition() {
-		expected = "sed: char 1: unknown command: 'f'";
+		expected = "sed: char 10: unknown options to 's'";
 		try {
 			String[] strArr = {TESTFILE1, STRING_COMMAND};
 			sedApp.run(strArr, null, stdout);
@@ -492,8 +526,9 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidNullArgs() {
-		expected = "REPLACEMENT is not specified";
+		expected = "sed: REPLACEMENT is not specified";
 		try {
 			sedApp.run(null, null, stdout);
 			result = stdout.toString();
@@ -503,6 +538,7 @@ public class SedApplicationTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
 	public void testInvalidNullOutputStream() {
 		expected = EXP_NULL_POINTER;
 		try {
