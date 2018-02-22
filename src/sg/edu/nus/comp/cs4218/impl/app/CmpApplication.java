@@ -17,6 +17,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.CmpItf;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.CmpException;
+import sg.edu.nus.comp.cs4218.exception.SplitException;
 
 public class CmpApplication implements CmpItf {
 
@@ -32,13 +33,11 @@ public class CmpApplication implements CmpItf {
 				throw new CmpException("Can't compare more than 2 files");
 			}
 			try {
-				String output;
+				String output = "";
 				if(files.size() == 2) {
 					output = cmpTwoFiles(files.get(0), files.get(1), flags[0], flags[1], flags[2]);
 				}else if(files.size() == 1) {
 					output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
-				}else {
-					throw new CmpException("requires 2 files to be specified");
 				}
 				stdout.write(output.getBytes());
 			} catch (IOException e) {
@@ -55,9 +54,6 @@ public class CmpApplication implements CmpItf {
 	 */
 	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
 		for (int i = 0; i < args.length; i++) {
-			if(args[i].length() == 0) {
-				throw new CmpException("can't have empty argument");
-			}
 			if(args[i].equals("-")) {
 				continue;
 			}else if (args[i].charAt(0) == ('-')) {
@@ -95,10 +91,8 @@ public class CmpApplication implements CmpItf {
 	public String cmpTwoFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
 
-		Path filePathA = getAbsolutePath(fileNameA);
-		Path filePathB = getAbsolutePath(fileNameB);
-		checkIfFileIsReadable(filePathA);
-		checkIfFileIsReadable(filePathB);
+		Path filePathA = checkIfValidFile(fileNameA);
+		Path filePathB = checkIfValidFile(fileNameB);
 		BufferedReader readerA = new BufferedReader(new FileReader(new File(filePathA.toString())));
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePathB.toString())));
 		String msg = cmpFiles(filePathA, filePathB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
@@ -160,8 +154,7 @@ public class CmpApplication implements CmpItf {
 	@Override
 	public String cmpFileAndStdin(String fileName, InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
-		Path filePath = getAbsolutePath(fileName);
-		checkIfFileIsReadable(filePath);
+		Path filePath = checkIfValidFile(fileName);
 		BufferedReader readerA = new BufferedReader(new InputStreamReader(stdin));
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePath.toString())));
 		String msg = cmpFiles(Paths.get("-"), filePath, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
@@ -191,14 +184,18 @@ public class CmpApplication implements CmpItf {
 	 * @return Path of file path
 	 * @throws CmpException
 	 */
-	Path getAbsolutePath(String file) throws CmpException {
+	Path checkIfValidFile(String file) throws CmpException {
+		if (file.length() == 0) {
+			throw new CmpException("can't have empty argument");
+		}
 		try {
 			Path filePathB = Paths.get(file);
 			if (!filePathB.isAbsolute()) {
 				filePathB = Paths.get(Environment.currentDirectory).resolve(file);
 			}
+			checkIfFileIsReadable(filePathB, file);
 			return filePathB;
-		}catch(InvalidPathException exPath) {
+		} catch (InvalidPathException exPath) {
 			throw new CmpException("invalid file: " + file);
 		}
 	}
@@ -212,13 +209,13 @@ public class CmpApplication implements CmpItf {
 	 * @throws CatException
 	 *             If the file is not readable
 	 */
-	boolean checkIfFileIsReadable(Path filePath) throws CmpException {
+	boolean checkIfFileIsReadable(Path filePath, String file) throws CmpException {
 		if (Files.isDirectory(filePath)) {
 			throw new CmpException("This is a directory");
 		}
 		if (!Files.exists(filePath)) {
 			throw new CmpException(
-					"cannot open '" + filePath.toString() + "' for reading: No such file or directory");
+					"cannot open '" + file + "' for reading: No such file or directory");
 		}
 		if (Files.isReadable(filePath)) {
 			return true;
