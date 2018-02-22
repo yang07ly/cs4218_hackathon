@@ -181,13 +181,13 @@ public class LsApplication implements LsItf {
 			try {
 				filePath = currentDir.resolve(inputPaths[i]);
 			} catch (InvalidPathException e) {
-				throw new LsException("ls: cannot access '" + inputPaths[i] + "': No such file or directory");
+				throw new LsException("cannot access '" + inputPaths[i] + "': No such file or directory");
 			}
 			
 			if (Files.exists(filePath) && !inputPaths[i].isEmpty()) {
 				validPaths.add(inputPaths[i]);
 			} else {
-				throw new LsException("ls: cannot access '" + inputPaths[i] + "': No such file or directory");
+				throw new LsException("cannot access '" + inputPaths[i] + "': No such file or directory");
 			}
 		}
 		return validPaths;

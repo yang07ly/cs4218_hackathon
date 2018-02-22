@@ -89,15 +89,15 @@ public class SedApplication implements SedItf {
 				try {
 					filePath = currentDir.resolve(args[i]);
 				} catch (InvalidPathException e) {
-					throw new SedException("sed: can't read " + args[i] + ": No such file or directory");
+					throw new SedException("can't read " + args[i] + ": No such file or directory");
 				}
 
 				if (args[i].isEmpty() || !Files.exists(filePath) || !Files.isReadable(filePath)) {
-					throw new SedException("sed: can't read " + args[i] + ": No such file or directory");
+					throw new SedException("can't read " + args[i] + ": No such file or directory");
 				}
 
 				if (Files.isDirectory(filePath)) {
-					throw new SedException("sed: read error on " + args[i] + ": Is a directory");
+					throw new SedException("read error on " + args[i] + ": Is a directory");
 				}
 				
 				outputStr += replaceSubstringInFile(regexp, replexp, matchIndex, args[i]);
