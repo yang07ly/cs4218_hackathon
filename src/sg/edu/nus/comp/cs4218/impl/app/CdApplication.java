@@ -44,16 +44,10 @@ public class CdApplication implements CdItf {
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CdException {
-		if (args == null) {
-			return;
-		}
-
-		if (args.length > 1) {
+		if (args == null || args.length == 0) {
+			changeToDirectory(null, new Environment());
+		} else if (args.length > 1) {
 			throw new CdException("too many arguments");
-		}
-
-		if (args.length == 0) {
-			changeToDirectory(System.getProperty("user.dir"), new Environment());
 		} else {
 			changeToDirectory(args[0], new Environment());	
 		}
@@ -74,7 +68,11 @@ public class CdApplication implements CdItf {
 		Path filePath;
 		Path currentDir = Paths.get(Environment.currentDirectory);
 		try {
-			filePath = currentDir.resolve(path);
+			if (path == null || path.length() == 0) {
+				filePath = currentDir.resolve(System.getProperty("user.dir"));
+			} else {
+				filePath = currentDir.resolve(path);
+			}
 		} catch (InvalidPathException e) {
 			throw new CdException(path + ": No such file or directory");
 		}
