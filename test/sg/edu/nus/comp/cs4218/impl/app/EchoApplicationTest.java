@@ -78,6 +78,19 @@ public class EchoApplicationTest {
 	}
 	
 	@Test
+	public void testEchoEmptyArgs() {
+		expected = "\n";
+		try {
+			String[] strArr = {};
+			echoApp.run(strArr, null, stdout);
+			result = stdout.toString();
+		} catch (EchoException e) {
+			result = e.getMessage();
+		}
+		assertEquals(expected, result);
+	}
+	
+	@Test
 	public void testEchoTextWithSpaces() {
 		expected = "text1     text2\n";
 		try {
