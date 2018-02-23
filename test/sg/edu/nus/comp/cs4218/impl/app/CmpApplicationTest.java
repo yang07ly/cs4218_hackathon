@@ -1,0 +1,379 @@
+package sg.edu.nus.comp.cs4218.impl.app;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import sg.edu.nus.comp.cs4218.Environment;
+
+public class CmpApplicationTest {
+	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
+	private static final String FILE3_TXT = "file3.txt";
+	private static final String FILE1_TXT = "file1.txt";
+	private static final String FILE2_TXT = "file2.txt";
+	CmpApplication app;
+	OutputStream outputStream;
+	String expected, output;
+
+	@Before
+	public void setUp() {
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
+				+ "cmp_test_system";
+		app = new CmpApplication();
+		outputStream = new ByteArrayOutputStream();
+		output = "";
+		expected = "";
+	}
+
+	@Test
+	public void testFileFileEmptyFileA() {
+		expected = "cmp: can't have empty argument";
+		try {
+			output = app.cmpTwoFiles("", FILE2_TXT, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileEmptyFileB() {
+		expected = "cmp: can't have empty argument";
+		try {
+			output = app.cmpTwoFiles(FILE2_TXT, "", false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileSpaceFileA() {
+		expected = "cmp: invalid file:  ";
+		try {
+			output = app.cmpTwoFiles(" ", FILE2_TXT, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileSpaceFileB() {
+		expected = "cmp: invalid file:  ";
+		try {
+			output = app.cmpTwoFiles(FILE2_TXT, " ", false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileDirectoryFileA() {
+		Path path = Paths.get(Environment.currentDirectory);
+		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		try {
+			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileDirectoryFileB() {
+		Path path = Paths.get(Environment.currentDirectory);
+		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		try {
+			output = app.cmpTwoFiles(FILE2_TXT, path.toString(), false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileNonExistentialFileA() {
+		Path path = Paths.get(Environment.currentDirectory);
+		expected = "cmp: cannot open 'file3.txt' for reading: No such file or directory";
+		try {
+			output = app.cmpTwoFiles(FILE3_TXT, FILE1_TXT, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileNonExistentialFileb() {
+		Path path = Paths.get(Environment.currentDirectory);
+		expected = "cmp: cannot open 'file4.txt' for reading: No such file or directory";
+		try {
+			output = app.cmpTwoFiles("file4.txt", FILE1_TXT, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileFileRelRelTrueTrueTrueNoDiff() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, "file1_copy.txt", true, true, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("", output);
+	}
+
+	@Test
+	public void testFileFileRelRelTrueTrueTrue() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, true, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("Files differ", output);
+	}
+
+	@Test
+	public void testFileFileRelRelTrueFalseFalse() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l", output);
+	}
+
+	@Test
+	public void testFileFileRelRelFalseTrueFalse() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, true, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("Files differ", output);
+	}
+	
+	@Test
+	public void testFileFileRelRelFalseFalseTrue() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("10 151 154\n11 154 151\n", output);
+	}
+	
+	@Test
+	public void testFileEmptyFileRelRelFalseFalseTrue() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, EMPTY_FILE_TXT, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("1 155 EOF\ncmp: EOF on emptyFile.txt", output);
+	}
+	
+	@Test
+	public void testFileEmptyFileRelRelTrueFalseTrue() {
+		try {
+			output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+	}
+	
+	@Test
+	public void testFilePathFileRelRelFalseFalseTrue() {
+		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
+		try {
+			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("10 151 154\n11 154 151\n", output);
+	}
+
+	/*
+	 * Test file and stream
+	 */
+
+	@Test
+	public void testFileStreamEmptyFileA() {
+		expected = "cmp: can't have empty argument";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin("", inputStream, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+	
+	@Test
+	public void testFileStreamSpaceFileA() {
+		expected = "cmp: invalid file:  ";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(" ", inputStream, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileStreamDirectoryFileA() {
+		Path path = Paths.get(Environment.currentDirectory);
+		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(path.toString(), inputStream, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileStreamNonExistentialFileA() {
+		expected = "cmp: cannot open 'file3.txt' for reading: No such file or directory";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE3_TXT, inputStream, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileStreamEmptyStreamFalseFalseFalse() {
+		expected = "file1.txt - differ: byte 1, line 1";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileStreamTrueTrueTrueNoDiff() {
+		expected = "";
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE1_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, true, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testFileStreamRelRelTrueTrueTrue() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, true, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("Files differ", output);
+	}
+
+	@Test
+	public void testFileStreamRelRelTrueFalseFalse() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l", output);
+	}
+
+	@Test
+	public void testFileStreamRelRelFalseTrueFalse() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, true, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("Files differ", output);
+	}
+	
+	@Test
+	public void testFileStreamRelRelFalseFalseTrue() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("10 151 154\n11 154 151\n", output);
+	}
+	
+	@Test
+	public void testFileStreamFalseFalseTrue() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("1 155 EOF\ncmp: EOF on -", output);
+	}
+	
+	@Test
+	public void testFilePathStreamFalseFalseTrue() {
+		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(path.toString(), inputStream, false, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("1 155 EOF\ncmp: EOF on -", output);
+	}
+	
+	@Test
+	public void testFileStreamTrueFalseTrue() {
+		try {
+			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+			InputStream inputStream = new FileInputStream(file);
+			output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, true);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+	}
+
+}

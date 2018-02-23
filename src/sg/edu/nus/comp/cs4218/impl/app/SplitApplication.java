@@ -99,22 +99,18 @@ public class SplitApplication implements SplitItf {
 	 *             if more than 1 line and byte is specified.
 	 */
 	private void splitFile(String file, String prefix, int lines, String bytes) throws SplitException {
-		String outputPrefix = prefix;
 		int numLines = lines;
 		if (numLines != -1 && bytes.length() != 0) {
 			throw new SplitException("cannot split in more than one way");
 		}
-		
-		if (outputPrefix == null) {
-			outputPrefix = "x";
-		}
+
 		if (bytes.length() == 0) {
 			if(numLines == -1) {
 				numLines = 1000;
 			}
-			splitFileByLines(file, outputPrefix, numLines);
+			splitFileByLines(file, prefix, numLines);
 		} else {
-			splitFileByBytes(file, outputPrefix, bytes);
+			splitFileByBytes(file, prefix, bytes);
 		}
 	}
 
@@ -127,6 +123,9 @@ public class SplitApplication implements SplitItf {
 	 * @return String of the next counter for the file name
 	 */
 	private String getNextName(String currCounter) {
+		if(currCounter == null) {
+			return "aa";
+		}
 		char[] name = currCounter.toCharArray();
 		String newCounter;
 		boolean hasIncremented = false;
@@ -150,6 +149,7 @@ public class SplitApplication implements SplitItf {
 
 	@Override
 	public void splitFileByLines(String file, String prefix, int lines) throws SplitException {
+		String outputPrefix = getPrefix(prefix);
 		if (lines == 0) {
 			throw new SplitException(lines + ": invalid number of lines");
 		}
@@ -160,7 +160,7 @@ public class SplitApplication implements SplitItf {
 		int count = 1;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(filePath)));
-			BufferedWriter writer = new BufferedWriter(new FileWriter(prefix + currCounter));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outputPrefix + currCounter));
 			line = reader.readLine();
 			writer.write(line);
 			while ((line = reader.readLine()) != null) {
@@ -168,7 +168,7 @@ public class SplitApplication implements SplitItf {
 					writer.flush();
 					writer.close();
 					currCounter = getNextName(currCounter);
-					writer = new BufferedWriter(new FileWriter(prefix + currCounter));
+					writer = new BufferedWriter(new FileWriter(outputPrefix + currCounter));
 					count = 1;
 					writer.write(line);
 					continue;
@@ -181,35 +181,46 @@ public class SplitApplication implements SplitItf {
 			writer.flush();
 			writer.close();
 		} catch (IOException exIO) {
-			throw new SplitException("IOException caught");
+			throw new SplitException(prefix + ": No such file or directory");
 		}
+	}
+
+	/**
+	 * Checks for null prefix and sets to default prefix if
+	 * @param prefix String of prefix
+	 * @return String of prefix
+	 */
+	private String getPrefix(String prefix) {
+		if (prefix == null) {
+			return "x";
+		}
+		return prefix;
 	}
 
 	@Override
 	public void splitFileByBytes(String file, String prefix, String bytes) throws SplitException {
+		String outputPrefix = getPrefix(prefix);
 		int numBytes = getBytes(bytes);
 		char[] buffer = new char[numBytes];
 		Path path = checkIfValidFile(file);
 
 		String filePath = path.toString();
-		String currCounter = "aa";
+		String currCounter = null;
 		int count = 0;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(filePath)));
-			BufferedWriter writer = new BufferedWriter(new FileWriter(prefix + currCounter));
+			BufferedWriter writer;
 			while ((count = reader.read(buffer, 0, numBytes)) != -1) {
+				currCounter = getNextName(currCounter);
+				writer = new BufferedWriter(new FileWriter(outputPrefix + currCounter));
 				writer.write(buffer, 0, count);
 				writer.flush();
 				writer.close();
-				currCounter = getNextName(currCounter);
-				writer = new BufferedWriter(new FileWriter(prefix + currCounter));
 				buffer = new char[numBytes];
 			}
 			reader.close();
-			writer.flush();
-			writer.close();
 		} catch (IOException exIO) {
-			throw new SplitException(filePath + ": No such file or directory");
+			throw new SplitException(prefix + ": No such file or directory");
 		}
 	}
 
@@ -245,7 +256,7 @@ public class SplitApplication implements SplitItf {
 				default:
 					throw new SplitException(bytes + ": invalid number of bytes");
 				}
-			} catch (NumberFormatException exNum) {
+			} catch (Exception e) {
 				throw new SplitException(bytes + ": invalid number of bytes");
 			}
 		}

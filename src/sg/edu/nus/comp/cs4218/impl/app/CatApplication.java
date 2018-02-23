@@ -62,30 +62,31 @@ public class CatApplication implements Application {
 
 			if (numOfFiles > 0) {
 				Path filePath;
-				Path[] filePathArray = new Path[numOfFiles];
 				Path currentDir = Paths.get(Environment.currentDirectory);
-				boolean isFileReadable = false;
 
 				for (int i = 0; i < numOfFiles; i++) {
-					filePath = currentDir.resolve(args[i]);
-					isFileReadable = checkIfFileIsReadable(filePath);
-					if (isFileReadable) {
-						filePathArray[i] = filePath;
-					}
-				}
-
-				// file could be read. perform cat command
-				if (filePathArray.length != 0) {
 					try {
-						for (int j = 0; j < filePathArray.length; j++) {
-								byte[] byteFileArray = Files.readAllBytes(filePathArray[j]);
-								stdout.write(byteFileArray);
-						}
+						filePath = currentDir.resolve(args[i]);
+						checkIfFileIsReadable(filePath, args[i]);
+						byte[] byteFileArray = Files.readAllBytes(filePath);
+						stdout.write(byteFileArray);
 						stdout.write("\n".getBytes());
-					} catch (IOException e) {
+					}catch(CatException catE) {
+						if(numOfFiles == 1) {
+							throw catE;
+						}
+						try {
+							String message = catE.getMessage()+"\n";
+							stdout.write(message.getBytes());
+						} catch (IOException e) {
+							throw new CatException("Could not write to output stream");
+						}
+					}
+					catch (IOException e) {
 						throw new CatException("Could not write to output stream");
 					}
 				}
+
 			}
 		}
 	}
@@ -99,15 +100,14 @@ public class CatApplication implements Application {
 	 * @throws CatException
 	 *             If the file is not readable
 	 */
-	boolean checkIfFileIsReadable(Path filePath) throws CatException {
-
+	boolean checkIfFileIsReadable(Path filePath, String file) throws CatException {
 		if (Files.isDirectory(filePath)) {
-			throw new CatException("This is a directory");
+			throw new CatException(file + ": Is a directory");
 		}
 		if (Files.exists(filePath) && Files.isReadable(filePath)) {
 			return true;
 		} else {
-			throw new CatException("Could not read file");
+			throw new CatException(file + ": No such file or directory");
 		}
 	}
 }

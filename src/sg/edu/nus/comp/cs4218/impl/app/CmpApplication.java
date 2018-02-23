@@ -17,7 +17,6 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.CmpItf;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.CmpException;
-import sg.edu.nus.comp.cs4218.exception.SplitException;
 
 public class CmpApplication implements CmpItf {
 
@@ -95,7 +94,7 @@ public class CmpApplication implements CmpItf {
 		Path filePathB = checkIfValidFile(fileNameB);
 		BufferedReader readerA = new BufferedReader(new FileReader(new File(filePathA.toString())));
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePathB.toString())));
-		String msg = cmpFiles(filePathA, filePathB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
+		String msg = cmpFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
 				readerB);
 		readerA.close();
 		readerB.close();
@@ -114,29 +113,31 @@ public class CmpApplication implements CmpItf {
 	 * @return
 	 * @throws IOException
 	 */
-	private String cmpFiles(Path filePathA, Path filePathB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
+	private String cmpFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff, BufferedReader readerA, BufferedReader readerB) throws IOException {
-		int readValueA, readValueB, byteNumber = 1, lineNumber = 1;
-		String msgWithoutL = filePathA.getFileName() + " " + filePathB.getFileName() + " differ: ";
+		int readValueA = 0, readValueB = 0, byteNumber = 1, lineNumber = 1;
+		String msgWithoutL = fileNameA + " " + fileNameB + " differ: ";
 		String msg = "";
 
-		while (((readValueA = readerA.read()) != -1) && ((readValueB = readerB.read()) != -1)) {
+		readValueA = readerA.read();
+		readValueB = readerB.read();
+		while ((readValueA != -1) || (readValueB != -1)) {
 			if (readValueA != readValueB) {
 				if (isPrintSimplify) { // -s
 					return "Files differ";
 				} else if (isPrintCharDiff) {
 					if (isPrintOctalDiff) { // -cl
-						msg += byteNumber + " " + Integer.toOctalString(readValueA) + " " + ((char) readValueA) + " "
-								+ Integer.toOctalString(readValueB) + " " + ((char) readValueB) + "\n";
+						msg += byteNumber + " " + getOctalString(readValueA) + " " + ((char) readValueA) + " "
+								+ getOctalString(readValueB) + " " + ((char) readValueB) + "\n";
 					} else { // -c
 						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
-								+ Integer.toOctalString(readValueA) + " " + ((char) readValueA) + " "
-								+ Integer.toOctalString(readValueB) + " " + ((char) readValueB);
+								+ getOctalString(readValueA) + " " + ((char) readValueA) + " "
+								+ getOctalString(readValueB) + " " + ((char) readValueB);
 						return msgWithoutL;
 					}
 				} else if (isPrintOctalDiff) { // -l
-					msg += byteNumber + " " + Integer.toOctalString(readValueA) + " "
-							+ Integer.toOctalString(readValueB) + "\n";
+					msg += byteNumber + " " + getOctalString(readValueA) + " "
+							+ getOctalString(readValueB) + "\n";
 
 				} else { // no flags
 					msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber;
@@ -147,17 +148,38 @@ public class CmpApplication implements CmpItf {
 			if (readValueA == 10) {
 				lineNumber++;
 			}
+			if((readValueB == -1)&& isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameB;
+				break;
+			}
+			if((readValueA == -1) && isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameA;
+				break;
+			}
+			readValueA = readerA.read();
+			readValueB = readerB.read();
 		}
 		return msg;
+	}
+
+	/**
+	 * @param readValueA
+	 * @return
+	 */
+	private String getOctalString(int readValueA) {
+		if(readValueA == -1) {
+			return "EOF";
+		}
+		return Integer.toOctalString(readValueA);
 	}
 
 	@Override
 	public String cmpFileAndStdin(String fileName, InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
 		Path filePath = checkIfValidFile(fileName);
-		BufferedReader readerA = new BufferedReader(new InputStreamReader(stdin));
-		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePath.toString())));
-		String msg = cmpFiles(Paths.get("-"), filePath, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
+		BufferedReader readerA = new BufferedReader(new FileReader(new File(filePath.toString())));
+		BufferedReader readerB = new BufferedReader(new InputStreamReader(stdin));
+		String msg = cmpFiles(fileName, "-", isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
 				readerB);
 		readerA.close();
 		readerB.close();
@@ -211,7 +233,7 @@ public class CmpApplication implements CmpItf {
 	 */
 	boolean checkIfFileIsReadable(Path filePath, String file) throws CmpException {
 		if (Files.isDirectory(filePath)) {
-			throw new CmpException("This is a directory");
+			throw new CmpException(file + ": this is a directory");
 		}
 		if (!Files.exists(filePath)) {
 			throw new CmpException(

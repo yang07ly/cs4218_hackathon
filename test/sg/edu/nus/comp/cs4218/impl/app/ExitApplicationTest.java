@@ -6,7 +6,7 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.exception.ExitException;
 import sg.edu.nus.comp.cs4218.impl.app.ExitApplication;
 
-public class ExitTest {
+public class ExitApplicationTest {
 
 	@Test
 	public void testExit() {
