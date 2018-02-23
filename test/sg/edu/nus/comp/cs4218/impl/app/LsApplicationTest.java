@@ -18,6 +18,7 @@ public class LsApplicationTest {
 	public static final String FOLDER1 = "folder1";
 	public static final String FOLDER1_1 = "folder1_1";
 	public static final String FOLDER2 = "folder2";
+	public static final String FOLDER1AND2 = "folder1  folder2\n";
 	public static final String FILE1 = "file1.txt";
 	public static final String FOLDER1_CONTENT = "file1_in_folder1.txt  file2_in_folder1.txt  folder1_1\n";
 	public static final String FOLDER2_CONTENT = "file1_in_folder2.txt  file2_in_folder2.txt\n";
@@ -35,8 +36,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testListCurrentFolder() {
-		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ FOLDER1 + "  folder2\n";
+		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  " + FOLDER1AND2;
 		try {
 			result = lsApp.listFolderContent(false, false);
 		} catch (LsException e) {
@@ -383,7 +383,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testOptionPositionAtEnd() {
-		expected = FOLDER1 + "  folder2\n";
+		expected = FOLDER1AND2;
 		try {
 			String[] strArr = {FOLDER1, FOLDER2, "-d"};
 			lsApp.run(strArr, null, stdout);
@@ -396,7 +396,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testOptionPositionAtCenter() {
-		expected = FOLDER1 + "  folder2\n";
+		expected = FOLDER1AND2;
 		try {
 			String[] strArr = {FOLDER1, "-R", FOLDER2, "-d"};
 			lsApp.run(strArr, null, stdout);
@@ -409,8 +409,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testNullArgs() {
-		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ FOLDER1 + "  folder2\n";
+		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "+ FOLDER1AND2;
 		try {
 			lsApp.run(null, null, stdout);
 			result = stdout.toString();
