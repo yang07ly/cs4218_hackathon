@@ -37,6 +37,121 @@ public class CmpApplicationTest {
 	}
 
 	@Test
+	public void testExtraOperand() {
+		expected = "cmp: Can't compare more than 2 sources";
+		String[] args = { "file1.txt", "file2.txt",
+		"-cl", "file3.txt" };
+		try {
+			app.run(args, System.in, outputStream);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testInvalidFlag() {
+		expected = "cmp: Invalid flags";
+		String[] args = { "file1.txt", "file2.txt", "-a" };
+		try {
+			app.run(args, System.in, outputStream);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testInvalidFlag2() {
+		expected = "cmp: Invalid flags";
+		String[] args = { "file1.txt", "file2.txt", "-c-" };
+		try {
+			app.run(args, System.in, outputStream);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCombineFlags() {
+		expected = "Files differ";
+		String[] args = { "file1.txt", "file2.txt", "-csl" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCombineFlags2() {
+		expected = "Files differ";
+		String[] args = { "file1.txt", "file2.txt", "-c-s-l" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCombineFlags3() {
+		expected = "Files differ";
+		String[] args = { "file1.txt", "file2.txt", "-c", "-s", "-l" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testHyphenFlag() {
+		expected = "cmp: Can't compare more than 2 sources";
+		String[] args = { "file1.txt", "file2.txt", "-" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testDoubleHyphen() {
+		expected = "cmp: Invalid flags";
+		String[] args = { "file1.txt", "file2.txt", "--" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testDoubleHyphen2() {
+		expected = "cmp: Invalid flags";
+		String[] args = { "file1.txt", "file2.txt", "--s" };
+		try {
+			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testFileFileEmptyFileA() {
 		expected = "cmp: can't have empty argument";
 		try {

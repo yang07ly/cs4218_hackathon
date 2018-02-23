@@ -29,11 +29,11 @@ public class CmpApplication implements CmpItf {
 			Vector<String> files = new Vector<String>();
 			getArguments(args, flags, files);
 			if (files.size() > 2) { 
-				throw new CmpException("Can't compare more than 2 files");
+				throw new CmpException("Can't compare more than 2 sources");
 			}
 			try {
 				String output = "";
-				if(files.size() == 2) {
+				if(!hasInputFromStream(files)) {
 					output = cmpTwoFiles(files.get(0), files.get(1), flags[0], flags[1], flags[2]);
 				}else if(files.size() == 1) {
 					output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
@@ -46,6 +46,18 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
+	 * @param files
+	 * @return
+	 */
+	private boolean hasInputFromStream(Vector<String> files) {
+		boolean hasStream = false;
+		for(int i = 0; i < files.size(); i++) {
+			hasStream = hasStream || files.get(i).equals("-");
+		}
+		return hasStream;
+	}
+
+	/**
 	 * @param args
 	 * @param flags
 	 * @param files
@@ -54,7 +66,7 @@ public class CmpApplication implements CmpItf {
 	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
 		for (int i = 0; i < args.length; i++) {
 			if(args[i].equals("-")) {
-				continue;
+				files.add(args[i]);
 			}else if (args[i].charAt(0) == ('-')) {
 				char prevChar = '-';
 				for(int j = 1; j < args[i].length(); j++) {

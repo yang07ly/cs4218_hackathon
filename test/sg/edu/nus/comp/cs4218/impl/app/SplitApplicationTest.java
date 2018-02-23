@@ -42,6 +42,32 @@ public class SplitApplicationTest {
 	}
 
 	@Test
+	public void testRunExtraOperand() {
+		String[] splitArgs = { "file1.txt", "-s" , "-c"};
+		expected = "split: extra operand '-c'";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testRunSplit2Ways() {
+		String[] splitArgs = { "file1.txt", "-b" ,"2" , "-l", "2" };
+		expected = "split: cannot split in more than one way";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testLinesEmptyFileName() {
 		expected = "split: can't have empty argument";
 		try {
