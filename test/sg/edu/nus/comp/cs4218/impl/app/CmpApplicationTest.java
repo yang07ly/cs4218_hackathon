@@ -17,6 +17,7 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class CmpApplicationTest {
+	private static final String FILES_DIFFER = "Files differ";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
 	private static final String FILE3_TXT = "file3.txt";
 	private static final String FILE1_TXT = "file1.txt";
@@ -144,7 +145,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("Files differ", output);
+		assertEquals(FILES_DIFFER, output);
 	}
 
 	@Test
@@ -164,7 +165,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("Files differ", output);
+		assertEquals(FILES_DIFFER, output);
 	}
 	
 	@Test
@@ -300,7 +301,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("Files differ", output);
+		assertEquals(FILES_DIFFER, output);
 	}
 
 	@Test
@@ -324,7 +325,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("Files differ", output);
+		assertEquals(FILES_DIFFER, output);
 	}
 	
 	@Test

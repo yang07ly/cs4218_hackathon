@@ -14,6 +14,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 
 public class CatApplicationTest {
 
+	private static final String FILE1_TXT = "file1.txt";
 	CatApplication app;
 	OutputStream outputStream;
 	String expected, output;
@@ -59,7 +60,7 @@ public class CatApplicationTest {
 	@Test
 	public void testOneFile() {
 		expected = "asdf\n";
-		String[] args = {"file1.txt"};
+		String[] args = {FILE1_TXT};
 		
 		try {
 			app.run(args, System.in, outputStream);
@@ -72,7 +73,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testAbsolutePath() {
-		String path = Environment.currentDirectory + File.separator + "file1.txt";
+		String path = Environment.currentDirectory + File.separator + FILE1_TXT;
 		expected = "asdf\n";
 		String[] args = {path};
 		
@@ -88,7 +89,7 @@ public class CatApplicationTest {
 	@Test
 	public void testMultipleFiles() {
 		expected = "asdf\nqwer\n";
-		String[] args = {"file1.txt","file2.txt"};
+		String[] args = {FILE1_TXT,"file2.txt"};
 		
 		try {
 			app.run(args, System.in, outputStream);
@@ -102,7 +103,7 @@ public class CatApplicationTest {
 	@Test
 	public void testMultipleFilesWithInvalidFiles() {
 		expected = "asdf\ncat: asdf: No such file or directory\nqwer\n";
-		String[] args = {"file1.txt", "asdf", "file2.txt"};
+		String[] args = {FILE1_TXT, "asdf", "file2.txt"};
 		
 		try {
 			app.run(args, System.in, outputStream);
