@@ -74,6 +74,10 @@ public class PipeCommand implements Command{
 			callCommand.parse();
 			callCommand.evaluate(inputStreamTemp, byteArrayOutputStream);
 		}
+		
+		ShellImpl.writeToStdout(byteArrayOutputStream, stdout);
+		ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
+		return;
 	}
 
 	public void parse() throws ShellException {
