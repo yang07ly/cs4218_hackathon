@@ -46,8 +46,9 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
+	 * checks if taking from input stream
 	 * @param files
-	 * @return
+	 * @return true if user specifies '-' as a file
 	 */
 	private boolean hasInputFromStream(Vector<String> files) {
 		boolean hasStream = false;
@@ -58,9 +59,10 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param args
-	 * @param flags
-	 * @param files
+	 * parses user command and extracts arguments
+	 * @param args String array of user-written arguments
+	 * @param flags boolean array that will store the parsed flags
+	 * @param files vector of string that will store the parsed files
 	 * @throws CmpException
 	 */
 	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
@@ -175,8 +177,9 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param readValueA
-	 * @return
+	 * gets the octalString from an integer
+	 * @param readValueA Integer to convert to octal
+	 * @return String of octal value
 	 */
 	private String getOctalString(int readValueA) {
 		if(readValueA == -1) {

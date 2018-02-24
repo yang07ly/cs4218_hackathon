@@ -13,12 +13,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class SplitApplicationTest {
+	private static final String XAC = "xac";
 	private static final String XAB = "xab";
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT2 = "output";
@@ -199,15 +199,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAB)));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
@@ -280,15 +280,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir +  XAB)));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
@@ -592,22 +592,23 @@ public class SplitApplicationTest {
 			output = e.getMessage();
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals("as", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAB)));
 			assertEquals("df", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("xac")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAC)));
 			assertEquals("gh", reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
-			Files.delete(Paths.get("xac"));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
+			Files.delete(Paths.get(currentDir + XAC));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
 	}
+	
 	@Test
 	public void testBytesAbsolutePathKiloByte() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + "1024bytes.txt");

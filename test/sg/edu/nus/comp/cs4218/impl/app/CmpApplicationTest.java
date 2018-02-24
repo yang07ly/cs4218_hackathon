@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
@@ -221,7 +220,6 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileA() {
-		Path path = Paths.get(Environment.currentDirectory);
 		expected = "cmp: cannot open 'file3.txt' for reading: No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE3_TXT, FILE1_TXT, false, false, false);
@@ -233,7 +231,6 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileb() {
-		Path path = Paths.get(Environment.currentDirectory);
 		expected = "cmp: cannot open 'file4.txt' for reading: No such file or directory";
 		try {
 			output = app.cmpTwoFiles("file4.txt", FILE1_TXT, false, false, false);
