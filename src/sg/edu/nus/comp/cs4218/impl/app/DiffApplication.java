@@ -35,11 +35,4 @@ public class DiffApplication implements DiffItf{
 		return null;
 	}
 
-	@Override
-	public String diffFileAndStdin(InputStream stdin, Boolean isShowSame, Boolean isNoBlank, Boolean isSimple)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

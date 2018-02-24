@@ -201,20 +201,6 @@ public class CmpApplication implements CmpItf {
 		return msg;
 	}
 
-	//not in use, cant have more than 1 file with '-'
-	@Override
-	public String cmpStdin(InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
-			Boolean isPrintOctalDiff) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
-		String fileNameA = reader.readLine();
-		String fileNameB = reader.readLine();
-		if(reader.read() != -1) {
-			throw new CmpException("Can't cmp more than 2 files");
-		}
-		reader.close();
-		return cmpTwoFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff);
-	}
-	
 	/**
 	 * gets the absolute filepath of a file
 	 * @param file String of file name or file path
