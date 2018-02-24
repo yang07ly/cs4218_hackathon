@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import sg.edu.nus.comp.cs4218.exception.EchoException;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
 
 public class QuotingTest {
@@ -24,6 +25,15 @@ public class QuotingTest {
 
 	@Test
 	public void DoubleQuoteTest() {
+		expected = "hi`hi\n";
+		try {
+			String[] strArr = {"\"hi`hi\""};
+			echoApp.run(strArr, null, stdout);
+			result = stdout.toString();
+		} catch (EchoException e) {
+			result = e.getMessage();
+		}
+		assertEquals(expected, result);
 		
 	}
 
