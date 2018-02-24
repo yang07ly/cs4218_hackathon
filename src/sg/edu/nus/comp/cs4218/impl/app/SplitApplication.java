@@ -194,7 +194,12 @@ public class SplitApplication implements SplitItf {
 		if (prefix == null) {
 			return "x";
 		}
-		return prefix;
+		Path path = Paths.get(prefix);
+		if(path.isAbsolute()) {
+			return prefix;
+		}else {
+			return Environment.currentDirectory + File.separator + prefix;
+		}
 	}
 
 	@Override

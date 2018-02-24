@@ -30,11 +30,12 @@ public class SplitApplicationTest {
 	SplitApplication app;
 	InputStream inputStream = System.in;
 	OutputStream outputStream;
-	String expected, output;
+	String expected, output, currentDir;
 
 	@Before
 	public void setUp() {
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system"+ File.separator + "split_test_system";
+		currentDir = Environment.currentDirectory + File.separator;
 		app = new SplitApplication();
 		outputStream = new ByteArrayOutputStream();
 		output = "";
@@ -145,15 +146,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -223,15 +224,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -404,18 +405,18 @@ public class SplitApplicationTest {
 			output = e.getMessage();
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals("as", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals("df", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ac")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ac")));
 			assertEquals("gh", reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
-			Files.delete(Paths.get("ac"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
+			Files.delete(Paths.get(currentDir + "ac"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -435,18 +436,18 @@ public class SplitApplicationTest {
 			expected += "a";
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 512);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[512];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			int count = reader.read(buffer, 0 , 512);
 			reader.close();
 			assertEquals("a", new String(buffer,0, count));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -467,18 +468,18 @@ public class SplitApplicationTest {
 			expected += "a";
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 1024);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[1024];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			int count = reader.read(buffer, 0 , 1024);
 			reader.close();
 			assertEquals("a", new String(buffer, 0, count));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -499,18 +500,18 @@ public class SplitApplicationTest {
 		}
 		String expected = new String(stringBuilder);
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 1048576);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[1];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			reader.read(buffer, 0 , 1);
 			reader.close();
 			assertEquals("a", new String(buffer));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
