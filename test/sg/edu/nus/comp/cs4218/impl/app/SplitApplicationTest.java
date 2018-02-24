@@ -81,7 +81,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesSpaceFileName() {
-		expected = "split: invalid file:  ";
+		expected = "split: ' ': No such file or directory";
 		try {
 			app.splitFileByLines(" ", "", 4);
 		} catch (Exception e) {
@@ -92,7 +92,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesFileNotFound() {
-		expected = "split: cannot open 'asdf' for reading: No such file or directory";
+		expected = "split: 'asdf': No such file or directory";
 		try {
 			app.splitFileByLines("asdf", "", 4);
 		} catch (Exception e) {
@@ -108,7 +108,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: cannot open 'asdf.txt' for reading: No such file or directory";
+		expected = "split: 'asdf.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -119,7 +119,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: C:\\asdf\\zxcv\\qwer\\file1.txt: No such file or directory";
+		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -311,7 +311,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesSpaceFileName() {
-		expected = "split: invalid file:  ";
+		expected = "split: ' ': No such file or directory";
 		try {
 			app.splitFileByBytes(" ", "", "1");
 		} catch (Exception e) {
@@ -322,7 +322,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesFileNotFound() {
-		expected = "split: cannot open 'asdf' for reading: No such file or directory";
+		expected = "split: 'asdf': No such file or directory";
 		try {
 			app.splitFileByBytes("asdf", "", "1");
 		} catch (Exception e) {
@@ -338,7 +338,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: cannot open 'asdf.txt' for reading: No such file or directory";
+		expected = "split: 'asdf.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -349,7 +349,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: C:\\asdf\\zxcv\\qwer\\file1.txt: No such file or directory";
+		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 

@@ -198,7 +198,7 @@ public class SplitApplication implements SplitItf{
 			writer.flush();
 			writer.close();
 		} catch (IOException exIO) {
-			throw new SplitException(prefix + ": No such file or directory");
+			throw new SplitException("'" + prefix + "': No such file or directory");
 		}
 	}
 
@@ -242,7 +242,7 @@ public class SplitApplication implements SplitItf{
 			}
 			reader.close();
 		} catch (IOException exIO) {
-			throw new SplitException(prefix + ": No such file or directory");
+			throw new SplitException("'" + prefix + "': No such file or directory");
 		}
 	}
 
@@ -339,9 +339,9 @@ public class SplitApplication implements SplitItf{
 			checkIfFileIsReadable(filePathB, file);
 			return new FileInputStream(filePathB.toString());
 		} catch (InvalidPathException exPath) {
-			throw new SplitException("invalid file: " + file);
+			throw new SplitException("'" + file + "': No such file or directory");
 		} catch (FileNotFoundException e) {
-			throw new SplitException("invalid file: " + file);
+			throw new SplitException("'" + file + "': No such file or directory");
 		}
 	}
 
@@ -356,16 +356,15 @@ public class SplitApplication implements SplitItf{
 	 */
 	boolean checkIfFileIsReadable(Path filePath, String file) throws SplitException {
 		if (Files.isDirectory(filePath)) {
-			throw new SplitException("This is a directory");
+			throw new SplitException("'" + file + "': this is a directory");
 		}
 		if (!Files.exists(filePath)) {
-			throw new SplitException(
-					"cannot open '" + file + "' for reading: No such file or directory");
+			throw new SplitException("'" + file + "': No such file or directory");
 		}
 		if (Files.isReadable(filePath)) {
 			return true;
 		} else {
-			throw new SplitException("Could not read file");
+			throw new SplitException("'" + file + "': Could not read file");
 		}
 	}
 

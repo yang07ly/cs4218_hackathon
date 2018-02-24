@@ -219,7 +219,7 @@ public class CmpApplication implements CmpItf {
 			checkIfFileIsReadable(filePathB, file);
 			return filePathB;
 		} catch (InvalidPathException exPath) {
-			throw new CmpException("invalid file: " + file);
+			throw new CmpException("'" + file + "': No such file or directory");
 		}
 	}
 	
@@ -234,16 +234,15 @@ public class CmpApplication implements CmpItf {
 	 */
 	boolean checkIfFileIsReadable(Path filePath, String file) throws CmpException {
 		if (Files.isDirectory(filePath)) {
-			throw new CmpException(file + ": this is a directory");
+			throw new CmpException("'" + file + "': this is a directory");
 		}
 		if (!Files.exists(filePath)) {
-			throw new CmpException(
-					"cannot open '" + file + "' for reading: No such file or directory");
+			throw new CmpException("'" + file + "': No such file or directory");
 		}
 		if (Files.isReadable(filePath)) {
 			return true;
 		} else {
-			throw new CmpException("Could not read file");
+			throw new CmpException("'" + file + "': Could not read file");
 		}
 	}
 
