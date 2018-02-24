@@ -6,9 +6,7 @@ import org.junit.Test;
 
 public class CallCommandTest {
 
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
+	
 
 }
+
