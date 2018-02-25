@@ -64,6 +64,7 @@ public class SequenceCommand implements Command {
 				callCommand.evaluate(stdin, stdout);
 			}
 		}
+		
 	}
 
 	/**
@@ -100,7 +101,8 @@ public class SequenceCommand implements Command {
 				sizeSQ++;
 			} else if (cmdline.charAt(i) == SEMICOLON_OPERATOR) {
 				if (sizeBQ % 2 == 0) {
-					argsArray.add(cmdline.substring(index, i));
+					String command = cmdline.substring(index, i);
+					argsArray.add(command);
 					index = i + 1;
 				}
 			} 
@@ -113,7 +115,7 @@ public class SequenceCommand implements Command {
 			}
 			
 		}
-		
+//		outputArgsArray();
 	}
 	
 	public void outputArgsArray() {

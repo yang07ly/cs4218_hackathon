@@ -85,8 +85,8 @@ public class ShellImpl implements Shell {
 
 				ByteArrayOutputStream outByte = (ByteArrayOutputStream) bqOutputStream;
 				byte[] byteArray = outByte.toByteArray();
-				String bqResult = new String(byteArray).replace("\n", "")
-						.replace("\r", "");
+				String bqResult = new String(byteArray).replace("\n", " ")
+						.replace("\r", " ");
 				String[] parts = bqResult.trim().split("\\s+");
 				for (int j = 0; j < parts.length; j++) {
 					results.add(parts[j]);

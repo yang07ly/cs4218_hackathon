@@ -150,6 +150,7 @@ public class CallCommand implements Command {
 		} else {
 			this.argsArray = new String[0];
 		}
+	
 	}
 
 	/**

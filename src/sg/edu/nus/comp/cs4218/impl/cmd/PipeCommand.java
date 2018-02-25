@@ -54,7 +54,7 @@ public class PipeCommand implements Command{
 
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		
+
 		if (argsArray.size() == 1) {
 			String command = argsArray.get(0);
 			CallCommand callCommand = new CallCommand(command);
@@ -70,11 +70,11 @@ public class PipeCommand implements Command{
 			String command = argsArray.get(i);
 			CallCommand callCommand = new CallCommand(command);
 			inputStreamTemp = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-			byteArrayOutputStream = new ByteArrayOutputStream();
+			byteArrayOutputStream = new ByteArrayOutputStream();	
 			callCommand.parse();
 			callCommand.evaluate(inputStreamTemp, byteArrayOutputStream);
 		}
-		
+
 		ShellImpl.writeToStdout(byteArrayOutputStream, stdout);
 		ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
 		return;
@@ -103,11 +103,12 @@ public class PipeCommand implements Command{
 			} else if (cmdline.charAt(i) == CHAR_SQ) {
 				sizeSQ++;
 			} else if (cmdline.charAt(i) == PIPE_OPERATOR) {
-				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0) {
+				if (sizeBQ % 2 == 0) {
 					argsArray.add(cmdline.substring(index, i));
 					index = i + 1;
 				}
-			} else if (i == cmdline.length() - 1) {
+			} 
+			if (i == cmdline.length() - 1) {
 				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0) {
 					argsArray.add(cmdline.substring(index, i + 1));
 					break;
@@ -117,6 +118,16 @@ public class PipeCommand implements Command{
 		}
 	}
 	
+	
+	public void outputArgsArray() {
+		for(String i: argsArray) {
+			System.out.println(i);
+		}
+	}
+	
+	public void outputArgsArraySize() {
+		System.out.println(argsArray.size());
+	}
 	/**
 	 * Terminates current execution of the command (unused for now)
 	 */
