@@ -13,12 +13,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class SplitApplicationTest {
+	private static final String XAC = "xac";
 	private static final String XAB = "xab";
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT2 = "output";
@@ -30,11 +30,12 @@ public class SplitApplicationTest {
 	SplitApplication app;
 	InputStream inputStream = System.in;
 	OutputStream outputStream;
-	String expected, output;
+	String expected, output, currentDir;
 
 	@Before
 	public void setUp() {
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system"+ File.separator + "split_test_system";
+		currentDir = Environment.currentDirectory + File.separator;
 		app = new SplitApplication();
 		outputStream = new ByteArrayOutputStream();
 		output = "";
@@ -80,7 +81,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesSpaceFileName() {
-		expected = "split: invalid file:  ";
+		expected = "split: ' ': No such file or directory";
 		try {
 			app.splitFileByLines(" ", "", 4);
 		} catch (Exception e) {
@@ -91,7 +92,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesFileNotFound() {
-		expected = "split: cannot open 'asdf' for reading: No such file or directory";
+		expected = "split: 'asdf': No such file or directory";
 		try {
 			app.splitFileByLines("asdf", "", 4);
 		} catch (Exception e) {
@@ -107,7 +108,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: cannot open 'asdf.txt' for reading: No such file or directory";
+		expected = "split: 'asdf.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -118,7 +119,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: C:\\asdf\\zxcv\\qwer\\file1.txt: No such file or directory";
+		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -145,15 +146,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -198,15 +199,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAB)));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
@@ -223,15 +224,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -279,15 +280,15 @@ public class SplitApplicationTest {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir +  XAB)));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
@@ -310,7 +311,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesSpaceFileName() {
-		expected = "split: invalid file:  ";
+		expected = "split: ' ': No such file or directory";
 		try {
 			app.splitFileByBytes(" ", "", "1");
 		} catch (Exception e) {
@@ -321,7 +322,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesFileNotFound() {
-		expected = "split: cannot open 'asdf' for reading: No such file or directory";
+		expected = "split: 'asdf': No such file or directory";
 		try {
 			app.splitFileByBytes("asdf", "", "1");
 		} catch (Exception e) {
@@ -337,7 +338,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: cannot open 'asdf.txt' for reading: No such file or directory";
+		expected = "split: 'asdf.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -348,7 +349,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: C:\\asdf\\zxcv\\qwer\\file1.txt: No such file or directory";
+		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -404,18 +405,18 @@ public class SplitApplicationTest {
 			output = e.getMessage();
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			assertEquals("as", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			assertEquals("df", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("ac")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ac")));
 			assertEquals("gh", reader.readLine());
 			reader.close();
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
-			Files.delete(Paths.get("ac"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
+			Files.delete(Paths.get(currentDir + "ac"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -435,18 +436,18 @@ public class SplitApplicationTest {
 			expected += "a";
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 512);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[512];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			int count = reader.read(buffer, 0 , 512);
 			reader.close();
 			assertEquals("a", new String(buffer,0, count));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -467,18 +468,18 @@ public class SplitApplicationTest {
 			expected += "a";
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 1024);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[1024];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			int count = reader.read(buffer, 0 , 1024);
 			reader.close();
 			assertEquals("a", new String(buffer, 0, count));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -499,18 +500,18 @@ public class SplitApplicationTest {
 		}
 		String expected = new String(stringBuilder);
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("aa")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 			reader.read(buffer, 0 , 1048576);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			
 			buffer = new char[1];
-			reader = new BufferedReader(new FileReader(new File("ab")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
 			reader.read(buffer, 0 , 1);
 			reader.close();
 			assertEquals("a", new String(buffer));
-			Files.delete(Paths.get("aa"));
-			Files.delete(Paths.get("ab"));
+			Files.delete(Paths.get(currentDir + "aa"));
+			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
@@ -591,22 +592,23 @@ public class SplitApplicationTest {
 			output = e.getMessage();
 		}
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(XAA)));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			assertEquals("as", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAB)));
 			assertEquals("df", reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File("xac")));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAC)));
 			assertEquals("gh", reader.readLine());
 			reader.close();
-			Files.delete(Paths.get(XAA));
-			Files.delete(Paths.get(XAB));
-			Files.delete(Paths.get("xac"));
+			Files.delete(Paths.get(currentDir + XAA));
+			Files.delete(Paths.get(currentDir + XAB));
+			Files.delete(Paths.get(currentDir + XAC));
 		} catch (IOException e) {
 			output = IO_ERROR_IN_TEST;
 		}
 	}
+	
 	@Test
 	public void testBytesAbsolutePathKiloByte() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + "1024bytes.txt");

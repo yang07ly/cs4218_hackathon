@@ -3,10 +3,12 @@ package sg.edu.nus.comp.cs4218.impl.app;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -16,81 +18,86 @@ import java.nio.file.Paths;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.SplitItf;
 import sg.edu.nus.comp.cs4218.exception.CatException;
-import sg.edu.nus.comp.cs4218.exception.CmpException;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
-/**
- * The split command writes its arguments separated by spaces and terminates by
- * a newline on the standard output.
- * 
- * <p>
- * <b>Command format:</b> <code>split [OPTIONS] [FILE {PREFIX]]...</code>
- * </p>
- */
-public class SplitApplication implements SplitItf {
+public class SplitApplication implements SplitItf{
 
-	/**
-	 * Runs the split application with the specified arguments.
-	 * 
-	 * @param args
-	 *            Array of arguments for the application. Each array element is the
-	 *            path to a file. If a file is not specified stdin is used.
-	 * @param stdin
-	 *            An InputStream. The input for the command is read from this
-	 *            InputStream if no files are specified.
-	 * @param stdout
-	 *            An OutputStream. The output of the command is written to this
-	 *            OutputStream.
-	 * 
-	 * @throws SplitException
-	 *             If the file(s) specified do not exist or are unreadable.
-	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws SplitException {
-		if (args == null || args.length == 0) {
+		String[] flags = new String[4];
+		getArgs(args, flags);
+		String file = flags[0], prefix = flags[1], bytes = flags[2], lineString = flags[3];
+		int lines = parseLines(lineString);
+		
+		if(file == null) {
 			if (stdin == null) {
 				throw new SplitException("Null Pointer Exception");
 			}
-		} else {
-			int lines = -1;
-			String file = null, prefix = null, bytes = "";
-			boolean hasFlag = false;
+			if(isSplitByLines(bytes, lines)) {
+				splitStreamByLines(stdin, prefix, lines);
+			}else {
+				splitStreamByBytes(stdin, prefix, bytes);
+			}
+		}else {
+			if(isSplitByLines(bytes, lines)) {
+				splitFileByLines(file, prefix, lines);
+			}else {
+				splitFileByBytes(file, prefix, bytes);
+			}
+		}
+	}
+	
+	/**
+	 * parses user arguments and stores them in processedArgs
+	 * @param args user arguments
+	 * @param processedArgs parsed arguments
+	 * @throws SplitException
+	 */
+	private void getArgs(String[] args, String... processedArgs) throws SplitException {
+		String file = null, prefix = null, bytes = "", lines = "-1";
+		boolean hasFlag = false, hasSplitter = false;
+		if(args != null) {
 			for (int i = 0; i < args.length; i++) {
 				try {
-					if (args[i].equals("-b")) {
-						hasFlag = true;
-						bytes = args[i + 1];
-					} else if (args[i].equals("-l")) {
-						hasFlag = true;
-						lines = Integer.parseInt(args[i + 1]);
-					} else if (!hasFlag) {
-						if(file == null) {
-							file = args[i];
-						}else if(prefix == null){
-							prefix = args[i];
-						}else {
-							throw new SplitException("extra operand '" + args[i] + "'");
-						}
+					if(hasFlag) {
 						hasFlag = false;
+					}else if (args[i].equals("-b")) {
+						hasFlag = hasSplitter = true;
+						if(hasSplitter) {
+							bytes = args[i + 1];
+						}else {
+							throw new SplitException("cannot split in more than one way");
+						}
+					} else if (args[i].equals("-l")) {
+						hasFlag = hasSplitter = true;
+						if(hasSplitter) {
+							lines = args[i + 1];
+						}else {
+							throw new SplitException("cannot split in more than one way");
+						}
+						lines = args[i + 1];
+					} else if(file == null) {
+						file = args[i];
+					}else if(prefix == null){
+						prefix = args[i];
+					}else {
+						throw new SplitException("extra operand '" + args[i] + "'");
 					}
-				} catch (NumberFormatException exNum) {
-					throw new SplitException(args[i + 1] + ": invalid number of lines: ");
 				} catch (ArrayIndexOutOfBoundsException exArr) {
-					throw new SplitException("option requires an argument -- 'l'");
+					throw new SplitException("option requires an argument -- '" + args[i] + "'");
 				}
 			}
-			splitFile(file, prefix, lines, bytes);
 		}
+		processedArgs[0] = file;
+		processedArgs[1] = prefix;
+		processedArgs[2] = bytes;
+		processedArgs[3] = lines;
+		return;
 	}
 
 	/**
-	 * Splits a file into several files by the number of lines or bytes. The output
-	 * files will be named starting with the given prefix.
+	 * checks if split by bytes or lines
 	 * 
-	 * @param file
-	 *            String of the source filepath
-	 * @param prefix
-	 *            String of prefix for the output files
 	 * @param lines
 	 *            Int of the number of lines to split the file by
 	 * @param bytes
@@ -98,21 +105,14 @@ public class SplitApplication implements SplitItf {
 	 * @throws SplitException
 	 *             if more than 1 line and byte is specified.
 	 */
-	private void splitFile(String file, String prefix, int lines, String bytes) throws SplitException {
+	private boolean isSplitByLines(String bytes, int lines) throws SplitException {
 		int numLines = lines;
 		if (numLines != -1 && bytes.length() != 0) {
 			throw new SplitException("cannot split in more than one way");
 		}
-
-		if (bytes.length() == 0) {
-			if(numLines == -1) {
-				numLines = 1000;
-			}
-			splitFileByLines(file, prefix, numLines);
-		} else {
-			splitFileByBytes(file, prefix, bytes);
-		}
+		return (bytes.length() == 0);
 	}
+
 
 	/**
 	 * Takes in the current counter for naming output files and returns the next
@@ -146,20 +146,37 @@ public class SplitApplication implements SplitItf {
 
 		return newCounter;
 	}
-
+	
 	@Override
-	public void splitFileByLines(String file, String prefix, int lines) throws SplitException {
-		String outputPrefix = getPrefix(prefix);
+	public void splitFileByLines(String fileName, String prefix, int linesPerFile) throws SplitException {
+		FileInputStream stream = getFileInputStream(fileName);
+		splitStreamByLines(stream, prefix, linesPerFile);
+	}
+	
+	/**
+	 * Split a stream into fixed size pieces with specified number of 
+	 * lines. Output splits naming convention: prefix + counter.
+	 * Default prefix is "x". Default counter is aa, ab, ..., zz, 
+	 * zaa, zab, ..., zzz, zzaa, etc. For example: xaa, xab, etc.
+	 * This is the default option for 'split'.
+	 * @param fileName String of source file name
+	 * @param prefix String of output file prefix (default is 'x')
+	 * @param linesPerFile Int of lines to have in the output file
+	 * (default is 1,000 lines)
+	 * @throws Exception
+	 */
+	public void splitStreamByLines(InputStream stdin, String prefix, int linesPerFile) throws SplitException {
+		String outputPrefix = getAbsolutePath(prefix);
+		int lines = linesPerFile;
 		if (lines == 0) {
 			throw new SplitException(lines + ": invalid number of lines");
+		}else if (lines == -1) {
+			lines = 1000;
 		}
-		Path path = checkIfValidFile(file);
-		String filePath = path.toString();
-
-		String line, currCounter = "aa";
+		String currCounter = "aa", line;
 		int count = 1;
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(filePath)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
 			BufferedWriter writer = new BufferedWriter(new FileWriter(outputPrefix + currCounter));
 			line = reader.readLine();
 			writer.write(line);
@@ -181,34 +198,39 @@ public class SplitApplication implements SplitItf {
 			writer.flush();
 			writer.close();
 		} catch (IOException exIO) {
-			throw new SplitException(prefix + ": No such file or directory");
+			throw new SplitException("'" + prefix + "': No such file or directory");
 		}
-	}
-
-	/**
-	 * Checks for null prefix and sets to default prefix if
-	 * @param prefix String of prefix
-	 * @return String of prefix
-	 */
-	private String getPrefix(String prefix) {
-		if (prefix == null) {
-			return "x";
-		}
-		return prefix;
 	}
 
 	@Override
-	public void splitFileByBytes(String file, String prefix, String bytes) throws SplitException {
-		String outputPrefix = getPrefix(prefix);
-		int numBytes = getBytes(bytes);
+	public void splitFileByBytes(String fileName, String prefix, String bytesPerFile) throws SplitException {
+		FileInputStream stream = getFileInputStream(fileName);
+		splitStreamByBytes(stream, prefix, bytesPerFile);
+	}
+	
+	/**
+	 * Split a stream into fixed size pieces with specified number of 
+	 * bytes. Output splits naming convention: prefix + counter.
+	 * Default prefix is "x". Default counter is aa, ab, ..., zz, 
+	 * zaa, zab, ..., zzz, zzaa, etc. For example: xaa, xab, etc.
+	 * @param fileName String of source file name
+	 * @param prefix String of output file prefix (default is 'x')
+	 * @param bytesPerFile String of number of bytes of content to 
+	 * fit into a file. Can have a suffix of either 'b', 'k', or 'm'.
+	 * Impact of suffix:
+	 * 'b' - multiply the bytes by 512
+	 * 'k' - multiply the bytes by 1024
+	 * 'm' - multiply the bytes by 1048576
+	 * @throws Exception
+	 */
+	private void splitStreamByBytes(InputStream stdin, String prefix, String bytesPerFile) throws SplitException {
+		String outputPrefix = getAbsolutePath(prefix);
+		int numBytes = parseBytes(bytesPerFile);
 		char[] buffer = new char[numBytes];
-		Path path = checkIfValidFile(file);
-
-		String filePath = path.toString();
 		String currCounter = null;
 		int count = 0;
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(filePath)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
 			BufferedWriter writer;
 			while ((count = reader.read(buffer, 0, numBytes)) != -1) {
 				currCounter = getNextName(currCounter);
@@ -220,10 +242,41 @@ public class SplitApplication implements SplitItf {
 			}
 			reader.close();
 		} catch (IOException exIO) {
-			throw new SplitException(prefix + ": No such file or directory");
+			throw new SplitException("'" + prefix + "': No such file or directory");
 		}
 	}
 
+	/**
+	 * returns path to prefix
+	 * @param prefix String of prefix
+	 * @return String of prefix
+	 */
+	private String getAbsolutePath(String prefix) {
+		if (prefix == null) {
+			return Environment.currentDirectory + File.separator + "x";
+		}
+		Path path = Paths.get(prefix);
+		if(path.isAbsolute()) {
+			return prefix;
+		}else {
+			return Environment.currentDirectory + File.separator + prefix;
+		}
+	}
+
+	/**
+	 * parses the number of lines
+	 * @param linesString the string of lines
+	 * @return Int of lines
+	 * @throws SplitException
+	 */
+	private int parseLines(String linesString) throws SplitException {
+		try {
+			return Integer.parseInt(linesString);
+		}catch (NumberFormatException exNum) {
+			throw new SplitException(linesString + ": invalid number of lines: ");
+		}
+	}
+	
 	/**
 	 * Gets the number of bytes by multiplying with the appended letter
 	 * 
@@ -233,7 +286,7 @@ public class SplitApplication implements SplitItf {
 	 * @throws SplitException
 	 *             if invalid string of bytes
 	 */
-	private int getBytes(String bytes) throws SplitException {
+	private int parseBytes(String bytes) throws SplitException {
 		int numBytes;
 		try {
 			numBytes = Integer.parseInt(bytes);
@@ -268,14 +321,13 @@ public class SplitApplication implements SplitItf {
 	}
 
 	/**
-	 * gets the absolute filepath of a file
-	 * 
+	 * gets the fileInputStream of a file
 	 * @param file
 	 *            String of file name or file path
-	 * @return Path of file path
+	 * @return fileInputStream of file
 	 * @throws SplitException
 	 */
-	Path checkIfValidFile(String file) throws SplitException {
+	FileInputStream getFileInputStream(String file) throws SplitException {
 		if (file.length() == 0) {
 			throw new SplitException("can't have empty argument");
 		}
@@ -285,9 +337,11 @@ public class SplitApplication implements SplitItf {
 				filePathB = Paths.get(Environment.currentDirectory).resolve(file);
 			}
 			checkIfFileIsReadable(filePathB, file);
-			return filePathB;
+			return new FileInputStream(filePathB.toString());
 		} catch (InvalidPathException exPath) {
-			throw new SplitException("invalid file: " + file);
+			throw new SplitException("'" + file + "': No such file or directory");
+		} catch (FileNotFoundException e) {
+			throw new SplitException("'" + file + "': No such file or directory");
 		}
 	}
 
@@ -302,16 +356,16 @@ public class SplitApplication implements SplitItf {
 	 */
 	boolean checkIfFileIsReadable(Path filePath, String file) throws SplitException {
 		if (Files.isDirectory(filePath)) {
-			throw new SplitException("This is a directory");
+			throw new SplitException("'" + file + "': this is a directory");
 		}
 		if (!Files.exists(filePath)) {
-			throw new SplitException(
-					"cannot open '" + file + "' for reading: No such file or directory");
+			throw new SplitException("'" + file + "': No such file or directory");
 		}
 		if (Files.isReadable(filePath)) {
 			return true;
 		} else {
-			throw new SplitException("Could not read file");
+			throw new SplitException("'" + file + "': Could not read file");
 		}
 	}
+
 }

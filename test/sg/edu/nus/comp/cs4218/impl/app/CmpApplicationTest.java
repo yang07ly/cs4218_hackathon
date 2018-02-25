@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
@@ -175,7 +174,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileSpaceFileA() {
-		expected = "cmp: invalid file:  ";
+		expected = "cmp: ' ': No such file or directory";
 		try {
 			output = app.cmpTwoFiles(" ", FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -186,7 +185,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileSpaceFileB() {
-		expected = "cmp: invalid file:  ";
+		expected = "cmp: ' ': No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, " ", false, false, false);
 		} catch (Exception e) {
@@ -198,7 +197,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
 		try {
 			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -210,7 +209,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileB() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, path.toString(), false, false, false);
 		} catch (Exception e) {
@@ -221,8 +220,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileA() {
-		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: cannot open 'file3.txt' for reading: No such file or directory";
+		expected = "cmp: 'file3.txt': No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE3_TXT, FILE1_TXT, false, false, false);
 		} catch (Exception e) {
@@ -233,8 +231,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileb() {
-		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: cannot open 'file4.txt' for reading: No such file or directory";
+		expected = "cmp: 'file4.txt': No such file or directory";
 		try {
 			output = app.cmpTwoFiles("file4.txt", FILE1_TXT, false, false, false);
 		} catch (Exception e) {
@@ -343,7 +340,7 @@ public class CmpApplicationTest {
 	
 	@Test
 	public void testFileStreamSpaceFileA() {
-		expected = "cmp: invalid file:  ";
+		expected = "cmp: ' ': No such file or directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -357,7 +354,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileStreamDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system: this is a directory";
+		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -370,7 +367,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamNonExistentialFileA() {
-		expected = "cmp: cannot open 'file3.txt' for reading: No such file or directory";
+		expected = "cmp: 'file3.txt': No such file or directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);

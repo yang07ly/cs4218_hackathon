@@ -46,8 +46,9 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
+	 * checks if taking from input stream
 	 * @param files
-	 * @return
+	 * @return true if user specifies '-' as a file
 	 */
 	private boolean hasInputFromStream(Vector<String> files) {
 		boolean hasStream = false;
@@ -58,9 +59,10 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param args
-	 * @param flags
-	 * @param files
+	 * parses user command and extracts arguments
+	 * @param args String array of user-written arguments
+	 * @param flags boolean array that will store the parsed flags
+	 * @param files vector of string that will store the parsed files
 	 * @throws CmpException
 	 */
 	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
@@ -175,8 +177,9 @@ public class CmpApplication implements CmpItf {
 	}
 
 	/**
-	 * @param readValueA
-	 * @return
+	 * gets the octalString from an integer
+	 * @param readValueA Integer to convert to octal
+	 * @return String of octal value
 	 */
 	private String getOctalString(int readValueA) {
 		if(readValueA == -1) {
@@ -198,20 +201,6 @@ public class CmpApplication implements CmpItf {
 		return msg;
 	}
 
-	//not in use, cant have more than 1 file with '-'
-	@Override
-	public String cmpStdin(InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
-			Boolean isPrintOctalDiff) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
-		String fileNameA = reader.readLine();
-		String fileNameB = reader.readLine();
-		if(reader.read() != -1) {
-			throw new CmpException("Can't cmp more than 2 files");
-		}
-		reader.close();
-		return cmpTwoFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff);
-	}
-	
 	/**
 	 * gets the absolute filepath of a file
 	 * @param file String of file name or file path
@@ -230,7 +219,7 @@ public class CmpApplication implements CmpItf {
 			checkIfFileIsReadable(filePathB, file);
 			return filePathB;
 		} catch (InvalidPathException exPath) {
-			throw new CmpException("invalid file: " + file);
+			throw new CmpException("'" + file + "': No such file or directory");
 		}
 	}
 	
@@ -245,16 +234,15 @@ public class CmpApplication implements CmpItf {
 	 */
 	boolean checkIfFileIsReadable(Path filePath, String file) throws CmpException {
 		if (Files.isDirectory(filePath)) {
-			throw new CmpException(file + ": this is a directory");
+			throw new CmpException("'" + file + "': this is a directory");
 		}
 		if (!Files.exists(filePath)) {
-			throw new CmpException(
-					"cannot open '" + file + "' for reading: No such file or directory");
+			throw new CmpException("'" + file + "': No such file or directory");
 		}
 		if (Files.isReadable(filePath)) {
 			return true;
 		} else {
-			throw new CmpException("Could not read file");
+			throw new CmpException("'" + file + "': Could not read file");
 		}
 	}
 

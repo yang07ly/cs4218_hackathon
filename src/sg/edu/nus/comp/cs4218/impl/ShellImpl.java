@@ -1,6 +1,7 @@
 package sg.edu.nus.comp.cs4218.impl;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -160,7 +161,7 @@ public class ShellImpl implements Shell {
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
 		absApp.run(argsArray, inputStream, outputStream);
-//		cat articles/text1.txt | grep “Interesting String”
+//		cat articles/text1.txt | grep 'Interesting String'
 	}
 
 	/**
@@ -177,7 +178,7 @@ public class ShellImpl implements Shell {
 	 */
 	public static InputStream openInputRedir(String inputStreamS)
 			throws ShellException {
-		File inputFile = new File(inputStreamS);
+		File inputFile = Paths.get(Environment.currentDirectory).resolve(inputStreamS).toFile();
 		FileInputStream fInputStream = null;
 		try {
 			fInputStream = new FileInputStream(inputFile);
@@ -201,7 +202,7 @@ public class ShellImpl implements Shell {
 	 */
 	public static OutputStream openOutputRedir(String outputStreamS) 
 			throws ShellException{
-		File outputFile = new File(outputStreamS);
+		File outputFile = Paths.get(Environment.currentDirectory).resolve(outputStreamS).toFile();
 		FileOutputStream fOutputStream = null;
 		try {
 			fOutputStream = new FileOutputStream(outputFile);
