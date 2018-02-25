@@ -13,6 +13,13 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class PasteApplicationTest {
+	private static final String FILE2_TXT = "file2.txt";
+	private static final String FILE_NOT_FOUND = "paste: asdf: No such file or directory";
+	private static final String ASDF = "asdf";
+	private static final String OUTPUT2 = "output";
+	private static final String OUTPUT_DIR = "paste: output: Is a directory";
+	private static final String ASDFGH = "asdfgh";
+	private static final String FILE1_TXT = "file1.txt";
 	PasteApplication app;
 	OutputStream outputStream;
 	String expected, output, currentDir;
@@ -29,9 +36,23 @@ public class PasteApplicationTest {
 	}
 
 	@Test
+	public void testRun() {
+		String path = currentDir + OUTPUT2;
+		expected = OUTPUT_DIR;
+		String args[] = {path};
+		try {
+			app.run(args, null, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testInvalidFile() {
-		expected = "paste: asdf: No such file or directory";
-		String[] args = {"asdf"};
+		expected = FILE_NOT_FOUND;
+		String[] args = {ASDF};
 		
 		try {
 			output = app.mergeFile(args);
@@ -43,8 +64,8 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testDir() {
-		String path = currentDir + "output";
-		expected = "paste: output: Is a directory";
+		String path = currentDir + OUTPUT2;
+		expected = OUTPUT_DIR;
 		
 		try {
 			output = app.mergeFile(path);
@@ -56,8 +77,8 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testMultipleWithInvalidFile() {
-		String[] args = {"file1.txt", "asdf", "file2.txt"};
-		expected = "paste: asdf: No such file or directory";
+		String[] args = {FILE1_TXT, ASDF, FILE2_TXT};
+		expected = FILE_NOT_FOUND;
 		
 		try {
 			output = app.mergeFile(args);
@@ -69,9 +90,9 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testMultipleWithDirectory() {
-		String directory = currentDir + "output";
-		String[] args = {"file1.txt", directory, "file2.txt"};
-		expected = "paste: output: Is a directory";
+		String directory = currentDir + OUTPUT2;
+		String[] args = {FILE1_TXT, directory, FILE2_TXT};
+		expected = OUTPUT_DIR;
 		
 		try {
 			output = app.mergeFile(args);
@@ -94,9 +115,9 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testOneFile() {
-		expected = "asdfgh";
+		expected = ASDFGH;
 		try {
-			output = app.mergeFile("file1.txt");
+			output = app.mergeFile(FILE1_TXT);
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
@@ -105,8 +126,8 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testOneFileAbsolutePath() {
-		String file = currentDir + "file1.txt";
-		expected = "asdfgh";
+		String file = currentDir + FILE1_TXT;
+		expected = ASDFGH;
 		try {
 			output = app.mergeFile(file);
 		} catch (Exception e) {
@@ -117,8 +138,8 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testMultipleFiles() {
-		String file = currentDir + "file2.txt";
-		String[] args = {"file1.txt", file};
+		String file = currentDir + FILE2_TXT;
+		String[] args = {FILE1_TXT, file};
 		expected = "asdfgh qwerty";
 		try {
 			output = app.mergeFile(args);
@@ -134,11 +155,11 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamInvalidFile() {
-		expected = "paste: asdf: No such file or directory";
-		String[] args = {"asdf"};
+		expected = FILE_NOT_FOUND;
+		String[] args = {ASDF};
 		
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, args);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -148,11 +169,11 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamDir() {
-		String path = currentDir + "output";
-		expected = "paste: output: Is a directory";
+		String path = currentDir + OUTPUT2;
+		expected = OUTPUT_DIR;
 		
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, path);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -162,11 +183,11 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamMultipleWithInvalidFile() {
-		String[] args = {"file1.txt", "asdf", "file2.txt"};
-		expected = "paste: asdf: No such file or directory";
+		String[] args = {FILE1_TXT, ASDF, FILE2_TXT};
+		expected = FILE_NOT_FOUND;
 		
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, args);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -176,12 +197,12 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamMultipleWithDirectory() {
-		String directory = currentDir + "output";
-		String[] args = {"file1.txt", directory, "file2.txt"};
-		expected = "paste: output: Is a directory";
+		String directory = currentDir + OUTPUT2;
+		String[] args = {FILE1_TXT, directory, FILE2_TXT};
+		expected = OUTPUT_DIR;
 		
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, args);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -191,9 +212,9 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamZeroFiles() {
-		expected = "asdfgh";
+		expected = ASDFGH;
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -203,10 +224,10 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamOneFile() {
-		expected = "asdfgh";
-		String path = currentDir + "file1.txt";
+		expected = ASDFGH;
+		String path = currentDir + FILE1_TXT;
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, path);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -216,10 +237,10 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamOneFileAbsolutePath() {
-		String file = currentDir + "file1.txt";
-		expected = "asdfgh";
+		String file = currentDir + FILE1_TXT;
+		expected = ASDFGH;
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, file);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -229,11 +250,11 @@ public class PasteApplicationTest {
 
 	@Test
 	public void testStreamMultipleFiles() {
-		String file = currentDir + "file2.txt";
-		String[] args = {"file1.txt", file};
+		String file = currentDir + FILE2_TXT;
+		String[] args = {FILE1_TXT, file};
 		expected = "asdfgh qwerty";
 		try {
-			FileInputStream inputStream = new FileInputStream(currentDir + "file1.txt");
+			FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 			output = app.mergeFileAndStdin(inputStream, args);
 		} catch (Exception e) {
 			output = e.getMessage();

@@ -33,10 +33,12 @@ public class CmpApplication implements CmpItf {
 			}
 			try {
 				String output = "";
-				if(!hasInputFromStream(files)) {
+				if(hasInputFromStream(files)) {
+					if(files.size() == 1) {
+						output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
+					}
+				}else  {
 					output = cmpTwoFiles(files.get(0), files.get(1), flags[0], flags[1], flags[2]);
-				}else if(files.size() == 1) {
-					output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
 				}
 				stdout.write(output.getBytes());
 			} catch (IOException e) {

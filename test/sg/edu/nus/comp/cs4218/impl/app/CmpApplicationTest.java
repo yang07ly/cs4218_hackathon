@@ -16,11 +16,12 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class CmpApplicationTest {
+	private static final String FILE1_TXT = "file1.txt";
 	private static final String FILES_DIFFER = "Files differ";
+	private static final String FILE2_TXT = "file2.txt";
+	private static final String CMP_INVALID_FLAGS = "cmp: Invalid flags";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
 	private static final String FILE3_TXT = "file3.txt";
-	private static final String FILE1_TXT = "file1.txt";
-	private static final String FILE2_TXT = "file2.txt";
 	CmpApplication app;
 	OutputStream outputStream;
 	String expected, output;
@@ -38,7 +39,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testExtraOperand() {
 		expected = "cmp: Can't compare more than 2 sources";
-		String[] args = { "file1.txt", "file2.txt",
+		String[] args = { FILE1_TXT, FILE2_TXT,
 		"-cl", "file3.txt" };
 		try {
 			app.run(args, System.in, outputStream);
@@ -50,8 +51,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testInvalidFlag() {
-		expected = "cmp: Invalid flags";
-		String[] args = { "file1.txt", "file2.txt", "-a" };
+		expected = CMP_INVALID_FLAGS;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-a" };
 		try {
 			app.run(args, System.in, outputStream);
 		} catch (Exception e) {
@@ -62,8 +63,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testInvalidFlag2() {
-		expected = "cmp: Invalid flags";
-		String[] args = { "file1.txt", "file2.txt", "-c-" };
+		expected = CMP_INVALID_FLAGS;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-c-" };
 		try {
 			app.run(args, System.in, outputStream);
 		} catch (Exception e) {
@@ -74,8 +75,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testCombineFlags() {
-		expected = "Files differ";
-		String[] args = { "file1.txt", "file2.txt", "-csl" };
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-csl" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
@@ -87,8 +88,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testCombineFlags2() {
-		expected = "Files differ";
-		String[] args = { "file1.txt", "file2.txt", "-c-s-l" };
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-c-s-l" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
@@ -100,8 +101,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testCombineFlags3() {
-		expected = "Files differ";
-		String[] args = { "file1.txt", "file2.txt", "-c", "-s", "-l" };
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-c", "-s", "-l" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
@@ -114,7 +115,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testHyphenFlag() {
 		expected = "cmp: Can't compare more than 2 sources";
-		String[] args = { "file1.txt", "file2.txt", "-" };
+		String[] args = { FILE1_TXT, FILE2_TXT, "-" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
@@ -126,8 +127,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testDoubleHyphen() {
-		expected = "cmp: Invalid flags";
-		String[] args = { "file1.txt", "file2.txt", "--" };
+		expected = CMP_INVALID_FLAGS;
+		String[] args = { FILE1_TXT, FILE2_TXT, "--" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
@@ -139,8 +140,8 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testDoubleHyphen2() {
-		expected = "cmp: Invalid flags";
-		String[] args = { "file1.txt", "file2.txt", "--s" };
+		expected = CMP_INVALID_FLAGS;
+		String[] args = { FILE1_TXT, FILE2_TXT, "--s" };
 		try {
 			app.run(args, System.in, outputStream);
 			output = outputStream.toString();
