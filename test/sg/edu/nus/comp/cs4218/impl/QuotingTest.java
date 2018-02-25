@@ -13,26 +13,39 @@ import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
 
 public class QuotingTest {
 	
-	EchoApplication echoApp;
+	ShellImpl TestShell;
 	String expected, result;
 	OutputStream stdout;
 
 	@Before
 	public void setUp() throws Exception {
-		echoApp = new EchoApplication();
+		TestShell = new ShellImpl();
+		expected = new String();
+		result = new String();
 		stdout = new ByteArrayOutputStream();
 	}
 
 	@Test
 	public void DoubleQuoteTest() {
-		expected = "hi`hi\n";
-		try {
-			String[] strArr = {"\"hi`hi\""};
-			echoApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (EchoException e) {
-			result = e.getMessage();
-		}
+		expected = "its a double quote";
+		
+		result = TestShell.DetectQuotes("\" ");
+		assertEquals(expected, result);
+		
+	}
+	@Test
+	public void SingleQuoteTest() {
+		expected = "its a single quote";
+		
+		result = TestShell.DetectQuotes("'");
+		assertEquals(expected, result);
+		
+	}
+	@Test
+	public void BackQuoteTest() {
+		expected = "its a backquote";
+		
+		result = TestShell.DetectQuotes("`");
 		assertEquals(expected, result);
 		
 	}
