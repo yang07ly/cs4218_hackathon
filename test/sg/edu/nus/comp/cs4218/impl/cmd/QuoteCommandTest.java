@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class QuoteCommandTest {
+	private static final String UNCLOSED_QUOTES = "Quote: Unclosed quotes";
 	QuoteCommand command;
 	String output, expected, cmdString;
 	InputStream inputStream;
@@ -39,7 +40,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testUnclosedSQ() {
-		expected = "Quote: Unclosed quotes";
+		expected = UNCLOSED_QUOTES;
 		cmdString = "echo 'asd";
 		command = new QuoteCommand(cmdString);
 		try {
@@ -78,7 +79,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testUnclosedDQ() {
-		expected = "Quote: Unclosed quotes";
+		expected = UNCLOSED_QUOTES;
 		cmdString = "echo \"asd";
 		command = new QuoteCommand(cmdString);
 		try {
@@ -156,7 +157,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testMultipleSQWithUnclosedDQ() {
-		expected = "Quote: Unclosed quotes";
+		expected = UNCLOSED_QUOTES;
 		cmdString = "echo 'Invalid' 'Quotes' \"asd";
 		command = new QuoteCommand(cmdString);
 		try {
@@ -169,7 +170,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testMultipleDQWithUnclosedSQ() {
-		expected = "Quote: Unclosed quotes";
+		expected = UNCLOSED_QUOTES;
 		cmdString = "echo \"Invalid\" \"Quotes\" 'asd";
 		command = new QuoteCommand(cmdString);
 		try {
