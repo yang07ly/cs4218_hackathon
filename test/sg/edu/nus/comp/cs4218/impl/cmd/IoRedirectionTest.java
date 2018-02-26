@@ -119,15 +119,15 @@ SeqCommand sequenceCommand;
 		
 	    File file = new File(Environment.currentDirectory + "/" + filename);
 
-	    BufferedReader br = new BufferedReader(new FileReader(file));
+	    BufferedReader buffReader = new BufferedReader(new FileReader(file));
 	    StringBuffer fileContents = new StringBuffer();
-	    String line = br.readLine();
+	    String line = buffReader.readLine();
 	    while (line != null) {
 	        fileContents.append(line);
-	        line = br.readLine();
+	        line = buffReader.readLine();
 	    }
 
-	    br.close();
+	    buffReader.close();
 
 	    return fileContents.toString();
 	}

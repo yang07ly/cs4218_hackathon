@@ -132,7 +132,7 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithPipes() {
 
 		try {
-			actual = ShellImpl.processBQ("`cat text.txt | sed s/pains/paining/ | sed s/pleasures/pleasuring/`");
+			actual = ShellImpl.processBQ("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -140,8 +140,8 @@ public class CommandSubstitutionTest {
 		}
 		
 		assertEquals(173, actual.length);
-		assertEquals("paining", actual[172]);
-		assertEquals("paining", actual[168]);
+		assertEquals("pain", actual[172]);
+		assertEquals("pain", actual[168]);
 		assertEquals("pleasuring,", actual[163]);
 		assertEquals("pleasuring", actual[158]);
 		assertEquals("pleasuring", actual[134]);

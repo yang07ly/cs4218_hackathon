@@ -12,9 +12,12 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public class CallCommandTest {
 
+	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
+	
 	static CallCommand callCommand;
 	Vector<String> commands;
 	String[] expected, actual;
+	String expectedSyntaxErr;
 	 
 	@Before
 	public void setup() {
@@ -39,7 +42,6 @@ public class CallCommandTest {
 	
 	@Test 
 	public void testInvalidIoRedirInput() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		 
 		callCommand = new CallCommand("cat << input.txt");
@@ -49,7 +51,7 @@ public class CallCommandTest {
 			message = e.getMessage(); 
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(EXP_SYNTAX,message);
 	}
 	
 	@Test 
@@ -69,7 +71,6 @@ public class CallCommandTest {
 	
 	@Test 
 	public void testInvalidIoRedirOutputOutput() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		
 		callCommand = new CallCommand("cat > output.txt  > output.txt");
@@ -79,12 +80,11 @@ public class CallCommandTest {
 			message = e.getMessage(); 
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(EXP_SYNTAX,message);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirInputInput() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		
 		callCommand = new CallCommand("cat < input.txt < input.txt");
@@ -94,12 +94,11 @@ public class CallCommandTest {
 			message = e.getMessage(); 
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(EXP_SYNTAX,message);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirInputEmpty() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		
 		callCommand = new CallCommand("cat < ");
@@ -109,7 +108,7 @@ public class CallCommandTest {
 			message = e.getMessage(); 
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(EXP_SYNTAX,message);
 	}
 	
 	
@@ -117,7 +116,6 @@ public class CallCommandTest {
 	
 	@Test 
 	public void testInvalidIoRedirOutput() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		
 		callCommand = new CallCommand("echo >> output.txt");
@@ -127,7 +125,7 @@ public class CallCommandTest {
 			message = e.getMessage();
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(EXP_SYNTAX,message);
 	}
 	@Test 
 	public void testValidIoRedirInput() {
@@ -156,62 +154,57 @@ public class CallCommandTest {
 	
 	@Test  
 	public void testExtractArgsInvalidSingleQuotes() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		try {
 			callCommand.extractArgs("argA '' argB ' argC", commands);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
-		assertEquals(expected, message);
+		assertEquals(EXP_SYNTAX, message);
 	}
 	 
 	@Test 
 	public void testExtractArgsInvalidDoubleQuotes() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		try {
 			callCommand.extractArgs("argA \"\" argB \" argC", commands);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
-		assertEquals(expected, message);
+		assertEquals(EXP_SYNTAX, message);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidBackQuotes() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		try {
 			callCommand.extractArgs("argA `` argB ` argC", commands);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
-		assertEquals(expected, message);
+		assertEquals(EXP_SYNTAX, message);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidSequence() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		try {
 			callCommand.extractArgs("argA ; argB ; argC", commands);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
-		assertEquals(expected, message);
+		assertEquals(EXP_SYNTAX, message);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidPipe() {
-		String expected = "shell: Invalid syntax encountered.";
 		String message = "";
 		try {
 			callCommand.extractArgs("argA | argB | argC", commands);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
-		assertEquals(expected, message);
+		assertEquals(EXP_SYNTAX, message);
 	}
 	
 	@Test 
@@ -228,21 +221,21 @@ public class CallCommandTest {
 	@Test 
 	public void testExtractArgsValidDoubleQuotes() {
 		try {
-			callCommand.extractArgs(" \"argA\" \"argB\" \"argC\" ", commands);
+			callCommand.extractArgs(" \"argD\" \"argE\" \"argF\" ", commands);
 		} catch (ShellException e) {
 			e.printStackTrace();
 		}
-		assertEquals(commands, new Vector<String>(Arrays.asList(new String[]{"argA", "argB", "argC"})));
+		assertEquals(commands, new Vector<String>(Arrays.asList(new String[]{"argD", "argE", "argF"})));
 	}
 	
 	@Test 
 	public void testExtractArgsValidBackQuotes() {
 		try {
-			callCommand.extractArgs(" `argA` `argB` `argC` ", commands);
+			callCommand.extractArgs(" `argG` `argH` `argI` ", commands);
 		} catch (ShellException e) {
 			e.printStackTrace();
 		}
-		assertEquals(commands, new Vector<String>(Arrays.asList(new String[]{"`argA`", "`argB`", "`argC`"})));
+		assertEquals(commands, new Vector<String>(Arrays.asList(new String[]{"`argG`", "`argH`", "`argI`"})));
 	}
 	
 	@Test 
