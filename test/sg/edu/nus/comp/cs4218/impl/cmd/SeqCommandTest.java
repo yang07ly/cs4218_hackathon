@@ -13,7 +13,7 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 
-public class SequenceCommandTest {
+public class SeqCommandTest {
 
 	SeqCommand sequenceCommand;
 	AppStub appStub;
@@ -52,7 +52,7 @@ public class SequenceCommandTest {
 			 e.printStackTrace();
 		}
 		
-		expected.add("echo a");
+		expected.add("echo a"); 
 		expected.add(" echo b");
 		assertEquals(sequenceCommand.argsArray.size(), 2);
 		assertEquals(sequenceCommand.argsArray, expected);
