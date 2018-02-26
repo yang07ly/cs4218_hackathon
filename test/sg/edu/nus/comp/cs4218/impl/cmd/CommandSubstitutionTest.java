@@ -78,14 +78,14 @@ public class CommandSubstitutionTest {
 	@Test 
 	public void testBQinBQ() {
 		try {
-			actual = ShellImpl.processBQ("`echo `echo cats``");
+			actual = ShellImpl.processBQ("`echo ` echo cats ``");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "";
+		expected[0] = " echo cats ``";
 		assertEquals(1, actual.length);
 		assertTrue(Arrays.equals(expected, actual));
 	
