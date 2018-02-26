@@ -118,8 +118,6 @@ public class CatApplicationTest {
 	@Test
 	public void testStream() {
 		expected = "asdf\n";
-		String[] args = {FILE1_TXT, "asdf", "file2.txt"};
-		
 		try {
 			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
 			app.run(null, fileStream, outputStream);
