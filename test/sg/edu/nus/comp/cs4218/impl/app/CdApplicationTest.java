@@ -28,7 +28,7 @@ public class CdApplicationTest {
 	public void testRelativeDirectoryChange() {
 		expected = System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM + File.separator + DIR_FOLDER1;
 		try {
-			cdApp.changeToDirectory(DIR_FOLDER1, new Environment());
+			cdApp.changeToDirectory(DIR_FOLDER1);
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -40,8 +40,7 @@ public class CdApplicationTest {
 	public void testAbsoluteDirectoryChange() {
 		expected = System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM + File.separator + DIR_FOLDER2;
 		try {
-			cdApp.changeToDirectory(System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM + File.separator + DIR_FOLDER2, 
-					new Environment());
+			cdApp.changeToDirectory(System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM + File.separator + DIR_FOLDER2);
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -53,7 +52,7 @@ public class CdApplicationTest {
 	public void testUserDirectoryChange() {
 		expected = System.getProperty(DIR_USER);
 		try {
-			cdApp.changeToDirectory(null, new Environment());
+			cdApp.changeToDirectory(null);
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -65,7 +64,7 @@ public class CdApplicationTest {
 	public void testCurrentDirectoryChange() {
 		expected = System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM;
 		try {
-			cdApp.changeToDirectory(".", new Environment());
+			cdApp.changeToDirectory(".");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -77,7 +76,7 @@ public class CdApplicationTest {
 	public void testParentDirectoryChange() {
 		expected = System.getProperty(DIR_USER) + File.separator + "test_system";
 		try {
-			cdApp.changeToDirectory("..", new Environment());
+			cdApp.changeToDirectory("..");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -89,7 +88,7 @@ public class CdApplicationTest {
 	public void testDirChangeMixWithSpecialDir() {
 		expected = System.getProperty(DIR_USER) + File.separator + DIR_TEST_SYSTEM + File.separator + DIR_FOLDER2;
 		try {
-			cdApp.changeToDirectory("folder1/../folder2", new Environment());
+			cdApp.changeToDirectory("folder1/../folder2");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -101,7 +100,7 @@ public class CdApplicationTest {
 	public void testEmptyDirectoryChange() {
 		expected = System.getProperty(DIR_USER);
 		try {
-			cdApp.changeToDirectory("", new Environment());
+			cdApp.changeToDirectory("");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -113,7 +112,7 @@ public class CdApplicationTest {
 	public void testInvalidNonExistentChange() {
 		expected = "cd: unknownDir: No such file or directory";
 		try {
-			cdApp.changeToDirectory("unknownDir", new Environment());
+			cdApp.changeToDirectory("unknownDir");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -125,7 +124,7 @@ public class CdApplicationTest {
 	public void testInvalidFileChange() {
 		expected = "cd: file1.txt: Not a directory";
 		try {
-			cdApp.changeToDirectory("file1.txt", new Environment());
+			cdApp.changeToDirectory("file1.txt");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();
@@ -137,19 +136,7 @@ public class CdApplicationTest {
 	public void testInvalidSpacesDirectoryChange() {
 		expected = "cd:    : No such file or directory";
 		try {
-			cdApp.changeToDirectory("   ", new Environment());
-			result = Environment.currentDirectory;
-		} catch (CdException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
-	}
-	
-	@Test
-	public void testInvalidNullEnv() {
-		expected = "cd: Null Pointer Exception";
-		try {
-			cdApp.changeToDirectory(null, null);
+			cdApp.changeToDirectory("   ");
 			result = Environment.currentDirectory;
 		} catch (CdException e) {
 			result = e.getMessage();

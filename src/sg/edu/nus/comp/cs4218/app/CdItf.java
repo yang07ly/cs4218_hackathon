@@ -1,7 +1,6 @@
 package sg.edu.nus.comp.cs4218.app;
 
 import sg.edu.nus.comp.cs4218.Application;
-import sg.edu.nus.comp.cs4218.Environment;
 
 public interface CdItf extends Application {
 
@@ -11,7 +10,7 @@ public interface CdItf extends Application {
 	 * @param env Environment context 
 	 * @throws Exception
 	 */
-	public void changeToDirectory(String path, Environment env) 
+	public void changeToDirectory(String path) 
 			throws Exception;
 	
 }
