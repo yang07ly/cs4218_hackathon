@@ -20,7 +20,7 @@ import sg.edu.nus.comp.cs4218.app.SplitInterface;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
-public class SplitApplication implements SplitInterface{
+public class SplitApplication implements SplitInterface {
 
 	private static final String FILE_NOT_FOUND = "': No such file or directory";
 
@@ -30,57 +30,64 @@ public class SplitApplication implements SplitInterface{
 		getArgs(args, flags);
 		String file = flags[0], prefix = flags[1], bytes = flags[2], lineString = flags[3];
 		int lines = parseLines(lineString);
-		if(file == null) {
+		if (file == null) {
 			if (stdin == null) {
 				throw new SplitException("Null Pointer Exception");
 			}
-			if(isSplitByLines(bytes, lines)) {
+			if (isSplitByLines(bytes, lines)) {
 				splitStreamByLines(stdin, prefix, lines);
-			}else {
+			} else {
 				splitStreamByBytes(stdin, prefix, bytes);
 			}
-		}else {
-			if(isSplitByLines(bytes, lines)) {
+		} else {
+			if (isSplitByLines(bytes, lines)) {
 				splitFileByLines(file, prefix, lines);
-			}else {
+			} else {
 				splitFileByBytes(file, prefix, bytes);
 			}
 		}
 	}
-	
+
 	/**
 	 * parses user arguments and stores them in processedArgs
-	 * @param args user arguments
-	 * @param processedArgs parsed arguments
+	 * 
+	 * @param args
+	 *            user arguments
+	 * @param processedArgs
+	 *            parsed arguments
 	 * @throws SplitException
 	 */
 	private void getArgs(String[] args, String... processedArgs) throws SplitException {
 		String file = null, prefix = null, bytes = "", lines = "1000";
 		boolean hasFlag = false, hasSplitter = false;
-		if(args != null) {
+		if (args != null) {
 			for (int i = 0; i < args.length; i++) {
 				try {
-					if(hasFlag) {
+					if (hasFlag) {
 						hasFlag = false;
-					}else if (args[i].equals("-b")) {
-						if(hasSplitter) {
-							throw new SplitException("cannot split in more than one way");
+					} else if (args[i].charAt(0) == '-') {
+						if (args[i].equals("-b")) {
+							if (hasSplitter) {
+								throw new SplitException("cannot split in more than one way");
+							} else {
+								bytes = args[i + 1];
+								hasFlag = hasSplitter = true;
+							}
+						} else if (args[i].equals("-l")) {
+							if (hasSplitter) {
+								throw new SplitException("cannot split in more than one way");
+							} else {
+								lines = args[i + 1];
+								hasFlag = hasSplitter = true;
+							}
 						}else {
-							bytes = args[i + 1];
-							hasFlag = hasSplitter = true;
+							throw new SplitException(args[i] + ": invalid flag");
 						}
-					} else if (args[i].equals("-l")) {
-						if(hasSplitter) {
-							throw new SplitException("cannot split in more than one way");
-						}else {
-							lines = args[i + 1];
-							hasFlag = hasSplitter = true;
-						}
-					} else if(file == null) {
+					} else if (file == null) {
 						file = args[i];
-					}else if(prefix == null){
+					} else if (prefix == null) {
 						prefix = args[i];
-					}else {
+					} else {
 						throw new SplitException("extra operand '" + args[i] + "'");
 					}
 				} catch (ArrayIndexOutOfBoundsException exArr) {
@@ -109,7 +116,6 @@ public class SplitApplication implements SplitInterface{
 		return (bytes.length() == 0);
 	}
 
-
 	/**
 	 * Takes in the current counter for naming output files and returns the next
 	 * lexicographical name.
@@ -119,7 +125,7 @@ public class SplitApplication implements SplitInterface{
 	 * @return String of the next counter for the file name
 	 */
 	private String getNextName(String currCounter) {
-		if(currCounter == null) {
+		if (currCounter == null) {
 			return "aa";
 		}
 		char[] name = currCounter.toCharArray();
@@ -142,23 +148,25 @@ public class SplitApplication implements SplitInterface{
 
 		return newCounter;
 	}
-	
+
 	@Override
 	public void splitFileByLines(String fileName, String prefix, int linesPerFile) throws SplitException {
 		FileInputStream stream = getFileInputStream(fileName);
 		splitStreamByLines(stream, prefix, linesPerFile);
 	}
-	
+
 	/**
-	 * Split a stream into fixed size pieces with specified number of 
-	 * lines. Output splits naming convention: prefix + counter.
-	 * Default prefix is "x". Default counter is aa, ab, ..., zz, 
-	 * zaa, zab, ..., zzz, zzaa, etc. For example: xaa, xab, etc.
-	 * This is the default option for 'split'.
-	 * @param fileName String of source file name
-	 * @param prefix String of output file prefix (default is 'x')
-	 * @param linesPerFile Int of lines to have in the output file
-	 * (default is 1,000 lines)
+	 * Split a stream into fixed size pieces with specified number of lines. Output
+	 * splits naming convention: prefix + counter. Default prefix is "x". Default
+	 * counter is aa, ab, ..., zz, zaa, zab, ..., zzz, zzaa, etc. For example: xaa,
+	 * xab, etc. This is the default option for 'split'.
+	 * 
+	 * @param fileName
+	 *            String of source file name
+	 * @param prefix
+	 *            String of output file prefix (default is 'x')
+	 * @param linesPerFile
+	 *            Int of lines to have in the output file (default is 1,000 lines)
 	 * @throws Exception
 	 */
 	public void splitStreamByLines(InputStream stdin, String prefix, int linesPerFile) throws SplitException {
@@ -201,20 +209,22 @@ public class SplitApplication implements SplitInterface{
 		FileInputStream stream = getFileInputStream(fileName);
 		splitStreamByBytes(stream, prefix, bytesPerFile);
 	}
-	
+
 	/**
-	 * Split a stream into fixed size pieces with specified number of 
-	 * bytes. Output splits naming convention: prefix + counter.
-	 * Default prefix is "x". Default counter is aa, ab, ..., zz, 
-	 * zaa, zab, ..., zzz, zzaa, etc. For example: xaa, xab, etc.
-	 * @param fileName String of source file name
-	 * @param prefix String of output file prefix (default is 'x')
-	 * @param bytesPerFile String of number of bytes of content to 
-	 * fit into a file. Can have a suffix of either 'b', 'k', or 'm'.
-	 * Impact of suffix:
-	 * 'b' - multiply the bytes by 512
-	 * 'k' - multiply the bytes by 1024
-	 * 'm' - multiply the bytes by 1048576
+	 * Split a stream into fixed size pieces with specified number of bytes. Output
+	 * splits naming convention: prefix + counter. Default prefix is "x". Default
+	 * counter is aa, ab, ..., zz, zaa, zab, ..., zzz, zzaa, etc. For example: xaa,
+	 * xab, etc.
+	 * 
+	 * @param fileName
+	 *            String of source file name
+	 * @param prefix
+	 *            String of output file prefix (default is 'x')
+	 * @param bytesPerFile
+	 *            String of number of bytes of content to fit into a file. Can have
+	 *            a suffix of either 'b', 'k', or 'm'. Impact of suffix: 'b' -
+	 *            multiply the bytes by 512 'k' - multiply the bytes by 1024 'm' -
+	 *            multiply the bytes by 1048576
 	 * @throws Exception
 	 */
 	private void splitStreamByBytes(InputStream stdin, String prefix, String bytesPerFile) throws SplitException {
@@ -242,7 +252,9 @@ public class SplitApplication implements SplitInterface{
 
 	/**
 	 * returns path to prefix
-	 * @param prefix String of prefix
+	 * 
+	 * @param prefix
+	 *            String of prefix
 	 * @return String of prefix
 	 */
 	private String getAbsolutePath(String prefix) {
@@ -250,27 +262,29 @@ public class SplitApplication implements SplitInterface{
 			return Environment.currentDirectory + File.separator + "x";
 		}
 		Path path = Paths.get(prefix);
-		if(path.isAbsolute()) {
+		if (path.isAbsolute()) {
 			return prefix;
-		}else {
+		} else {
 			return Environment.currentDirectory + File.separator + prefix;
 		}
 	}
 
 	/**
 	 * parses the number of lines
-	 * @param linesString the string of lines
+	 * 
+	 * @param linesString
+	 *            the string of lines
 	 * @return Int of lines
 	 * @throws SplitException
 	 */
 	private int parseLines(String linesString) throws SplitException {
 		try {
 			return Integer.parseInt(linesString);
-		}catch (NumberFormatException exNum) {
+		} catch (NumberFormatException exNum) {
 			throw new SplitException(linesString + ": invalid number of lines: ");
 		}
 	}
-	
+
 	/**
 	 * Gets the number of bytes by multiplying with the appended letter
 	 * 
@@ -316,6 +330,7 @@ public class SplitApplication implements SplitInterface{
 
 	/**
 	 * gets the fileInputStream of a file
+	 * 
 	 * @param file
 	 *            String of file name or file path
 	 * @return fileInputStream of file

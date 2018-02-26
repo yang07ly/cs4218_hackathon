@@ -59,7 +59,7 @@ public class SplitApplicationTest {
 	@Test
 	public void testRunExtraOperand() {
 		String[] splitArgs = { FILE1_TXT, "-s" , "-c"};
-		expected = "split: extra operand '-c'";
+		expected = "split: -s: invalid flag";
 		try {
 			app.run(splitArgs, System.in, outputStream);
 			output = outputStream.toString();
