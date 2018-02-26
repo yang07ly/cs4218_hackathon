@@ -101,7 +101,7 @@ public class ShellImpl implements Shell {
 				results.add(argsArray[i]);
 			}
 		}
-		return resultArr;
+		return results.toArray(new String[results.size()]);
 	}
 
 	/**
