@@ -1,8 +1,5 @@
 package sg.edu.nus.comp.cs4218.app;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import sg.edu.nus.comp.cs4218.Application;
 
 public interface SplitInterface extends Application {

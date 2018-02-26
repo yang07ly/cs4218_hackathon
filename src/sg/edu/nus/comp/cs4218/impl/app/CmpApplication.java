@@ -112,6 +112,7 @@ public class CmpApplication implements CmpInterface {
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePathB.toString())));
 		String msg = cmpFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
 				readerB);
+		msg+="\n";
 		readerA.close();
 		readerB.close();
 		return msg;
