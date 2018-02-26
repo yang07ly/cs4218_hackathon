@@ -12,7 +12,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 public class PipeCommand implements Command{
-	public static final String EXP_INVALID_PIPE_OPERATOR = "Invalid pipe operator/s";
+	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
 	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
 			+ "operator cannot be used side by side.";
@@ -51,30 +51,30 @@ public class PipeCommand implements Command{
 		InputStream inputStreamTemp = null;
 
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
+		ByteArrayOutputStream byteArrOutStream = new ByteArrayOutputStream();
+ 
 		if (argsArray.size() == 1) {
 			String command = argsArray.get(0);
 			CallCommand callCommand = new CallCommand(command);
 			callCommand.parse();
 			callCommand.evaluate(inputStream, outputStream);
 			
-			ShellImpl.writeToStdout(byteArrayOutputStream, stdout);
-			ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
+			ShellImpl.writeToStdout(byteArrOutStream, stdout);
+			ShellImpl.outputStreamToInputStream(byteArrOutStream);
 			return;
 		}
 		 
 		for (int i = 0; i < argsArray.size(); i++) {
 			String command = argsArray.get(i);
 			CallCommand callCommand = new CallCommand(command);
-			inputStreamTemp = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-			byteArrayOutputStream = new ByteArrayOutputStream();	
+			inputStreamTemp = new ByteArrayInputStream(byteArrOutStream.toByteArray());
+			byteArrOutStream = new ByteArrayOutputStream();	
 			callCommand.parse();
-			callCommand.evaluate(inputStreamTemp, byteArrayOutputStream);
+			callCommand.evaluate(inputStreamTemp, byteArrOutStream);
 		}
  
-		ShellImpl.writeToStdout(byteArrayOutputStream, stdout);
-		ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
+		ShellImpl.writeToStdout(byteArrOutStream, stdout);
+		ShellImpl.outputStreamToInputStream(byteArrOutStream);
 		return;
 	}
  
@@ -90,7 +90,7 @@ public class PipeCommand implements Command{
 		}
 		
 		if (cmdline.charAt(0) == PIPE_OPERATOR || cmdline.charAt(cmdline.length() - 1) == PIPE_OPERATOR) {
-			throw new ShellException(EXP_INVALID_PIPE_OPERATOR);
+			throw new ShellException(EXP_INVALID_PIPE);
 		}
 		
 		for (int i = 0; i < cmdline.length(); i++) {
@@ -100,14 +100,12 @@ public class PipeCommand implements Command{
 				sizeDQ++;
 			} else if (cmdline.charAt(i) == CHAR_SQ) {
 				sizeSQ++;
-			} else if (cmdline.charAt(i) == PIPE_OPERATOR) {
-				if (sizeBQ % 2 == 0) {
-					argsArray.add(cmdline.substring(index, i));
-					index = i + 1;
-				}
+			} else if (cmdline.charAt(i) == PIPE_OPERATOR && sizeBQ % 2 == 0) {
+				argsArray.add(cmdline.substring(index, i));
+				index = i + 1;
 			} 
-			if (i == cmdline.length() - 1) {
-				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0) {
+			if ((i == cmdline.length() - 1) && (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)) {
+				 {
 					argsArray.add(cmdline.substring(index, i + 1));
 					break;
 				}

@@ -137,6 +137,11 @@ public class CallCommand implements Command {
 		int nTokens = cmdTokensArray.length;
 
 		// process inputRedir and/or outputRedir
+		processIoRedir(cmdTokensArray, nTokens);
+	
+	}
+
+	private void processIoRedir(String[] cmdTokensArray, int nTokens) throws ShellException {
 		if (nTokens >= 3) { // last 2 for inputRedir & >outputRedir
 			this.inputStreamS = cmdTokensArray[nTokens - 2].trim();
 			this.outputStreamS = cmdTokensArray[nTokens - 1].trim();
@@ -151,8 +156,8 @@ public class CallCommand implements Command {
 		} else {
 			this.argsArray = new String[0]; 
 		}
-	
 	}
+	
 
 	/**
 	 * Parses the sub-command's arguments to the call command and splits it into

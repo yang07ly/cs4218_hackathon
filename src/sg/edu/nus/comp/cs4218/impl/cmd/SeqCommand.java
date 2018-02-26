@@ -9,7 +9,7 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public class SeqCommand implements Command {
-	public static final String EXP_INVALID_SEMICOLON_OPERATOR = "Invalid semicolon operator/s";
+	public static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
 	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
 			+ "operator cannot be used side by side.";
@@ -21,7 +21,7 @@ public class SeqCommand implements Command {
 	public static final char CHAR_BQ = '`';
 	public static final char CHAR_DQ = '"';
 	public static final char CHAR_SQ = '\'';
-	public static final char SEMICOLON_OPERATOR = ';';
+	public static final char SEQ_OPERATOR = ';';
 	public static final String PIPE_OPERATOR = "|";
 
 	String app;
@@ -84,8 +84,8 @@ public class SeqCommand implements Command {
 			return;
 		}
 		
-		if (cmdline.charAt(0) == SEMICOLON_OPERATOR || cmdline.charAt(cmdline.length() - 1) == SEMICOLON_OPERATOR) {
-			throw new ShellException(EXP_INVALID_SEMICOLON_OPERATOR);
+		if (cmdline.charAt(0) == SEQ_OPERATOR || cmdline.charAt(cmdline.length() - 1) == SEQ_OPERATOR) {
+			throw new ShellException(EXP_INVALID_SEQ);
 		}
 		
 		for (int i = 0; i < cmdline.length(); i++) {
@@ -95,19 +95,15 @@ public class SeqCommand implements Command {
 				sizeDQ++;
 			} else if (cmdline.charAt(i) == CHAR_SQ) {
 				sizeSQ++;
-			} else if (cmdline.charAt(i) == SEMICOLON_OPERATOR) {
-				if (sizeBQ % 2 == 0) {
-					String command = cmdline.substring(index, i);
-					argsArray.add(command);
-					index = i + 1;
-				}
+			} else if (cmdline.charAt(i) == SEQ_OPERATOR && sizeBQ % 2 == 0) {
+				String command = cmdline.substring(index, i);
+				argsArray.add(command);
+				index = i + 1;
 			} 
 			
-			if (i == cmdline.length() - 1) {
-				if (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0) {
-					argsArray.add(cmdline.substring(index, i + 1));
-					break;
-				}
+			if (i == cmdline.length() - 1 && (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)) {
+				argsArray.add(cmdline.substring(index, i + 1));
+				break;
 			}
 			
 		}
