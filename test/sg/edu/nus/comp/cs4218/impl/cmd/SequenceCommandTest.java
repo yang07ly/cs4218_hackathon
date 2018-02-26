@@ -3,51 +3,75 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.cmd.SequenceCommand;
+import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 
 public class SequenceCommandTest {
 
-	SequenceCommand sequenceCommand;
+	SeqCommand sequenceCommand;
+	AppStub appStub;
+	ShellStub shellStub;
+	
+	Vector<String> expected,actual;
 	
 	@Before
 	public void setup() {
-		sequenceCommand = new SequenceCommand();
+		sequenceCommand = new SeqCommand();
+		appStub = new AppStub();
+		shellStub = new ShellStub();
+		expected = new Vector<String>();
+		actual = new Vector<String>();
 	}
 	
 	@Test
-	public void testSequenceTwoCommandsNoArgs() throws ShellException, AbstractApplicationException {
-		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-		sequenceCommand = new SequenceCommand("");
-		sequenceCommand.parse();
-		sequenceCommand.evaluate(System.in, stdout);
-		assertEquals("", new String(stdout.toByteArray()));
+	public void testSeqCommandsWithNoArgs() {
+		sequenceCommand = new SeqCommand("");
+		try {
+			sequenceCommand.parse();
+		} catch (ShellException e) {
+			 e.printStackTrace();
+		}
+				
+		assertEquals(sequenceCommand.argsArray.size(), 0);
+		assertEquals(sequenceCommand.argsArray, expected);
 	}
 	
 	@Test
-	public void testSequenceTwoCommandsWithValidArgs() throws ShellException, AbstractApplicationException {
-		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-		sequenceCommand = new SequenceCommand("echo a; echo b");
-		sequenceCommand.parse();
-		sequenceCommand.evaluate(System.in, stdout);
+	public void testSeqTwoCommandsWithValidArgs() {
+		sequenceCommand = new SeqCommand("echo a; echo b");
+		try {
+			sequenceCommand.parse();
+		} catch (ShellException e) {
+			 e.printStackTrace();
+		}
 		
-		String expectedResult = "a"  + "\n" + "b" + "\n";
-		assertEquals(expectedResult, new String(stdout.toByteArray()));
+		expected.add("echo a");
+		expected.add(" echo b");
+		assertEquals(sequenceCommand.argsArray.size(), 2);
+		assertEquals(sequenceCommand.argsArray, expected);
 	}
 	
 	@Test
-	public void testSequenceMultipleCommandsWithValidArgs() throws ShellException, AbstractApplicationException {
-		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-		sequenceCommand = new SequenceCommand("echo a; echo b; echo c");
-		sequenceCommand.parse();
-		sequenceCommand.evaluate(System.in, stdout);
+	public void testSeqMultipleCommandsWithValidArgs() {
+		sequenceCommand = new SeqCommand("echo a; echo b; echo c");
+		try {
+			sequenceCommand.parse();
+		} catch (ShellException e) {
+			 e.printStackTrace();
+		}
 		
-		String expectedResult = "a"  + "\n" + "b" + "\n" + "c" + "\n";
-		assertEquals(expectedResult, new String(stdout.toByteArray()));
+		expected.add("echo a");
+		expected.add(" echo b");
+		expected.add(" echo c");
+		assertEquals(sequenceCommand.argsArray.size(), 3);
+		assertEquals(sequenceCommand.argsArray, expected);
 	}
+	
 }

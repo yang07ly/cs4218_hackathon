@@ -35,7 +35,7 @@ public class CallCommand implements Command {
 	String cmdline, inputStreamS, outputStreamS;
 	String[] argsArray;
 	Boolean error;
-	String errorMsg;
+	String errorMsg; 
 
 	public CallCommand(String cmdline) {
 		this.cmdline = cmdline.trim();
@@ -121,7 +121,7 @@ public class CallCommand implements Command {
 			result = true;
 		} else {
 			result = false;
-		}
+		} 
 		if (!result) {
 			this.app = cmdVector.get(0);
 			error = true;
@@ -144,11 +144,11 @@ public class CallCommand implements Command {
 				error = true;
 				errorMsg = ShellImpl.EXP_SAME_REDIR;
 				throw new ShellException(errorMsg);
-			}
+			} 
 			this.argsArray = Arrays.copyOfRange(cmdTokensArray, 1,
 					cmdTokensArray.length - 2);
 		} else {
-			this.argsArray = new String[0];
+			this.argsArray = new String[0]; 
 		}
 	
 	}
@@ -244,7 +244,7 @@ public class CallCommand implements Command {
 	 *             When more than one input redirection string is found, or when
 	 *             invalid syntax is encountered..
 	 */
-	int extractInputRedir(String str, Vector<String> cmdVector, int endIdx)
+	int extractInputRedir(String str, Vector<String> cmdVector, int endIdx) 
 			throws ShellException {
 		String substring = str.substring(endIdx);
 		String strTrm = substring.trim();
@@ -306,7 +306,7 @@ public class CallCommand implements Command {
 		String strTrm = substring.trim();
 		if (strTrm.isEmpty()) {
 			return endIdx;
-		}
+		} 
 		if (!strTrm.startsWith(">")) {
 			throw new ShellException(EXP_SYNTAX);
 		}

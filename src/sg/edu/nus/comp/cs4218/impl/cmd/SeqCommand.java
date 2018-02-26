@@ -9,7 +9,7 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
-public class SequenceCommand implements Command {
+public class SeqCommand implements Command {
 	public static final String EXP_INVALID_SEMICOLON_OPERATOR = "Invalid semicolon operator/s";
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
 	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
@@ -34,7 +34,7 @@ public class SequenceCommand implements Command {
 	Boolean error;
 	String errorMsg;
 
-	public SequenceCommand(String cmdline) {
+	public SeqCommand(String cmdline) {
 		this.cmdline = cmdline.trim();
 		app = inputStreamS = outputStreamS = "";
 		error = false;
@@ -42,7 +42,7 @@ public class SequenceCommand implements Command {
 		argsArray = new Vector<String>();
 	}
 
-	public SequenceCommand() {
+	public SeqCommand() {
 		this("");
 	}
 
