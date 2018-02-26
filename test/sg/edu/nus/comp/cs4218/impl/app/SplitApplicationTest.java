@@ -70,6 +70,19 @@ public class SplitApplicationTest {
 	}
 
 	@Test
+	public void testNegativeLines() {
+		String[] splitArgs = { FILE1_TXT, "-l" , "-2"};
+		expected = "split: -2: invalid number of lines";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testRunSplitMoreThanOneWay() {
 		String[] splitArgs = { FILE1_TXT, "-l" , "-2", "-b", "3"};
 		expected = "split: cannot split in more than one way";

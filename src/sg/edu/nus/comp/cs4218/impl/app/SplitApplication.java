@@ -30,7 +30,6 @@ public class SplitApplication implements SplitInterface{
 		getArgs(args, flags);
 		String file = flags[0], prefix = flags[1], bytes = flags[2], lineString = flags[3];
 		int lines = parseLines(lineString);
-		
 		if(file == null) {
 			if (stdin == null) {
 				throw new SplitException("Null Pointer Exception");
@@ -56,7 +55,7 @@ public class SplitApplication implements SplitInterface{
 	 * @throws SplitException
 	 */
 	private void getArgs(String[] args, String... processedArgs) throws SplitException {
-		String file = null, prefix = null, bytes = "", lines = "-1";
+		String file = null, prefix = null, bytes = "", lines = "1000";
 		boolean hasFlag = false, hasSplitter = false;
 		if(args != null) {
 			for (int i = 0; i < args.length; i++) {
@@ -77,7 +76,6 @@ public class SplitApplication implements SplitInterface{
 							lines = args[i + 1];
 							hasFlag = hasSplitter = true;
 						}
-						lines = args[i + 1];
 					} else if(file == null) {
 						file = args[i];
 					}else if(prefix == null){
@@ -108,7 +106,6 @@ public class SplitApplication implements SplitInterface{
 	 *             if more than 1 line and byte is specified.
 	 */
 	private boolean isSplitByLines(String bytes, int lines) throws SplitException {
-		int numLines = lines;
 		return (bytes.length() == 0);
 	}
 
@@ -167,10 +164,8 @@ public class SplitApplication implements SplitInterface{
 	public void splitStreamByLines(InputStream stdin, String prefix, int linesPerFile) throws SplitException {
 		String outputPrefix = getAbsolutePath(prefix);
 		int lines = linesPerFile;
-		if (lines == 0) {
+		if (lines <= 0) {
 			throw new SplitException(lines + ": invalid number of lines");
-		}else if (lines == -1) {
-			lines = 1000;
 		}
 		String currCounter = "aa", line;
 		int count = 1;
