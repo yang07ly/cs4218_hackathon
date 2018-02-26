@@ -6,6 +6,6 @@ public class QuoteCommand{
 	
 	public String[] evaluate(String cmdString) throws QuoteException{
 		
-		return null;
+		return new String[];
 	}
 }

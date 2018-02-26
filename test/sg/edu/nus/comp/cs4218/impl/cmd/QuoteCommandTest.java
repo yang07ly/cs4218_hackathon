@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class QuoteCommandTest {
+	private static final String ASD = "asd";
 	private static final String UNCLOSED_QUOTES = "Quote: Unclosed quotes";
 	QuoteCommand command;
 	String expected, cmdString;
@@ -27,7 +28,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testNoQuotes() {
-		expected = "asd";
+		expected = ASD;
 		cmdString = "echo asd";
 		try {
 			output = command.evaluate(cmdString);
@@ -53,7 +54,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testClosedSQ() {
-		expected = "asd";
+		expected = ASD;
 		cmdString = "echo 'asd'";
 		try {
 			output = command.evaluate(cmdString);
@@ -73,7 +74,7 @@ public class QuoteCommandTest {
 			output[0] = e.getMessage();
 		}
 		assertEquals(2, output.length);
-		assertEquals("asd", output[0]);
+		assertEquals(ASD, output[0]);
 		assertEquals("omg", output[1]);
 	}
 
@@ -92,7 +93,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testClosedDQ() {
-		expected = "asd";
+		expected = ASD;
 		cmdString = "echo \"asd\"";
 		try {
 			output = command.evaluate(cmdString);
@@ -112,7 +113,7 @@ public class QuoteCommandTest {
 			output[0] = e.getMessage();
 		}
 		assertEquals(2, output.length);
-		assertEquals("asd", output[0]);
+		assertEquals(ASD, output[0]);
 		assertEquals("omg", output[1]);
 	}
 
