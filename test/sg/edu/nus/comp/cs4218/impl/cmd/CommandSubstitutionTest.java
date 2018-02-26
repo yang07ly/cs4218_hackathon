@@ -2,11 +2,15 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
@@ -22,7 +26,9 @@ public class CommandSubstitutionTest {
 	@Before
 	public void setup() {
 		callCommand = new CallCommand();
-		cmdSubCommand = new CmdSubCommand();
+		Environment.currentDirectory = System.getProperty("user.dir");
+
+		
 		
 	}
 	
@@ -33,7 +39,8 @@ public class CommandSubstitutionTest {
 		callCommand = new CallCommand("echo `xyz cats`");
 		try {
 			callCommand.parse();
-			cmdSubCommand.processBQ(callCommand.argsArray);
+			cmdSubCommand = new CmdSubCommand(callCommand.argsArray);
+			cmdSubCommand.evaluate(System.in, System.out);
 		} catch (ShellException e) {
 			actual = e.getMessage();
 		} catch (AbstractApplicationException e) {
@@ -78,7 +85,9 @@ public class CommandSubstitutionTest {
 	@Test 
 	public void testBQinBQ() {
 		try {
-			actual = cmdSubCommand.processBQ("`echo ` echo cats ``");
+			cmdSubCommand = new CmdSubCommand("`echo ` echo cats ``");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -95,7 +104,9 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithSemicolon() {
 
 		try {
-			actual = cmdSubCommand.processBQ("`echo cats; echo dogs`");
+			cmdSubCommand = new CmdSubCommand("`echo cats; echo dogs`");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -115,7 +126,9 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithPipe() {
 
 		try {
-			actual = cmdSubCommand.processBQ("`cat text.txt | sed s/pains/paining/`");
+			cmdSubCommand = new CmdSubCommand("`cat text.txt | sed s/pains/paining/`");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -130,9 +143,13 @@ public class CommandSubstitutionTest {
 	
 	@Test 
 	public void testCommandSubWithPipes() {
-
+		InputStream inputBuffer = null;
+		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
 		try {
-			actual = cmdSubCommand.processBQ("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
+			cmdSubCommand = new CmdSubCommand("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
+			cmdSubCommand.evaluate(inputBuffer, outputBuffer);
+			actual = cmdSubCommand.getArgsArray();
+			
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -152,7 +169,9 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithSemicolons() {
 
 		try {
-			actual = cmdSubCommand.processBQ("`echo first; echo second; echo third`");
+			cmdSubCommand = new CmdSubCommand("`echo first; echo second; echo third`");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {

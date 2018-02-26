@@ -46,7 +46,6 @@ public class CallCommand implements Command {
 		errorMsg = "";
 		argsArray = new String[0];
 		ioRedirCommand = new IoRedirCommand();
-		cmdSubCommmand = new CmdSubCommand();
 	}
 
 	public CallCommand() {
@@ -76,9 +75,10 @@ public class CallCommand implements Command {
 
 		InputStream inputStream;
 		OutputStream outputStream;
-
-		argsArray = cmdSubCommmand.processBQ(argsArray);
-
+		
+		cmdSubCommmand = new CmdSubCommand(argsArray);
+		cmdSubCommmand.evaluate(stdin, stdout);
+		argsArray = cmdSubCommmand.getArgsArray();
 		if (("").equals(inputStreamS)) {// empty
 			inputStream = stdin;
 		} else { // not empty
@@ -141,7 +141,7 @@ public class CallCommand implements Command {
 
 		// process inputRedir and/or outputRedir
 		processIoRedir(cmdTokensArray, nTokens);
-	
+
 	}
 
 	private void processIoRedir(String[] cmdTokensArray, int nTokens) throws ShellException {
@@ -160,7 +160,7 @@ public class CallCommand implements Command {
 			this.argsArray = new String[0]; 
 		}
 	}
-	
+
 
 	/**
 	 * Parses the sub-command's arguments to the call command and splits it into
@@ -184,9 +184,9 @@ public class CallCommand implements Command {
 	 *             parsing.
 	 */
 	int extractArgs(String str, Vector<String> cmdVector) throws ShellException {
-//		System.out.println(str);
-//		str = "echo `echo a; echo b`";
-//		System.out.println(str);
+		//		System.out.println(str);
+		//		str = "echo `echo a; echo b`";
+		//		System.out.println(str);
 		String patternDash = "[\\s]+(-[A-Za-z]*)[\\s]";
 		String patternUQ = "[\\s]+([^\\s\"'`\\n;|<>]*)[\\s]";
 		String patternDQ = "[\\s]+\"([^\\n\"`]*)\"[\\s]";
