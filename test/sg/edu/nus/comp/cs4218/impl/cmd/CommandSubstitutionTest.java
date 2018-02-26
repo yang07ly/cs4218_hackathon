@@ -15,14 +15,14 @@ public class CommandSubstitutionTest {
 	
 	CallCommand callCommand;
 
-	ShellImpl shellImpl;
+	CmdSubCommand cmdSubCommand;
 	
 	String[] expected,actual;
 
 	@Before
 	public void setup() {
 		callCommand = new CallCommand();
-		shellImpl= new ShellImpl();
+		cmdSubCommand = new CmdSubCommand();
 		
 	}
 	
@@ -33,7 +33,7 @@ public class CommandSubstitutionTest {
 		callCommand = new CallCommand("echo `xyz cats`");
 		try {
 			callCommand.parse();
-			ShellImpl.processBQ(callCommand.argsArray);
+			cmdSubCommand.processBQ(callCommand.argsArray);
 		} catch (ShellException e) {
 			actual = e.getMessage();
 		} catch (AbstractApplicationException e) {
@@ -78,7 +78,7 @@ public class CommandSubstitutionTest {
 	@Test 
 	public void testBQinBQ() {
 		try {
-			actual = ShellImpl.processBQ("`echo ` echo cats ``");
+			actual = cmdSubCommand.processBQ("`echo ` echo cats ``");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -95,7 +95,7 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithSemicolon() {
 
 		try {
-			actual = ShellImpl.processBQ("`echo cats; echo dogs`");
+			actual = cmdSubCommand.processBQ("`echo cats; echo dogs`");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -115,7 +115,7 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithPipe() {
 
 		try {
-			actual = ShellImpl.processBQ("`cat text.txt | sed s/pains/paining/`");
+			actual = cmdSubCommand.processBQ("`cat text.txt | sed s/pains/paining/`");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -132,7 +132,7 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithPipes() {
 
 		try {
-			actual = ShellImpl.processBQ("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
+			actual = cmdSubCommand.processBQ("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {
@@ -152,7 +152,7 @@ public class CommandSubstitutionTest {
 	public void testCommandSubWithSemicolons() {
 
 		try {
-			actual = ShellImpl.processBQ("`echo first; echo second; echo third`");
+			actual = cmdSubCommand.processBQ("`echo first; echo second; echo third`");
 		} catch (ShellException e) {
 			e.printStackTrace();
 		} catch (AbstractApplicationException e) {

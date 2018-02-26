@@ -37,6 +37,7 @@ public class CallCommand implements Command {
 	Boolean error;
 	String errorMsg; 
 	IoRedirCommand ioRedirCommand;
+	CmdSubCommand cmdSubCommmand;
 
 	public CallCommand(String cmdline) {
 		this.cmdline = cmdline.trim();
@@ -45,6 +46,7 @@ public class CallCommand implements Command {
 		errorMsg = "";
 		argsArray = new String[0];
 		ioRedirCommand = new IoRedirCommand();
+		cmdSubCommmand = new CmdSubCommand();
 	}
 
 	public CallCommand() {
@@ -75,7 +77,7 @@ public class CallCommand implements Command {
 		InputStream inputStream;
 		OutputStream outputStream;
 
-		argsArray = ShellImpl.processBQ(argsArray);
+		argsArray = cmdSubCommmand.processBQ(argsArray);
 
 		if (("").equals(inputStreamS)) {// empty
 			inputStream = stdin;
