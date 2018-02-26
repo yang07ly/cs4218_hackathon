@@ -184,9 +184,6 @@ public class CallCommand implements Command {
 	 *             parsing.
 	 */
 	int extractArgs(String str, Vector<String> cmdVector) throws ShellException {
-//		System.out.println(str);
-//		str = "echo `echo a; echo b`";
-//		System.out.println(str);
 		String patternDash = "[\\s]+(-[A-Za-z]*)[\\s]";
 		String patternUQ = "[\\s]+([^\\s\"'`\\n;|<>]*)[\\s]";
 		String patternDQ = "[\\s]+\"([^\\n\"`]*)\"[\\s]";

@@ -39,9 +39,6 @@ public class CmdSubCommand implements Command{
 	 */
 	public String[] processBQ(String... argsArray)
 			throws AbstractApplicationException, ShellException {
-		// echo "this is space `echo "nbsp"`"
-		// echo "this is space `echo "nbsp"` and `echo "2nd space"`"
-		// Back quoted: any char except \n,`
 		String[] resultArr = new String[argsArray.length];
 		System.arraycopy(argsArray, 0, resultArr, 0, argsArray.length);
 		String patternBQ = "`([^\\n`]*)`";
@@ -51,9 +48,7 @@ public class CmdSubCommand implements Command{
 			Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
 			if (matcherBQ.find()) {// found backquoted
 				String bqStr = matcherBQ.group(1);
-				// cmdVector.add(bqStr.trim());
 				// process back quote
-				// System.out.println("backquote" + bqStr);
 				OutputStream bqOutputStream = new ByteArrayOutputStream();
 				ShellImpl shell = new ShellImpl();
 				shell.parseAndEvaluate(bqStr, bqOutputStream);
