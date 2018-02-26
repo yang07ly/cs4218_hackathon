@@ -12,7 +12,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public class CallCommandTest {
 
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
+	public static final String EXP_SYNTAX = "shell: Invalid syntax encountered.";
 	
 	static CallCommand callCommand;
 	Vector<String> commands;

@@ -13,16 +13,12 @@ import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 public class SeqCommandTest {
 
 	SeqCommand sequenceCommand;
-	AppStub appStub;
-	ShellStub shellStub;
 	
 	Vector<String> expected,actual;
 	
 	@Before
 	public void setup() {
 		sequenceCommand = new SeqCommand();
-		appStub = new AppStub();
-		shellStub = new ShellStub();
 		expected = new Vector<String>();
 		actual = new Vector<String>();
 	}
