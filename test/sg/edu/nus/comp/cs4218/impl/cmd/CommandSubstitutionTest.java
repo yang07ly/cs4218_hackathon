@@ -3,6 +3,7 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -25,7 +26,8 @@ public class CommandSubstitutionTest {
 	@Before
 	public void setup() {
 		callCommand = new CallCommand();
-		Environment.currentDirectory = System.getProperty("user.dir");
+		String fileDir = "test_system" + File.separator + "cmd_test_system";
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
 
 		
 		
