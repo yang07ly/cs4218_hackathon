@@ -15,15 +15,11 @@ public class QuoteCommandTest {
 	QuoteCommand command;
 	String expected, cmdString;
 	String[] output;
-	InputStream inputStream;
-	OutputStream outputStream;
 
 	@Before
 	public void setup() {
 		expected = "";
 		cmdString = "";
-		inputStream = System.in;
-		outputStream = new ByteArrayOutputStream();
 	}
 
 	@Test
