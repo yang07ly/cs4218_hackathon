@@ -72,7 +72,6 @@ public class ShellImpl implements Shell {
 		String patternBQ = "`([^\\n`]*)`";
 		Pattern patternBQp = Pattern.compile(patternBQ);
 		Vector<String> results = new Vector<String>();
-		boolean bqFlag = false;
 		for (int i = 0; i < argsArray.length; i++) {
 			Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
 			if (matcherBQ.find()) {// found backquoted
@@ -90,24 +89,15 @@ public class ShellImpl implements Shell {
 						.replace("\r", " ");
 				String[] parts = bqResult.trim().split("\\s+");
 				for (int j = 0; j < parts.length; j++) {
-					results.add(parts[j]);
+					// replace substring of back quote with result
+					String replacedStr = argsArray[i].replace("`" + bqStr + "`",
+							parts[j]);
+					
+					resultArr[i] = replacedStr;
+					results.add(replacedStr);
 				}
-				
-				// replace substring of back quote with result
-				String replacedStr = argsArray[i].replace("`" + bqStr + "`",
-						bqResult);
-				
-				resultArr[i] = replacedStr;
-				bqFlag = true;
-
-				
-			}
-		}
-		if (bqFlag) {
-			resultArr = new String[results.size()];
-	
-			for (int i = 0; i < results.size(); i++) {
-				resultArr[i] = results.get(i);
+			} else {
+				results.add(argsArray[i]);
 			}
 		}
 		return resultArr;
