@@ -36,7 +36,7 @@ public class PipeCommandTest {
 	
 	@Test
 	public void testPipeTwoCommandsWithValidArgs() {
-		pipeCommand = new PipeCommand("cat text.txt | sed s/pains/paining/");
+		pipeCommand = new PipeCommand("cat text.txt | sed s/pains/pain/");
 		try {
 			pipeCommand.parse();
 		} catch (ShellException e) {
@@ -44,7 +44,7 @@ public class PipeCommandTest {
 		}		
 		
 		expected.add("cat text.txt ");
-		expected.add(" sed s/pains/paining/");
+		expected.add(" sed s/pains/pain/");
 
 		assertEquals(pipeCommand.argsArray.size(), 2);
 		assertEquals(pipeCommand.argsArray, expected);
@@ -52,7 +52,7 @@ public class PipeCommandTest {
 	
 	@Test
 	public void testPipeMultipleCommandsWithValidArgs() {
-		pipeCommand = new PipeCommand("cat text.txt | sed s/pains/paining/ | sed s/pleasures/pleasuring/");
+		pipeCommand = new PipeCommand("cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/");
 		try {
 			pipeCommand.parse();
 		} catch (ShellException e) {
@@ -60,7 +60,7 @@ public class PipeCommandTest {
 		}		
 		
 		expected.add("cat text.txt ");
-		expected.add(" sed s/pains/paining/ ");
+		expected.add(" sed s/pains/pain/ ");
 		expected.add(" sed s/pleasures/pleasuring/");
 
 		assertEquals(pipeCommand.argsArray.size(), 3);

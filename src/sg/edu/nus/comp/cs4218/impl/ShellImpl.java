@@ -255,14 +255,19 @@ public class ShellImpl implements Shell {
 	 *             If exception is thrown during writing.
 	 */
 	public static void writeToStdout(OutputStream outputStream,
-			OutputStream stdout) throws ShellException {
+			OutputStream stdout) {
 		if (outputStream instanceof FileOutputStream) {
 			return;
 		}
 		try {
 			stdout.write(((ByteArrayOutputStream) outputStream).toByteArray());
 		} catch (IOException e) {
-			throw new ShellException(EXP_STDOUT);
+			try {
+				throw new ShellException(EXP_STDOUT);
+			} catch (ShellException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -329,7 +334,7 @@ public class ShellImpl implements Shell {
 	@Override
 	public String DetectQuotes(String input) {
 		
-		String res = new String();
+		String res = "";
 		
 			if(Character.valueOf(input.charAt(0)) == 34) {
 			
