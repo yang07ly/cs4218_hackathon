@@ -58,7 +58,7 @@ SeqCommand sequenceCommand;
 	public void testInputRedirectionInvalid() {
 		String filename = "texting.txt";
 		String actual = "";
-		String expected = "shell: " + Environment.currentDirectory + "/" + filename + " (No such file or directory)";
+		String expected = "shell: " + Environment.currentDirectory + File.separator + filename + " (No such file or directory)";
 		
 		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
 		sequenceCommand = new SeqCommand("cat < " + filename);
@@ -97,7 +97,7 @@ SeqCommand sequenceCommand;
 			actual = e.getMessage();
 		}
 		
-		File file = new File(Environment.currentDirectory + "/" + filename);
+		File file = new File(Environment.currentDirectory + File.separator + filename);
 		assertTrue(file.exists());
 		try {
 			actual = getFileContents(filename);
@@ -111,13 +111,13 @@ SeqCommand sequenceCommand;
 	} 
 	
 	public void deleteFile(String filename) {
-		File file = new File(Environment.currentDirectory + "/" + filename);
+		File file = new File(Environment.currentDirectory + File.separator + filename);
 		file.delete();
 	}
 	
 	public String getFileContents(String filename) throws IOException {
 		
-	    File file = new File(Environment.currentDirectory + "/" + filename);
+	    File file = new File(Environment.currentDirectory + File.separator + filename);
 
 	    BufferedReader buffReader = new BufferedReader(new FileReader(file));
 	    StringBuffer fileContents = new StringBuffer();
