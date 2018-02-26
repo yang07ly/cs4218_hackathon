@@ -101,6 +101,4 @@ public interface Shell {
 	 * @param args String containing the commands, input arguments surrounded by backquotes
 	 */
 	public String performCommandSubstitutionWithException(String args);
-
-	public String DetectQuotes(String input);
 }

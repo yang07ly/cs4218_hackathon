@@ -40,7 +40,7 @@ public class MkdirApplicationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "mkdir_test_system";;
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "mkdir_test_system";
 		mkdirApp = new MkdirApplication();
 		
 		Path folderPath = Paths.get(Environment.currentDirectory).resolve("existingFolder");

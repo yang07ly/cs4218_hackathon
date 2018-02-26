@@ -220,28 +220,6 @@ public class ShellImpl implements Shell {
 		sequenceCommand.parse();
 		sequenceCommand.evaluate(stdin, stdout);
 	}
-	
-	@Override
-	public String DetectQuotes(String input) {
-		
-		String res = "";
-		
-			if(Character.valueOf(input.charAt(0)) == 34) {
-			
-				res = "its a double quote";
-			
-			} else if(Character.valueOf(input.charAt(0)) == 39) {
-			
-				res = "its a single quote";
-			
-			} else if(Character.valueOf(input.charAt(0)) == 96) {
-			
-				res = "its a backquote";
-			
-			}
-			return res;
-		
-	}
 
 	@Override
 	public String pipeTwoCommands(String args) {
