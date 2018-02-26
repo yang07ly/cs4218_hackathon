@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.CmpItf;
+import sg.edu.nus.comp.cs4218.app.CmpInterface;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.CmpException;
 
-public class CmpApplication implements CmpItf {
+public class CmpApplication implements CmpInterface {
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CmpException {

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.LsItf;
+import sg.edu.nus.comp.cs4218.app.LsInterface;
 import sg.edu.nus.comp.cs4218.exception.LsException;
 
 /**
@@ -31,7 +31,7 @@ import sg.edu.nus.comp.cs4218.exception.LsException;
  * </dl>
  * </p>
  */
-public class LsApplication implements LsItf {
+public class LsApplication implements LsInterface {
 	
 	private static final int DOPTION = 0;
 	private static final int ROPTION = 1;

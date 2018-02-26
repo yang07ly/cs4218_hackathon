@@ -16,11 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.SplitItf;
+import sg.edu.nus.comp.cs4218.app.SplitInterface;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
-public class SplitApplication implements SplitItf{
+public class SplitApplication implements SplitInterface{
 
 	private static final String FILE_NOT_FOUND = "': No such file or directory";
 

@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.CdItf;
+import sg.edu.nus.comp.cs4218.app.CdInterface;
 import sg.edu.nus.comp.cs4218.exception.CdException;
 
 /**
@@ -24,7 +24,7 @@ import sg.edu.nus.comp.cs4218.exception.CdException;
  * </dl>
  * </p>
  */
-public class CdApplication implements CdItf {
+public class CdApplication implements CdInterface {
 
 	/**
 	 * The cd command changes the current working directory.

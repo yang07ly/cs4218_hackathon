@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.SedItf;
+import sg.edu.nus.comp.cs4218.app.SedInterface;
 import sg.edu.nus.comp.cs4218.exception.SedException;
 
 /**
@@ -43,7 +43,7 @@ import sg.edu.nus.comp.cs4218.exception.SedException;
  * <dd>the name of the file(s). If no files are specified, use stdin.</dd>
  * </p>
  */
-public class SedApplication implements SedItf {
+public class SedApplication implements SedInterface {
 
 	public static final String EXP_NULL_POINTER = "Null Pointer Exception";
 
