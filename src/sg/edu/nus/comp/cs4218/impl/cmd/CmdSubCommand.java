@@ -81,7 +81,6 @@ public class CmdSubCommand implements Command{
 				argsArray = results.toArray(new String[results.size()]);		
 	}
 
-
 	@Override
 	public void terminate() {
 		// TODO Auto-generated method stub
@@ -91,7 +90,5 @@ public class CmdSubCommand implements Command{
 	public String[] getArgsArray() {
 		return argsArray;
 	}
-
-	
 	
 }

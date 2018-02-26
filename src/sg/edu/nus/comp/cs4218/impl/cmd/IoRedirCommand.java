@@ -16,6 +16,14 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
+/**
+ * IO Redirection Command is a call command which contain "<" or ">" iff the backquotes are not surrounded by 
+ * single quotes (if any).
+ * 
+ * Command format: <redirection> ::= “<“ [ <whitespace> ] <argument> |
+                  “>“ [ <whitespace> ] <argument>
+ **/
+
 public class IoRedirCommand implements Command {
 	
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
