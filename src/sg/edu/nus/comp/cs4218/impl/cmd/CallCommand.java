@@ -36,6 +36,7 @@ public class CallCommand implements Command {
 	String[] argsArray;
 	Boolean error;
 	String errorMsg; 
+	IoRedirCommand ioRedirCommand;
 
 	public CallCommand(String cmdline) {
 		this.cmdline = cmdline.trim();
@@ -43,6 +44,7 @@ public class CallCommand implements Command {
 		error = false;
 		errorMsg = "";
 		argsArray = new String[0];
+		ioRedirCommand = new IoRedirCommand();
 	}
 
 	public CallCommand() {
@@ -78,12 +80,12 @@ public class CallCommand implements Command {
 		if (("").equals(inputStreamS)) {// empty
 			inputStream = stdin;
 		} else { // not empty
-			inputStream = ShellImpl.openInputRedir(inputStreamS);
+			inputStream = ioRedirCommand.openInputRedir(inputStreamS);
 		}
 		if (("").equals(outputStreamS)) { // empty
 			outputStream = stdout;
 		} else {
-			outputStream = ShellImpl.openOutputRedir(outputStreamS);
+			outputStream = ioRedirCommand.openOutputRedir(outputStreamS);
 		}
 		ShellImpl.runApp(app, argsArray, inputStream, outputStream);
 		ShellImpl.closeInputStream(inputStream);
@@ -104,7 +106,6 @@ public class CallCommand implements Command {
 	public void parse() throws ShellException {
 
 		Vector<String> cmdVector = new Vector<String>();
-		IoRedirCommand ioRedirCommand = new IoRedirCommand();
 		Boolean result = true;
 		int endIdx = 0;
 		String str = " " + cmdline + " ";

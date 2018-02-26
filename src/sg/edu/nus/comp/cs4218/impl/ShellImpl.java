@@ -156,54 +156,6 @@ public class ShellImpl implements Shell {
 	}
 
 	/**
-	 * Static method to creates an inputStream based on the file name or file
-	 * path.
-	 * 
-	 * @param inputStreamS
-	 *            String of file name or file path
-	 * 
-	 * @return InputStream of file opened
-	 * 
-	 * @throws ShellException
-	 *             If file is not found.
-	 */
-	public static InputStream openInputRedir(String inputStreamS)
-			throws ShellException {
-		File inputFile = Paths.get(Environment.currentDirectory).resolve(inputStreamS).toFile();
-		FileInputStream fInputStream = null;
-		try {
-			fInputStream = new FileInputStream(inputFile);
-		} catch (FileNotFoundException e) {
-			throw new ShellException(e.getMessage());
-		}
-		return fInputStream;
-	}
-
-	/**
-	 * Static method to creates an outputStream based on the file name or file
-	 * path.
-	 * 
-	 * @param onputStreamS
-	 *            String of file name or file path.
-	 * 
-	 * @return OutputStream of file opened.
-	 * 
-	 * @throws ShellException
-	 *             If file destination cannot be opened or inaccessible.
-	 */
-	public static OutputStream openOutputRedir(String outputStreamS) 
-			throws ShellException{
-		File outputFile = Paths.get(Environment.currentDirectory).resolve(outputStreamS).toFile();
-		FileOutputStream fOutputStream = null;
-		try {
-			fOutputStream = new FileOutputStream(outputFile);
-		} catch (FileNotFoundException e) {
-			throw new ShellException(e.getMessage());
-		}
-		return fOutputStream;
-	}
-
-	/**
 	 * Static method to close an inputStream.
 	 * 
 	 * @param inputStream

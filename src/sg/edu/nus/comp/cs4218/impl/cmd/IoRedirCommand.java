@@ -1,12 +1,18 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import sg.edu.nus.comp.cs4218.Command;
+import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
@@ -137,4 +143,53 @@ public class IoRedirCommand implements Command {
 		}
 		return newEndIdx;
 	}
+	
+	/**
+	 * Static method to creates an inputStream based on the file name or file
+	 * path.
+	 * 
+	 * @param inputStreamS
+	 *            String of file name or file path
+	 * 
+	 * @return InputStream of file opened
+	 * 
+	 * @throws ShellException
+	 *             If file is not found.
+	 */
+	public InputStream openInputRedir(String inputStreamS)
+			throws ShellException {
+		File inputFile = Paths.get(Environment.currentDirectory).resolve(inputStreamS).toFile();
+		FileInputStream fInputStream = null;
+		try {
+			fInputStream = new FileInputStream(inputFile);
+		} catch (FileNotFoundException e) {
+			throw new ShellException(e.getMessage());
+		}
+		return fInputStream;
+	}
+
+	/**
+	 * Static method to creates an outputStream based on the file name or file
+	 * path.
+	 * 
+	 * @param onputStreamS
+	 *            String of file name or file path.
+	 * 
+	 * @return OutputStream of file opened.
+	 * 
+	 * @throws ShellException
+	 *             If file destination cannot be opened or inaccessible.
+	 */
+	public OutputStream openOutputRedir(String outputStreamS) 
+			throws ShellException{
+		File outputFile = Paths.get(Environment.currentDirectory).resolve(outputStreamS).toFile();
+		FileOutputStream fOutputStream = null;
+		try {
+			fOutputStream = new FileOutputStream(outputFile);
+		} catch (FileNotFoundException e) {
+			throw new ShellException(e.getMessage());
+		}
+		return fOutputStream;
+	}
+	
 }
