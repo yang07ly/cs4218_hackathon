@@ -47,24 +47,19 @@ public class CmdSubCommand implements Command{
 	
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
-		// echo "this is space `echo "nbsp"`"
-				// echo "this is space `echo "nbsp"` and `echo "2nd space"`"
-				// Back quoted: any char except \n,`
-				String[] resultArr = new String[argsArray.length];
-				System.arraycopy(argsArray, 0, resultArr, 0, argsArray.length);
-				String patternBQ = "`([^\\n`]*)`";
-				Pattern patternBQp = Pattern.compile(patternBQ);
-				Vector<String> results = new Vector<String>();
-				for (int i = 0; i < argsArray.length; i++) {
-					Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
-					if (matcherBQ.find()) {// found backquoted
-						String bqStr = matcherBQ.group(1);
-						// cmdVector.add(bqStr.trim());
-						// process back quote
-						// System.out.println("backquote" + bqStr);
-						OutputStream bqOutputStream = new ByteArrayOutputStream();
-						ShellImpl shell = new ShellImpl();
-						shell.parseAndEvaluate(bqStr, bqOutputStream);
+		String[] resultArr = new String[argsArray.length];
+		System.arraycopy(argsArray, 0, resultArr, 0, argsArray.length);
+		String patternBQ = "`([^\\n`]*)`";
+		Pattern patternBQp = Pattern.compile(patternBQ);
+		Vector<String> results = new Vector<String>();
+		for (int i = 0; i < argsArray.length; i++) {
+			Matcher matcherBQ = patternBQp.matcher(argsArray[i]);
+			if (matcherBQ.find()) {// found backquoted
+				String bqStr = matcherBQ.group(1);
+				// process back quote
+				OutputStream bqOutputStream = new ByteArrayOutputStream();
+				ShellImpl shell = new ShellImpl();
+				shell.parseAndEvaluate(bqStr, bqOutputStream);
 
 						ByteArrayOutputStream outByte = (ByteArrayOutputStream) bqOutputStream;
 						byte[] byteArray = outByte.toByteArray();
@@ -83,9 +78,9 @@ public class CmdSubCommand implements Command{
 						results.add(argsArray[i]);
 					}
 				}
-				argsArray = results.toArray(new String[results.size()]);
-		
+				argsArray = results.toArray(new String[results.size()]);		
 	}
+
 
 	@Override
 	public void terminate() {
@@ -96,5 +91,7 @@ public class CmdSubCommand implements Command{
 	public String[] getArgsArray() {
 		return argsArray;
 	}
+
+	
 	
 }
