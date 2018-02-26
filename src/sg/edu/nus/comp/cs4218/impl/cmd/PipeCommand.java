@@ -26,8 +26,6 @@ public class PipeCommand implements Command{
 	public static final char CHAR_SQ = '\'';
 	public static final char PIPE_OPERATOR = '|';
 
-
-
 	String app;
 	String cmdline, inputStreamS, outputStreamS;
 	Vector<String> argsArray;
@@ -118,16 +116,6 @@ public class PipeCommand implements Command{
 		}
 	}
 	
-	
-	public void outputArgsArray() {
-		for(String i: argsArray) {
-			System.out.println(i);
-		}
-	}
-	
-	public void outputArgsArraySize() {
-		System.out.println(argsArray.size());
-	}
 	/**
 	 * Terminates current execution of the command (unused for now)
 	 */

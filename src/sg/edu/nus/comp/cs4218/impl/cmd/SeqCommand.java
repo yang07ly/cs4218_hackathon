@@ -25,9 +25,6 @@ public class SeqCommand implements Command {
 	public static final char SEMICOLON_OPERATOR = ';';
 	public static final String PIPE_OPERATOR = "|";
 
-
-
-
 	String app;
 	String cmdline, inputStreamS, outputStreamS;
 	Vector<String> argsArray;
@@ -115,18 +112,8 @@ public class SeqCommand implements Command {
 			}
 			
 		}
-//		outputArgsArray();
 	}
 	
-	public void outputArgsArray() {
-		for(String i: argsArray) {
-			System.out.println(i);
-		}
-	}
-	
-	public void outputArgsArraySize() {
-		System.out.println(argsArray.size());
-	}
 	/**
 	 * Terminates current execution of the command (unused for now)
 	 */
