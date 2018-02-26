@@ -19,6 +19,7 @@ import sg.edu.nus.comp.cs4218.impl.app.ExitApplication;
 import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SplitApplication;
+import sg.edu.nus.comp.cs4218.impl.cmd.CallCommand;
 import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 
 /**
@@ -355,21 +356,51 @@ public class ShellImpl implements Shell {
 
 	@Override
 	public String pipeTwoCommands(String args) {
-		// TODO Auto-generated method stub
-		return null;
+		return pipeMultipleCommands(args);
 	}
 
 	@Override
 	public String pipeMultipleCommands(String args) {
-		// TODO Auto-generated method stub
-		
-		return null;
+		String[] commands = args.split("|");
+		InputStream inputBuffer = null;
+		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+
+		for (int i = 0; i < commands.length; i++) {
+			CallCommand command = new CallCommand(commands[i]);
+			inputBuffer = new ByteArrayInputStream(outputBuffer.toByteArray());
+			outputBuffer = new ByteArrayOutputStream();
+			try {
+				command.parse();
+				command.evaluate(inputBuffer, outputBuffer);
+			} catch (ShellException e) {
+				return pipeWithException(args);
+			} catch (AbstractApplicationException e) {
+				e.printStackTrace();
+			}
+		}
+		return outputBuffer.toString();
 	}
 
 	@Override
 	public String pipeWithException(String args) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] commands = args.split("|");
+		InputStream inputBuffer = null;
+		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+		String exceptionMessage = "";
+		for (int i = 0; i < commands.length; i++) {
+			CallCommand command = new CallCommand(commands[i]);
+			inputBuffer = new ByteArrayInputStream(outputBuffer.toByteArray());
+			outputBuffer = new ByteArrayOutputStream();
+			try {
+				command.parse();
+				command.evaluate(inputBuffer, outputBuffer);
+			} catch (ShellException e) {
+				exceptionMessage = e.getMessage();
+			} catch (AbstractApplicationException e) {
+				e.printStackTrace();
+			}
+		}
+		return exceptionMessage;
 	}
 
 	@Override
