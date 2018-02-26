@@ -10,10 +10,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.MkdirItf;
+import sg.edu.nus.comp.cs4218.app.MkdirInterface;
 import sg.edu.nus.comp.cs4218.exception.MkdirException;
 
-public class MkdirApplication implements MkdirItf {
+public class MkdirApplication implements MkdirInterface {
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws MkdirException {

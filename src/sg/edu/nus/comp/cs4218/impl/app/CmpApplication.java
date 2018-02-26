@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.CmpItf;
+import sg.edu.nus.comp.cs4218.app.CmpInterface;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.CmpException;
 
-public class CmpApplication implements CmpItf {
+public class CmpApplication implements CmpInterface {
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CmpException {
@@ -33,10 +33,12 @@ public class CmpApplication implements CmpItf {
 			}
 			try {
 				String output = "";
-				if(!hasInputFromStream(files)) {
+				if(hasInputFromStream(files)) {
+					if(files.size() == 1) {
+						output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
+					}
+				}else  {
 					output = cmpTwoFiles(files.get(0), files.get(1), flags[0], flags[1], flags[2]);
-				}else if(files.size() == 1) {
-					output = cmpFileAndStdin(files.get(0),stdin, flags[0], flags[1], flags[2]);
 				}
 				stdout.write(output.getBytes());
 			} catch (IOException e) {

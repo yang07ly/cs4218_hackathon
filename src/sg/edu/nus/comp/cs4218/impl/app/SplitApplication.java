@@ -16,11 +16,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.SplitItf;
+import sg.edu.nus.comp.cs4218.app.SplitInterface;
 import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
-public class SplitApplication implements SplitItf{
+public class SplitApplication implements SplitInterface{
+
+	private static final String FILE_NOT_FOUND = "': No such file or directory";
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws SplitException {
@@ -28,7 +30,6 @@ public class SplitApplication implements SplitItf{
 		getArgs(args, flags);
 		String file = flags[0], prefix = flags[1], bytes = flags[2], lineString = flags[3];
 		int lines = parseLines(lineString);
-		
 		if(file == null) {
 			if (stdin == null) {
 				throw new SplitException("Null Pointer Exception");
@@ -54,7 +55,7 @@ public class SplitApplication implements SplitItf{
 	 * @throws SplitException
 	 */
 	private void getArgs(String[] args, String... processedArgs) throws SplitException {
-		String file = null, prefix = null, bytes = "", lines = "-1";
+		String file = null, prefix = null, bytes = "", lines = "1000";
 		boolean hasFlag = false, hasSplitter = false;
 		if(args != null) {
 			for (int i = 0; i < args.length; i++) {
@@ -62,20 +63,19 @@ public class SplitApplication implements SplitItf{
 					if(hasFlag) {
 						hasFlag = false;
 					}else if (args[i].equals("-b")) {
-						hasFlag = hasSplitter = true;
 						if(hasSplitter) {
-							bytes = args[i + 1];
-						}else {
 							throw new SplitException("cannot split in more than one way");
+						}else {
+							bytes = args[i + 1];
+							hasFlag = hasSplitter = true;
 						}
 					} else if (args[i].equals("-l")) {
-						hasFlag = hasSplitter = true;
 						if(hasSplitter) {
-							lines = args[i + 1];
-						}else {
 							throw new SplitException("cannot split in more than one way");
+						}else {
+							lines = args[i + 1];
+							hasFlag = hasSplitter = true;
 						}
-						lines = args[i + 1];
 					} else if(file == null) {
 						file = args[i];
 					}else if(prefix == null){
@@ -106,10 +106,6 @@ public class SplitApplication implements SplitItf{
 	 *             if more than 1 line and byte is specified.
 	 */
 	private boolean isSplitByLines(String bytes, int lines) throws SplitException {
-		int numLines = lines;
-		if (numLines != -1 && bytes.length() != 0) {
-			throw new SplitException("cannot split in more than one way");
-		}
 		return (bytes.length() == 0);
 	}
 
@@ -168,10 +164,8 @@ public class SplitApplication implements SplitItf{
 	public void splitStreamByLines(InputStream stdin, String prefix, int linesPerFile) throws SplitException {
 		String outputPrefix = getAbsolutePath(prefix);
 		int lines = linesPerFile;
-		if (lines == 0) {
+		if (lines <= 0) {
 			throw new SplitException(lines + ": invalid number of lines");
-		}else if (lines == -1) {
-			lines = 1000;
 		}
 		String currCounter = "aa", line;
 		int count = 1;
@@ -198,7 +192,7 @@ public class SplitApplication implements SplitItf{
 			writer.flush();
 			writer.close();
 		} catch (IOException exIO) {
-			throw new SplitException("'" + prefix + "': No such file or directory");
+			throw new SplitException("'" + prefix + FILE_NOT_FOUND);
 		}
 	}
 
@@ -242,7 +236,7 @@ public class SplitApplication implements SplitItf{
 			}
 			reader.close();
 		} catch (IOException exIO) {
-			throw new SplitException("'" + prefix + "': No such file or directory");
+			throw new SplitException("'" + prefix + FILE_NOT_FOUND);
 		}
 	}
 
@@ -339,9 +333,9 @@ public class SplitApplication implements SplitItf{
 			checkIfFileIsReadable(filePathB, file);
 			return new FileInputStream(filePathB.toString());
 		} catch (InvalidPathException exPath) {
-			throw new SplitException("'" + file + "': No such file or directory");
+			throw new SplitException("'" + file + FILE_NOT_FOUND);
 		} catch (FileNotFoundException e) {
-			throw new SplitException("'" + file + "': No such file or directory");
+			throw new SplitException("'" + file + FILE_NOT_FOUND);
 		}
 	}
 
@@ -359,7 +353,7 @@ public class SplitApplication implements SplitItf{
 			throw new SplitException("'" + file + "': this is a directory");
 		}
 		if (!Files.exists(filePath)) {
-			throw new SplitException("'" + file + "': No such file or directory");
+			throw new SplitException("'" + file + FILE_NOT_FOUND);
 		}
 		if (Files.isReadable(filePath)) {
 			return true;

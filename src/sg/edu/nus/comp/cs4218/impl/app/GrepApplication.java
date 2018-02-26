@@ -3,10 +3,10 @@ package sg.edu.nus.comp.cs4218.impl.app;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sg.edu.nus.comp.cs4218.app.GrepItf;
+import sg.edu.nus.comp.cs4218.app.GrepInterface;
 import sg.edu.nus.comp.cs4218.exception.GrepException;
 
-public class GrepApplication implements GrepItf {
+public class GrepApplication implements GrepInterface {
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws GrepException {

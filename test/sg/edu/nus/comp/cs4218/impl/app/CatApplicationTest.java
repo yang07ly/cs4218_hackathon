@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.OutputStream;
 
 import org.junit.Before;
@@ -16,12 +17,13 @@ public class CatApplicationTest {
 	private static final String FILE1_TXT = "file1.txt";
 	CatApplication app;
 	OutputStream outputStream;
-	String expected, output;
+	String expected, output, currentDir;
 
 	@Before
 	public void setUp() {
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
 				+ "cat_test_system";
+		currentDir = Environment.currentDirectory + File.separator;
 		app = new CatApplication();
 		outputStream = new ByteArrayOutputStream();
 		output = "";
@@ -106,6 +108,34 @@ public class CatApplicationTest {
 		
 		try {
 			app.run(args, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testStream() {
+		expected = "asdf\n";
+		String[] args = {FILE1_TXT, "asdf", "file2.txt"};
+		
+		try {
+			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
+			app.run(null, fileStream, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testNullArgsNullStream() {
+		expected = "cat: Null Pointer Exception";
+		
+		try {
+			app.run(null, null, outputStream);
 			output = outputStream.toString();
 		} catch (Exception e) {
 			output = e.getMessage();

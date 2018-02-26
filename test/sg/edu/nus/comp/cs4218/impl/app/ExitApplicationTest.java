@@ -9,18 +9,16 @@ public class ExitApplicationTest {
 
 	@Test
 	public void testExit() {
-		Thread thread = new Thread(){
+		Thread thread1 = new Thread(){
 	    public void run(){
 	        ExitApplication app = new ExitApplication();
 	        try {
 				app.terminateExecution();
 			} catch (ExitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 	      }
 	    };
-		assertTrue(!thread.isAlive());
+		assertTrue(!thread1.isAlive());
 	}
 
 }

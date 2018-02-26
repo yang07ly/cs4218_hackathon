@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,13 +19,14 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class SplitApplicationTest {
+	private static final String FILE1_TXT = "file1.txt";
+	private static final String XAA = "xaa";
+	private static final String FILE2_TXT = "file2.txt";
 	private static final String XAC = "xac";
 	private static final String XAB = "xab";
-	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT2 = "output";
 	private static final String QWERTY = "qwerty";
 	private static final String ZXCVBN = "zxcvbn";
-	private static final String XAA = "xaa";
 	private static final String ASDFGH = "asdfgh";
 	private static final String IO_ERROR_IN_TEST = "IO Error in test";
 	SplitApplication app;
@@ -43,8 +45,20 @@ public class SplitApplicationTest {
 	}
 
 	@Test
+	public void testRunNullInputs() {
+		expected = "split: Null Pointer Exception";
+		try {
+			app.run(null, null, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testRunExtraOperand() {
-		String[] splitArgs = { "file1.txt", "-s" , "-c"};
+		String[] splitArgs = { FILE1_TXT, "-s" , "-c"};
 		expected = "split: extra operand '-c'";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -56,8 +70,47 @@ public class SplitApplicationTest {
 	}
 
 	@Test
+	public void testNegativeLines() {
+		String[] splitArgs = { FILE1_TXT, "-l" , "-2"};
+		expected = "split: -2: invalid number of lines";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testRunSplitMoreThanOneWay() {
+		String[] splitArgs = { FILE1_TXT, "-l" , "-2", "-b", "3"};
+		expected = "split: cannot split in more than one way";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testRunSplitMoreThanOneWay2() {
+		String[] splitArgs = { FILE1_TXT, "-b", "3", "-l" , "-2"};
+		expected = "split: cannot split in more than one way";
+		try {
+			app.run(splitArgs, System.in, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
+
+	@Test
 	public void testRunSplit2Ways() {
-		String[] splitArgs = { "file1.txt", "-b" ,"2" , "-l", "2" };
+		String[] splitArgs = { FILE1_TXT, "-b" ,"2" , "-l", "2" };
 		expected = "split: cannot split in more than one way";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -137,6 +190,99 @@ public class SplitApplicationTest {
 	/*
 		These tests are all valid test cases for splitFileByLines
 	*/
+	@Test
+	public void testSplitStreamByDefaultLines() {
+		try {
+			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
+			app.run(null, fileStream, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
+			assertEquals(ASDFGH, reader.readLine());
+			assertEquals(QWERTY, reader.readLine());
+			assertEquals(ZXCVBN, reader.readLine());
+			reader.close();
+			Files.delete(Paths.get(currentDir + XAA));
+		} catch (IOException e) {
+			output = IO_ERROR_IN_TEST;
+		}
+		assertEquals("", output);
+	}
+	
+	@Test
+	public void testSplitStreamByBytes() {
+		String[] myArgs = {"-b", "6"};
+		try {
+			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
+			app.run(myArgs, fileStream, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+
+		try {
+			BufferedReader fileReader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
+			char[] buffer = new char[10];
+			int count = fileReader.read(buffer, 0, 10);
+			assertEquals(ASDFGH, new String(buffer,0,count));
+			fileReader.close();
+			Files.delete(Paths.get(currentDir + XAA));
+		} catch (IOException e) {
+			output = IO_ERROR_IN_TEST;
+		}
+		assertEquals("", output);
+	}
+	
+	@Test
+	public void testSplitFileByLines() {
+		String[] myArgs = {currentDir + FILE1_TXT, "-l", "6"};
+		try {
+			app.run(myArgs, null, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
+			assertEquals(ASDFGH, reader.readLine());
+			assertEquals(QWERTY, reader.readLine());
+			assertEquals(ZXCVBN, reader.readLine());
+			reader.close();
+			Files.delete(Paths.get(currentDir + XAA));
+		} catch (IOException e) {
+			output = IO_ERROR_IN_TEST;
+		}
+		assertEquals("", output);
+	}
+	
+	@Test
+	public void testSplitFileByBytes() {
+		String[] myArgs = {currentDir + FILE2_TXT, "-b", "6"};
+		try {
+			app.run(myArgs, null, outputStream);
+			output = outputStream.toString();
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+
+		try {
+			BufferedReader fileReader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
+			char[] buffer = new char[10];
+			int count = fileReader.read(buffer, 0, 10);
+			assertEquals(ASDFGH, new String(buffer,0,count));
+			fileReader.close();
+			Files.delete(Paths.get(currentDir + XAA));
+		} catch (IOException e) {
+			output = IO_ERROR_IN_TEST;
+		}
+		assertEquals("", output);
+	}
+	
 	@Test
 	public void testLinesRelativeAny() {
 		try {
@@ -400,7 +546,7 @@ public class SplitApplicationTest {
 	@Test
 	public void testBytesRelativeAnyInteger() {
 		try {
-			app.splitFileByBytes("file2.txt", "", "2");
+			app.splitFileByBytes(FILE2_TXT, "", "2");
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
@@ -526,7 +672,7 @@ public class SplitApplicationTest {
 		Path outputFileB = Paths.get(myPath + "ab");
 		Path outputFileC = Paths.get(myPath + "ac");
 		try {
-			app.splitFileByBytes("file2.txt", myPath, "2");
+			app.splitFileByBytes(FILE2_TXT, myPath, "2");
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
@@ -585,7 +731,7 @@ public class SplitApplicationTest {
 	
 	@Test
 	public void testBytesAbsoluteNullInteger() {
-		Path path = Paths.get(Environment.currentDirectory + File.separator + "file2.txt");
+		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE2_TXT);
 		try {
 			app.splitFileByBytes(path.toString(), null, "2");
 		} catch (Exception e) {

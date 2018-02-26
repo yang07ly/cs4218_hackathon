@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.app.CdItf;
+import sg.edu.nus.comp.cs4218.app.CdInterface;
 import sg.edu.nus.comp.cs4218.exception.CdException;
 
 /**
@@ -24,7 +24,7 @@ import sg.edu.nus.comp.cs4218.exception.CdException;
  * </dl>
  * </p>
  */
-public class CdApplication implements CdItf {
+public class CdApplication implements CdInterface {
 
 	/**
 	 * The cd command changes the current working directory.
@@ -45,11 +45,11 @@ public class CdApplication implements CdItf {
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CdException {
 		if (args == null || args.length == 0) {
-			changeToDirectory(null, new Environment());
+			changeToDirectory(null);
 		} else if (args.length > 1) {
 			throw new CdException("too many arguments");
 		} else {
-			changeToDirectory(args[0], new Environment());	
+			changeToDirectory(args[0]);	
 		}
 	}
 
@@ -64,11 +64,7 @@ public class CdApplication implements CdItf {
 	 *             	not a directory.
 	 */
 	@Override
-	public void changeToDirectory(String path, Environment env) throws CdException {
-		if (env == null) {
-			throw new CdException("Null Pointer Exception");
-		}
-		
+	public void changeToDirectory(String path) throws CdException {
 		Path filePath;
 		Path currentDir = Paths.get(Environment.currentDirectory);
 		try {
@@ -90,7 +86,7 @@ public class CdApplication implements CdItf {
 		}
 
 		try {
-			env.currentDirectory = filePath.toFile().getCanonicalPath();
+			Environment.currentDirectory = filePath.toFile().getCanonicalPath();
 		} catch (IOException e) {
 			throw new CdException("IOException");
 		}
