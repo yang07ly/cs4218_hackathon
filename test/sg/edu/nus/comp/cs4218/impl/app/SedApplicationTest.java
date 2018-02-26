@@ -34,7 +34,7 @@ public class SedApplicationTest {
 		
 	@Before
 	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "sed_test_system";;
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "sed_test_system";
 		sedApp = new SedApplication();
 		stdin = new ByteArrayInputStream("Text from Inputstream\nstream of texts in stream".getBytes());
 		stdout = new ByteArrayOutputStream();

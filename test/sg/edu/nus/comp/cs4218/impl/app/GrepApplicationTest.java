@@ -63,7 +63,7 @@ public class GrepApplicationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "grep_test_system";;
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "grep_test_system";
 		grepApp = new GrepApplication();
 		stdout = new ByteArrayOutputStream();
 		stdin = new ByteArrayInputStream((STREAM_LINE1 + STREAM_LINE2 + STREAM_LINE3 + STREAM_LINE4 + STREAM_LINEA).getBytes());

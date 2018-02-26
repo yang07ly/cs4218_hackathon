@@ -29,7 +29,7 @@ public class LsApplicationTest {
 
 	@Before
 	public void setup() {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "ls_test_system";;
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "ls_test_system";
 		lsApp = new LsApplication();
 		stdout = new ByteArrayOutputStream();
 	}
