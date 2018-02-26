@@ -7,7 +7,6 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 public class SeqCommand implements Command {
 	public static final String EXP_INVALID_SEMICOLON_OPERATOR = "Invalid semicolon operator/s";

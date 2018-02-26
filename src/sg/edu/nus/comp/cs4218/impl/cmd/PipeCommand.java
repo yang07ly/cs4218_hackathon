@@ -63,7 +63,7 @@ public class PipeCommand implements Command{
 			ShellImpl.outputStreamToInputStream(byteArrayOutputStream);
 			return;
 		}
-		
+		 
 		for (int i = 0; i < argsArray.size(); i++) {
 			String command = argsArray.get(i);
 			CallCommand callCommand = new CallCommand(command);
