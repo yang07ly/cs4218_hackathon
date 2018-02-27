@@ -151,12 +151,12 @@ public class CmpApplication implements CmpInterface {
 					return "Files differ\n";
 				} else if (isPrintCharDiff) {
 					if (isPrintOctalDiff) { // -cl
-						msg += byteNumber + " " + getOctalString(readValueA) + " " + ((char) readValueA) + " "
-								+ getOctalString(readValueB) + " " + ((char) readValueB) + "\n";
+						msg += byteNumber + " " + getOctalString(readValueA) + " " + getChar(readValueA) + " "
+								+ getOctalString(readValueB) + " " + getChar(readValueB) + "\n";
 					} else { // -c
 						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
-								+ getOctalString(readValueA) + " " + ((char) readValueA) + " "
-								+ getOctalString(readValueB) + " " + ((char) readValueB);
+								+ getOctalString(readValueA) + " " + getChar(readValueA) + " "
+								+ getOctalString(readValueB) + " " + getChar(readValueB);
 						return msgWithoutL + "\n";
 					}
 				} else if (isPrintOctalDiff) { // -l
@@ -179,14 +179,25 @@ public class CmpApplication implements CmpInterface {
 	}
 
 	/**
+	 * @param readValueB
+	 * @return
+	 */
+	private String getChar(int readValueB) {
+		if(readValueB == -1) {
+			return "EOF";
+		}else {
+			String character = "";
+			character += (char) readValueB;
+			return character;
+		}
+	}
+
+	/**
 	 * gets the octalString from an integer
 	 * @param readValueA Integer to convert to octal
 	 * @return String of octal value
 	 */
 	private String getOctalString(int readValueA) {
-		if(readValueA == -1) {
-			return "EOF";
-		}
 		return Integer.toOctalString(readValueA);
 	}
 
