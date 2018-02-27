@@ -3,22 +3,18 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public class IoRedirectionTest {
@@ -132,9 +128,8 @@ public class IoRedirectionTest {
 		String message = "";
 		String filename = "file-not-found.txt";
 		String expected = "shell: File not found";
-		InputStream fInputStream = null;
 		try {
-			fInputStream = (FileInputStream) ioRedirCommand.openInputRedir(filename);
+			ioRedirCommand.openInputRedir(filename);
 		} catch (ShellException e) {
 			message = e.getMessage();
 		}
@@ -145,9 +140,8 @@ public class IoRedirectionTest {
 	@Test
 	public void testOpenOutputRedirValidFile() {
 		String filename = "newtext.txt";
-		OutputStream outputStream = null;
-		try {
-			outputStream = ioRedirCommand.openOutputRedir(filename);
+		try {			
+			ioRedirCommand.openOutputRedir(filename);
 		} catch (ShellException e) {
 			e.printStackTrace();
 		}
