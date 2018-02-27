@@ -38,6 +38,7 @@ public class CallCommandTest {
 		expected = new String[1];
 		expected[0] = "abc";
 		assertEquals(1,callCommand.argsArray.length);
+		assertEquals("echo",callCommand.app);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray) );
 	}
 	
