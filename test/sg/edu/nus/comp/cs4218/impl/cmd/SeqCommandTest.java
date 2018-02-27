@@ -15,12 +15,14 @@ public class SeqCommandTest {
 	SeqCommand sequenceCommand;
 	
 	Vector<String> expected,actual;
+	String errorMsg;
 	
 	@Before
 	public void setup() {
 		sequenceCommand = new SeqCommand();
 		expected = new Vector<String>();
 		actual = new Vector<String>();
+		errorMsg = "";
 	}
 	
 	@Test
@@ -54,6 +56,38 @@ public class SeqCommandTest {
 	@Test
 	public void testSeqMultipleCommandsWithValidArgs() {
 		sequenceCommand = new SeqCommand("echo a; echo b; echo c");
+		try {
+			sequenceCommand.parse();
+		} catch (ShellException e) {
+			 e.printStackTrace();
+		}
+		
+		expected.add("echo a");
+		expected.add(" echo b");
+		expected.add(" echo c");
+		assertEquals(sequenceCommand.argsArray.size(), 3);
+		assertEquals(sequenceCommand.argsArray, expected);
+	}
+	
+	@Test
+	public void testSeqWithInvalidSeqFront() {
+		sequenceCommand = new SeqCommand("; echo a; echo b");
+		try {
+			sequenceCommand.parse();
+		} catch (ShellException e) {
+			 e.printStackTrace();
+		}
+		
+		expected.add("echo a");
+		expected.add(" echo b");
+		expected.add(" echo c");
+		assertEquals(sequenceCommand.argsArray.size(), 3);
+		assertEquals(sequenceCommand.argsArray, expected);
+	}
+	
+	@Test
+	public void testSeqWithInvalidSeqBack() {
+		sequenceCommand = new SeqCommand("echo a; echo b; echo c;");
 		try {
 			sequenceCommand.parse();
 		} catch (ShellException e) {
