@@ -16,6 +16,7 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.Environment;
 
 public class CmpApplicationTest {
+	private static final String OS_NAME = "os.name";
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String FILES_DIFFER = "Files differ\n";
 	private static final String FILE2_TXT = "file2.txt";
@@ -267,7 +268,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
 		} else {
 			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l\n", output);
@@ -291,7 +292,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 154\n11 154 151\n", output);
 		} else {
 			assertEquals("9 151 154\n10 154 151\n", output);
@@ -315,7 +316,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
 		} else {
 			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
@@ -330,7 +331,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 154\n11 154 151\n", output);
 		} else {
 			assertEquals("9 151 154\n10 154 151\n", output);
@@ -441,7 +442,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
 		} else {
 			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l\n", output);
@@ -469,7 +470,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 154\n11 154 151\n", output);
 		} else {
 			assertEquals("9 151 154\n10 154 151\n", output);
@@ -510,7 +511,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if (System.getProperty("os.name").length() > 8) {
+		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
 		} else {
 			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
