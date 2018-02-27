@@ -232,11 +232,7 @@ public class SedApplicationTest {
 	
 	@Test
 	public void testInvalidFolderReplace() {
-		if (System.getProperty("os.name").length() > 8) {
-			expected = "sed: read error on folder1: Is a directory";
-		} else {
-			expected = "sed: can't read folder1: No such file or directory";
-		}
+		expected = "sed: read error on folder1: Is a directory";
 		
 		try {
 			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, "folder1");

@@ -157,6 +157,8 @@ public class IoRedirectionTest {
 		assertTrue(f.exists());
 		
 		deleteFile(filename);
+		
+		assertFalse(f.exists());
 	}
 	
 
