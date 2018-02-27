@@ -18,22 +18,23 @@ public class CallCommandTest {
 	Vector<String> commands;
 	String[] expected, actual;
 	String expectedSyntaxErr;
-	 
+	String errorMessage; 
+	
 	@Before
 	public void setup() {
 		callCommand = new CallCommand();
 		commands = new Vector<String>();
+		errorMessage = "";
 	}
 	
 	@Test 
-	public void testCallCommandParsing() {
+	public void testOneCallCommandParsingWithArgs() {
 		callCommand = new CallCommand("echo abc");
 		try {
 			callCommand.parse();
 		} catch (ShellException e) {
 			e.printStackTrace();
 		}
-		
 		expected = new String[1];
 		expected[0] = "abc";
 		assertEquals(1,callCommand.argsArray.length);
@@ -41,91 +42,95 @@ public class CallCommandTest {
 	}
 	
 	@Test 
-	public void testInvalidIoRedirInput() {
-		String message = "";
-		 
+	public void testOneCallCommandParsingWithEmptyArgs() {
+		callCommand = new CallCommand("");
+		try {
+			callCommand.parse();
+		} catch (ShellException e) {
+			e.printStackTrace();
+		}
+		expected = new String[0];
+		assertEquals(0,callCommand.argsArray.length);
+		assertTrue(Arrays.equals(expected, callCommand.argsArray) );
+	}
+	
+	@Test 
+	public void testInvalidIoRedirInput() {	 
 		callCommand = new CallCommand("cat << input.txt");
 		try {
 			callCommand.parse();
 		} catch (ShellException e) {
-			message = e.getMessage(); 
-		}
-		
-		assertEquals(EXP_SYNTAX,message);
+			errorMessage = e.getMessage(); 
+		}	
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirInputOutput() {
 		String expected = "shell: Input redirection file same as output redirection file.";
-		String message = "";
 		
 		callCommand = new CallCommand("cat < input.txt > input.txt");
 		try {
 			callCommand.parse();
 		} catch (ShellException e) {
-			message = e.getMessage(); 
+			errorMessage = e.getMessage(); 
 		}
 		
-		assertEquals(expected,message);
+		assertEquals(expected, errorMessage);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirOutputOutput() {
-		String message = "";
 		
 		callCommand = new CallCommand("cat > output.txt  > output.txt");
 		try {
 			callCommand.parse();
 		} catch (ShellException e) {
-			message = e.getMessage(); 
+			errorMessage = e.getMessage(); 
 		}
 		
-		assertEquals(EXP_SYNTAX,message);
+		assertEquals(EXP_SYNTAX,errorMessage);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirInputInput() {
-		String message = "";
 		
 		callCommand = new CallCommand("cat < input.txt < input.txt");
 		try {
 			callCommand.parse(); 
 		} catch (ShellException e) {
-			message = e.getMessage(); 
+			errorMessage = e.getMessage(); 
 		}
 		
-		assertEquals(EXP_SYNTAX,message);
+		assertEquals(EXP_SYNTAX,errorMessage);
 	}
 	
 	@Test 
 	public void testInvalidIoRedirInputEmpty() {
-		String message = "";
 		
 		callCommand = new CallCommand("cat < ");
 		try {
 			callCommand.parse(); 
 		} catch (ShellException e) {
-			message = e.getMessage(); 
+			errorMessage = e.getMessage(); 
 		}
 		
-		assertEquals(EXP_SYNTAX,message);
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	
 	
 	
 	@Test 
-	public void testInvalidIoRedirOutput() {
-		String message = "";
-		
+	public void testInvalidIoRedirOutput() {		
 		callCommand = new CallCommand("echo >> output.txt");
 		try {
 			callCommand.parse();
 		} catch (ShellException e) {
-			message = e.getMessage();
+			errorMessage = e.getMessage();
 		}
 		
-		assertEquals(EXP_SYNTAX,message);
+		assertEquals(EXP_SYNTAX,errorMessage);
 	}
 	@Test 
 	public void testValidIoRedirInput() {
@@ -165,46 +170,42 @@ public class CallCommandTest {
 	 
 	@Test 
 	public void testExtractArgsInvalidDoubleQuotes() {
-		String message = "";
 		try {
 			callCommand.extractArgs("argA \"\" argB \" argC", commands);
 		} catch (ShellException e) {
-			message = e.getMessage();
+			errorMessage = e.getMessage();
 		}
-		assertEquals(EXP_SYNTAX, message);
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidBackQuotes() {
-		String message = "";
 		try {
 			callCommand.extractArgs("argA `` argB ` argC", commands);
 		} catch (ShellException e) {
-			message = e.getMessage();
+			errorMessage = e.getMessage();
 		}
-		assertEquals(EXP_SYNTAX, message);
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidSequence() {
-		String message = "";
 		try {
 			callCommand.extractArgs("argA ; argB ; argC", commands);
 		} catch (ShellException e) {
-			message = e.getMessage();
+			errorMessage = e.getMessage();
 		}
-		assertEquals(EXP_SYNTAX, message);
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	@Test 
 	public void testExtractArgsInvalidPipe() {
-		String message = "";
 		try {
 			callCommand.extractArgs("argA | argB | argC", commands);
 		} catch (ShellException e) {
-			message = e.getMessage();
+			errorMessage = e.getMessage();
 		}
-		assertEquals(EXP_SYNTAX, message);
+		assertEquals(EXP_SYNTAX, errorMessage);
 	}
 	
 	@Test 

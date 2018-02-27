@@ -131,7 +131,7 @@ public class IoRedirectionTest {
 	public void testOpenInputRedirInvalidFile() {
 		String message = "";
 		String filename = "file-not-found.txt";
-		String expected = "shell: " + Environment.currentDirectory + File.separator + filename + " (No such file or directory)";
+		String expected = "shell: File not found";
 		InputStream fInputStream = null;
 		try {
 			fInputStream = (FileInputStream) ioRedirCommand.openInputRedir(filename);
@@ -143,7 +143,7 @@ public class IoRedirectionTest {
 	}
 	
 	@Test
-	public void TestOpenOutputRedirValidFile() {
+	public void testOpenOutputRedirValidFile() {
 		String filename = "newtext.txt";
 		OutputStream outputStream = null;
 		try {
@@ -159,90 +159,7 @@ public class IoRedirectionTest {
 		deleteFile(filename);
 	}
 	
-//	@Test
-//	public void testInputRedirectionValid() {
-//		String expected = "On the other hand, we denounce with righteous indignation and dislike men "
-//				+ "who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire,"
-//				+ " that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs "
-//				+ "to those who fail in their duty through weakness of will, which is the same as saying through shrinking"
-//				+ " from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our"
-//				+ " power of choice is untrammelled and when nothing prevents our being able to do what we like best, every"
-//				+ " pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims"
-//				+ " of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and "
-//				+ "annoyances accepted. The wise man therefore always holds in these matters to this principle of selection:"
-//				+ " he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains\n";
-//		
-//		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-//		sequenceCommand = new SeqCommand("cat < text.txt");
-//		try {
-//			sequenceCommand.parse();
-//			sequenceCommand.evaluate(System.in, stdout);
-//
-//		} catch (ShellException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assertEquals(expected, new String(stdout.toByteArray()));
-//	}
-//	
-//	@Test
-//	public void testInputRedirectionInvalid() {
-//		String filename = "texting.txt";
-//		String actual = "";
-//		String expected = "shell: " + Environment.currentDirectory + File.separator + filename + " (No such file or directory)";
-//		
-//		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-//		sequenceCommand = new SeqCommand("cat < " + filename);
-//		try {
-//			sequenceCommand.parse();
-//			sequenceCommand.evaluate(System.in, stdout);
-//
-//		} catch (ShellException e) {
-//			// TODO Auto-generated catch block
-//			actual = e.getMessage();
-//		} catch (AbstractApplicationException e) {
-//			// TODO Auto-generated catch block
-//			actual = e.getMessage();
-//		}
-//		
-//		 
-//		assertEquals(expected, actual);
-//	}
-//	
-//	@Test
-//	public void testOutputRedirection() {
-//		String filename = "newtext.txt";
-//		String actual = "";
-//		
-//		ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-//		sequenceCommand = new SeqCommand("echo \"output something here\" > " + filename);
-//		try {
-//			sequenceCommand.parse();
-//			sequenceCommand.evaluate(System.in, stdout);
-//
-//		} catch (ShellException e) {
-//			// TODO Auto-generated catch block
-//			actual = e.getMessage();
-//		} catch (AbstractApplicationException e) {
-//			// TODO Auto-generated catch block
-//			actual = e.getMessage();
-//		}
-//		
-//		File file = new File(Environment.currentDirectory + File.separator + filename);
-//		assertTrue(file.exists());
-//		try {
-//			actual = getFileContents(filename);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			actual = e.getMessage();
-//		}
-//		assertEquals("output something here", actual);
-//		deleteFile(filename);
-//		 
-//	} 
+
 	
 	public void deleteFile(String filename) {
 		File file = new File(Environment.currentDirectory + File.separator + filename);

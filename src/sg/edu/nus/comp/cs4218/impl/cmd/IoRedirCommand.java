@@ -171,7 +171,7 @@ public class IoRedirCommand implements Command {
 		try {
 			fInputStream = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
-			throw new ShellException(e.getMessage());
+			throw new ShellException("File not found");
 		}
 		return fInputStream;
 	}
@@ -195,7 +195,7 @@ public class IoRedirCommand implements Command {
 		try {
 			fOutputStream = new FileOutputStream(outputFile);
 		} catch (FileNotFoundException e) {
-			throw new ShellException(e.getMessage());
+			throw new ShellException("File not found");
 		}
 		return fOutputStream;
 	}
