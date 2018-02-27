@@ -298,7 +298,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on emptyFile.txt\n", output);
+		assertEquals("cmp: EOF on emptyFile.txt\n", output);
 	}
 	
 	@Test
@@ -462,7 +462,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on -\n", output);
+		assertEquals("cmp: EOF on -\n", output);
 	}
 	
 	@Test
@@ -475,7 +475,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on -\n", output);
+		assertEquals("cmp: EOF on -\n", output);
 	}
 	
 	@Test

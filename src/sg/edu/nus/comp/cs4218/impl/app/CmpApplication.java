@@ -138,6 +138,14 @@ public class CmpApplication implements CmpInterface {
 		readValueA = readerA.read();
 		readValueB = readerB.read();
 		while ((readValueA != -1) || (readValueB != -1)) {
+			if((readValueB == -1)&& isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameB + "\n";
+				break;
+			}
+			if((readValueA == -1) && isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameA + "\n";
+				break;
+			}
 			if (readValueA != readValueB) {
 				if (isPrintSimplify) { // -s
 					return "Files differ\n";
@@ -163,14 +171,6 @@ public class CmpApplication implements CmpInterface {
 			byteNumber++;
 			if (readValueA == 10) {
 				lineNumber++;
-			}
-			if((readValueB == -1)&& isPrintOctalDiff) {
-				msg += "cmp: EOF on " + fileNameB + "\n";
-				break;
-			}
-			if((readValueA == -1) && isPrintOctalDiff) {
-				msg += "cmp: EOF on " + fileNameA + "\n";
-				break;
 			}
 			readValueA = readerA.read();
 			readValueB = readerB.read();
