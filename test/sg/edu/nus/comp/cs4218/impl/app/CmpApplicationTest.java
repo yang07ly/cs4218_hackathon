@@ -17,7 +17,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 
 public class CmpApplicationTest {
 	private static final String FILE1_TXT = "file1.txt";
-	private static final String FILES_DIFFER = "Files differ";
+	private static final String FILES_DIFFER = "Files differ\n";
 	private static final String FILE2_TXT = "file2.txt";
 	private static final String CMP_INVALID_FLAGS = "cmp: Invalid flags";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
@@ -268,7 +268,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l", output);
+		assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
 	}
 
 	@Test
@@ -298,7 +298,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on emptyFile.txt", output);
+		assertEquals("cmp: EOF on emptyFile.txt\n", output);
 	}
 	
 	@Test
@@ -381,7 +381,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyStreamFalseFalseFalse() {
-		expected = "file1.txt - differ: byte 1, line 1";
+		expected = "file1.txt - differ: byte 1, line 1\n";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -426,7 +426,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l", output);
+		assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
 	}
 
 	@Test
@@ -462,7 +462,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on -", output);
+		assertEquals("cmp: EOF on -\n", output);
 	}
 	
 	@Test
@@ -475,7 +475,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("1 155 EOF\ncmp: EOF on -", output);
+		assertEquals("cmp: EOF on -\n", output);
 	}
 	
 	@Test

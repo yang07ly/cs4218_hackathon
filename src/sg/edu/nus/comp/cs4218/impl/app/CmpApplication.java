@@ -112,7 +112,6 @@ public class CmpApplication implements CmpInterface {
 		BufferedReader readerB = new BufferedReader(new FileReader(new File(filePathB.toString())));
 		String msg = cmpFiles(fileNameA, fileNameB, isPrintCharDiff, isPrintSimplify, isPrintOctalDiff, readerA,
 				readerB);
-		msg+="\n";
 		readerA.close();
 		readerB.close();
 		return msg;
@@ -139,9 +138,17 @@ public class CmpApplication implements CmpInterface {
 		readValueA = readerA.read();
 		readValueB = readerB.read();
 		while ((readValueA != -1) || (readValueB != -1)) {
+			if((readValueB == -1)&& isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameB + "\n";
+				break;
+			}
+			if((readValueA == -1) && isPrintOctalDiff) {
+				msg += "cmp: EOF on " + fileNameA + "\n";
+				break;
+			}
 			if (readValueA != readValueB) {
 				if (isPrintSimplify) { // -s
-					return "Files differ";
+					return "Files differ\n";
 				} else if (isPrintCharDiff) {
 					if (isPrintOctalDiff) { // -cl
 						msg += byteNumber + " " + getOctalString(readValueA) + " " + ((char) readValueA) + " "
@@ -150,7 +157,7 @@ public class CmpApplication implements CmpInterface {
 						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
 								+ getOctalString(readValueA) + " " + ((char) readValueA) + " "
 								+ getOctalString(readValueB) + " " + ((char) readValueB);
-						return msgWithoutL;
+						return msgWithoutL + "\n";
 					}
 				} else if (isPrintOctalDiff) { // -l
 					msg += byteNumber + " " + getOctalString(readValueA) + " "
@@ -158,20 +165,12 @@ public class CmpApplication implements CmpInterface {
 
 				} else { // no flags
 					msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber;
-					return msgWithoutL;
+					return msgWithoutL + "\n";
 				}
 			}
 			byteNumber++;
 			if (readValueA == 10) {
 				lineNumber++;
-			}
-			if((readValueB == -1)&& isPrintOctalDiff) {
-				msg += "cmp: EOF on " + fileNameB;
-				break;
-			}
-			if((readValueA == -1) && isPrintOctalDiff) {
-				msg += "cmp: EOF on " + fileNameA;
-				break;
 			}
 			readValueA = readerA.read();
 			readValueB = readerB.read();

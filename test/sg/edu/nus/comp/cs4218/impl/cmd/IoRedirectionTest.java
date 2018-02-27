@@ -5,8 +5,13 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -29,6 +34,8 @@ public class IoRedirectionTest {
 		ioRedirCommand = new IoRedirCommand();
 		cmdVector = new Vector<String>();
 		actual = 0;
+		String fileDir = "test_system" + File.separator + "cmd_test_system";
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
 		
 	}
 	
@@ -97,17 +104,59 @@ public class IoRedirectionTest {
 	}
 	
 	@Test
-	public void TestOpenInputRedir() {
+	public void testOpenInputRedirValidFile() {
+		String expected = "On the other hand, we denounce with righteous indignation and dislike men"
+				+ " who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire,"
+				+ " that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs"
+				+ " to those who fail in their duty through weakness of will, which is the same as saying through"
+				+ " shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour,"
+				+ " when our power of choice is untrammelled and when nothing prevents our being able to do what we like best,"
+				+ " every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims"
+				+ " of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and "
+				+ "annoyances accepted. The wise man therefore always holds in these matters to this principle of selection:"
+				+ " he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains";
 		
-		
-	
+		InputStream fInputStream = null;
+		try {
+			fInputStream = (FileInputStream) ioRedirCommand.openInputRedir("text.txt");
+		} catch (ShellException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(expected, getStringFromInputStream(fInputStream));	
+
 	}
 	
 	@Test
-	public void TestOpenOutputRedir() {
-		
-		
+	public void testOpenInputRedirInvalidFile() {
+		String message = "";
+		String filename = "file-not-found.txt";
+		String expected = "shell: " + Environment.currentDirectory + File.separator + filename + " (No such file or directory)";
+		InputStream fInputStream = null;
+		try {
+			fInputStream = (FileInputStream) ioRedirCommand.openInputRedir(filename);
+		} catch (ShellException e) {
+			message = e.getMessage();
+		}
+		assertEquals(expected, message);	
+
+	}
 	
+	@Test
+	public void TestOpenOutputRedirValidFile() {
+		String filename = "newtext.txt";
+		OutputStream outputStream = null;
+		try {
+			outputStream = ioRedirCommand.openOutputRedir(filename);
+		} catch (ShellException e) {
+			e.printStackTrace();
+		}
+		
+		File f = new File(Environment.currentDirectory + File.separator + filename);
+		
+		assertTrue(f.exists());
+		
+		deleteFile(filename);
 	}
 	
 //	@Test
@@ -215,5 +264,35 @@ public class IoRedirectionTest {
 	    buffReader.close();
 
 	    return fileContents.toString();
+	}
+	
+	// convert InputStream to String
+	private static String getStringFromInputStream(InputStream is) {
+
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+
+		String line;
+		try {
+
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return sb.toString();
+
 	}
 }
