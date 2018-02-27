@@ -152,13 +152,16 @@ public class IoRedirectionTest {
 			e.printStackTrace();
 		}
 		
-		File f = new File(Environment.currentDirectory + File.separator + filename);
+		boolean isFileExist = false;
+		if (new File(Environment.currentDirectory + File.separator + filename).exists())
+		{
+			isFileExist = true;
+		}
 		
-		assertTrue(f.exists());
+		assertTrue(isFileExist);
 		
 		deleteFile(filename);
 		
-		assertFalse(f.exists());
 	}
 	
 
