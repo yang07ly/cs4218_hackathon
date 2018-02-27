@@ -16,6 +16,7 @@ public class QuoteCommandTest {
 	public void setup() {
 		expected = "";
 		cmdString = "";
+		output = new String[1];
 	}
 
 	@Test
