@@ -12,8 +12,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 /**
- * A Pipe Command is a left-associative operator consisting of at least one non-keyword and
- * quoted (if any).
+ * A Pipe Command is a left-associative operator consisting of call/pipe and call commands
  * 
  * <p>
  * <b>Command format:</b> <code> <pipe> ::= <call> “|” <call> | <pipe> “|” <call></code>
@@ -102,10 +101,8 @@ public class PipeCommand implements Command{
 	}
  
 	/**
-	 * Parses and splits the pipe-command to the call command into its different
-	 * components, namely the application name, the arguments (if any), the
-	 * input redirection file path (if any) and output redirection file path (if
-	 * any).
+	 * Parses and splits the pipe-command to the call/pipe command into its different
+	 * components, separated by pipe operator.
 	 * 
 	 * @throws ShellException
 	 *             If an exception happens while parsing the pipe-command, or if

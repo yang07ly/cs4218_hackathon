@@ -8,6 +8,14 @@ import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
+/**
+ * A Sequence Command is a semicolon operator consisting of commands
+ * 
+ * <p>
+ * <b>Command format:</b> <code> <seq> ::= <command> “;” <command></code>
+ * </p>
+ */
+
 public class SeqCommand implements Command {
 	public static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
@@ -42,6 +50,20 @@ public class SeqCommand implements Command {
 		this("");
 	}
 
+	/**
+	 * Evaluates parts of the sequence-command separated by semicolon operator. The first part will be executed first followed by the subsequent commands
+	 * preceding it.
+	 * 
+	 * @param stdin
+	 *            InputStream to get data from.
+	 * @param stdout
+	 *            OutputStream to write resultant data to.
+	 * 
+	 * @throws AbstractApplicationException
+	 *             If an exception happens while evaluating the sub-command of sequence commands.
+	 * @throws ShellException
+	 *             If an exception happens while evaluating the sub-command of sequence commands.
+	 */
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
@@ -64,10 +86,8 @@ public class SeqCommand implements Command {
 	}
 
 	/**
-	 * Parses and splits the sub-command to the call command into its different
-	 * components, namely the application name, the arguments (if any), the
-	 * input redirection file path (if any) and output redirection file path (if
-	 * any).
+	 * Parses and splits the commands to the call command into its different
+	 * components by semicolon operator
 	 * 
 	 * @throws ShellException
 	 *             If an exception happens while parsing the sub-command, or if
