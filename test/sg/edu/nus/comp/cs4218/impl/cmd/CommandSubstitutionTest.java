@@ -28,9 +28,6 @@ public class CommandSubstitutionTest {
 		callCommand = new CallCommand();
 		String fileDir = "test_system" + File.separator + "cmd_test_system";
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
-
-		
-		
 	}
 	
 	@Test 

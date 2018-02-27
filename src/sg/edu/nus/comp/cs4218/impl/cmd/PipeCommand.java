@@ -11,6 +11,15 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
+/**
+ * A Pipe Command is a left-associative operator consisting of at least one non-keyword and
+ * quoted (if any).
+ * 
+ * <p>
+ * <b>Command format:</b> <code> <pipe> ::= <call> “|” <call> | <pipe> “|” <call></code>
+ * </p>
+ */
+
 public class PipeCommand implements Command{
 	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
 	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
@@ -44,6 +53,20 @@ public class PipeCommand implements Command{
 		this("");
 	}
 
+	/**
+	 * Evaluates parts of the pipe-command separated by pipe operator. The resultant of evaluation which is the output of left part will
+	 *  be pass to the input of the right part 
+	 * 
+	 * @param stdin
+	 *            InputStream to get data from.
+	 * @param stdout
+	 *            OutputStream to write resultant data to.
+	 * 
+	 * @throws AbstractApplicationException
+	 *             If an exception happens while evaluating the sub-command of pipe commands.
+	 * @throws ShellException
+	 *             If an exception happens while evaluating the sub-command of pipe commands.
+	 */
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
 		InputStream inputStream = stdin;
@@ -78,6 +101,17 @@ public class PipeCommand implements Command{
 		return;
 	}
  
+	/**
+	 * Parses and splits the pipe-command to the call command into its different
+	 * components, namely the application name, the arguments (if any), the
+	 * input redirection file path (if any) and output redirection file path (if
+	 * any).
+	 * 
+	 * @throws ShellException
+	 *             If an exception happens while parsing the pipe-command, or if
+	 *             the input redirection file path is same as that of the output
+	 *             redirection file path.
+	 */
 	public void parse() throws ShellException {
 		
 		int sizeBQ = 0;
