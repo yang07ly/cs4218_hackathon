@@ -189,32 +189,32 @@ public class IoRedirectionTest {
 	}
 	
 	// convert InputStream to String
-	private static String getStringFromInputStream(InputStream is) {
+	private static String getStringFromInputStream(InputStream inputStream) {
 
-		BufferedReader br = null;
-		StringBuilder sb = new StringBuilder();
+		BufferedReader buffReader = null;
+		StringBuilder stringBuilder = new StringBuilder();
 
 		String line;
 		try {
 
-			br = new BufferedReader(new InputStreamReader(is));
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
+			buffReader = new BufferedReader(new InputStreamReader(inputStream));
+			while ((line = buffReader.readLine()) != null) {
+				stringBuilder.append(line);
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (br != null) {
+			if (buffReader != null) {
 				try {
-					br.close();
+					buffReader.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 
-		return sb.toString();
+		return stringBuilder.toString();
 
 	}
 }
