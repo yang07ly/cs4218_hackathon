@@ -13,6 +13,8 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public class CallCommandTest {
 
+	private static final String ABC = "abc";
+
 	public static final String EXP_SYNTAX = "shell: Invalid syntax encountered.";
 
 	static CallCommand callCommand;
@@ -37,7 +39,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals(1, callCommand.argsArray.length);
 		assertEquals("echo", callCommand.app);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -269,7 +271,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("echo", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -284,7 +286,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("cat", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -299,7 +301,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("ls", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -314,7 +316,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("exit", callCommand.app);
 	}
 
@@ -327,7 +329,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("cd", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -342,7 +344,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("sed", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -357,7 +359,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("split", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
@@ -372,7 +374,7 @@ public class CallCommandTest {
 			e.printStackTrace();
 		}
 		expected = new String[1];
-		expected[0] = "abc";
+		expected[0] = ABC;
 		assertEquals("cmp", callCommand.app);
 		assertEquals(1, callCommand.argsArray.length);
 		assertTrue(Arrays.equals(expected, callCommand.argsArray));
