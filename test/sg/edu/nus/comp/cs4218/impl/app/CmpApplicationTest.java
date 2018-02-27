@@ -39,8 +39,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testExtraOperand() {
 		expected = "cmp: Can't compare more than 2 sources";
-		String[] args = { FILE1_TXT, FILE2_TXT,
-		"-cl", "file3.txt" };
+		String[] args = { FILE1_TXT, FILE2_TXT, "-cl", "file3.txt" };
 		try {
 			app.run(args, System.in, outputStream);
 		} catch (Exception e) {
@@ -198,7 +197,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: '" + Paths.get(Environment.currentDirectory)+ "': this is a directory";
+		expected = "cmp: '" + Paths.get(Environment.currentDirectory) + "': this is a directory";
 		try {
 			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -210,7 +209,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileB() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: '" + Paths.get(Environment.currentDirectory)+ "': this is a directory";
+		expected = "cmp: '" + Paths.get(Environment.currentDirectory) + "': this is a directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, path.toString(), false, false, false);
 		} catch (Exception e) {
@@ -268,9 +267,9 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if(System.getProperty("os.name").length() > 8){
+		if (System.getProperty("os.name").length() > 8) {
 			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
-		}else {
+		} else {
 			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l\n", output);
 		}
 	}
@@ -284,7 +283,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals(FILES_DIFFER, output);
 	}
-	
+
 	@Test
 	public void testFileFileRelRelFalseFalseTrue() {
 		try {
@@ -292,9 +291,13 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("10 151 154\n11 154 151\n", output);
+		if (System.getProperty("os.name").length() > 8) {
+			assertEquals("10 151 154\n11 154 151\n", output);
+		} else {
+			assertEquals("9 151 154\n10 154 151\n", output);
+		}
 	}
-	
+
 	@Test
 	public void testFileEmptyFileRelRelFalseFalseTrue() {
 		try {
@@ -304,7 +307,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals("cmp: EOF on emptyFile.txt\n", output);
 	}
-	
+
 	@Test
 	public void testFileEmptyFileRelRelTrueFalseTrue() {
 		try {
@@ -312,9 +315,13 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+		if (System.getProperty("os.name").length() > 8) {
+			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+		} else {
+			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
+		}
 	}
-	
+
 	@Test
 	public void testFilePathFileRelRelFalseFalseTrue() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
@@ -323,7 +330,11 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("10 151 154\n11 154 151\n", output);
+		if (System.getProperty("os.name").length() > 8) {
+			assertEquals("10 151 154\n11 154 151\n", output);
+		} else {
+			assertEquals("9 151 154\n10 154 151\n", output);
+		}
 	}
 
 	/*
@@ -342,7 +353,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals(expected, output);
 	}
-	
+
 	@Test
 	public void testFileStreamSpaceFileA() {
 		expected = "cmp: ' ': No such file or directory";
@@ -430,9 +441,9 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		if(System.getProperty("os.name").length() > 8){
+		if (System.getProperty("os.name").length() > 8) {
 			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
-		}else {
+		} else {
 			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l\n", output);
 		}
 	}
@@ -448,7 +459,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals(FILES_DIFFER, output);
 	}
-	
+
 	@Test
 	public void testFileStreamRelRelFalseFalseTrue() {
 		try {
@@ -458,9 +469,13 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("10 151 154\n11 154 151\n", output);
+		if (System.getProperty("os.name").length() > 8) {
+			assertEquals("10 151 154\n11 154 151\n", output);
+		} else {
+			assertEquals("9 151 154\n10 154 151\n", output);
+		}
 	}
-	
+
 	@Test
 	public void testFileStreamFalseFalseTrue() {
 		try {
@@ -472,7 +487,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals("cmp: EOF on -\n", output);
 	}
-	
+
 	@Test
 	public void testFilePathStreamFalseFalseTrue() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
@@ -485,7 +500,7 @@ public class CmpApplicationTest {
 		}
 		assertEquals("cmp: EOF on -\n", output);
 	}
-	
+
 	@Test
 	public void testFileStreamTrueFalseTrue() {
 		try {
@@ -495,7 +510,11 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+		if (System.getProperty("os.name").length() > 8) {
+			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+		} else {
+			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
+		}
 	}
 
 }
