@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 public class IoRedirectionTest {
 
@@ -32,7 +34,6 @@ public class IoRedirectionTest {
 		actual = 0;
 		String fileDir = "test_system" + File.separator + "cmd_test_system";
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
-		
 	}
 	
 	@Test
@@ -43,8 +44,6 @@ public class IoRedirectionTest {
 			e.printStackTrace();
 		}
 		assertEquals(1, actual);
-		
-	
 	}
 	
 	@Test
@@ -120,7 +119,6 @@ public class IoRedirectionTest {
 			e.printStackTrace();
 		}
 		assertEquals(expected, getStringFromInputStream(fInputStream));	
-
 	}
 	
 	@Test
@@ -134,14 +132,14 @@ public class IoRedirectionTest {
 			message = e.getMessage();
 		}
 		assertEquals(expected, message);	
-
 	}
 	
 	@Test
 	public void testOpenOutputRedirValidFile() {
 		String filename = "newtext.txt";
 		try {			
-			ioRedirCommand.openOutputRedir(filename);
+			OutputStream outputStream = ioRedirCommand.openOutputRedir(filename);
+			ShellImpl.closeOutputStream(outputStream);
 		} catch (ShellException e) {
 			e.printStackTrace();
 		}
@@ -155,7 +153,6 @@ public class IoRedirectionTest {
 		assertTrue(isFileExist);
 		
 		deleteFile(filename);
-		
 	}
 	
 
