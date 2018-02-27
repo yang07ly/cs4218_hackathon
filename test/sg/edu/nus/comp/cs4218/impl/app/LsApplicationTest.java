@@ -152,7 +152,11 @@ public class LsApplicationTest {
 
 	@Test
 	public void testDirectoryListCurrentFolder() {
-		expected = ".\n";
+		if (System.getProperty("os.name").length() > 8) {
+			expected = ".\n";
+		} else {
+			expected = "\n";
+		}
 		try {
 			result = lsApp.listFolderContent(true, false);
 		} catch (LsException e) {
@@ -205,7 +209,7 @@ public class LsApplicationTest {
 				+ "folder1  folder2\n\n" + 
 				"'." + File.separator + "folder name with space':\n" + 
 				"file1_in_folder_spaces.txt  file2_in_folder_spaces.txt\n\n" + 
-				".\\folder1:\n" + 
+				"." + File.separator + "folder1:\n" + 
 				FOLDER1_CONTENT + "\n" + 
 				"." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
 				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n\n" + 
