@@ -268,7 +268,11 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
+		if(System.getProperty("os.name").length() > 8){
+			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
+		}else {
+			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l\n", output);
+		}
 	}
 
 	@Test
@@ -426,7 +430,11 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
+		if(System.getProperty("os.name").length() > 8){
+			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
+		}else {
+			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l\n", output);
+		}
 	}
 
 	@Test
