@@ -48,37 +48,43 @@ public class CommandSubstitutionTest {
 		
 	}
 	
-//	@Test 
-//	public void testInvalidBQFront() {
-//		try {
-//			actual = ShellImpl.processBQ("``echo cats`");
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[1];
-//		expected[0] = "";
-//		assertEquals(1, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//
-//	}
-//	
-//	@Test 
-//	public void testInvalidBQBack() {
-//		try {
-//			actual = ShellImpl.processBQ("`echo cats``");
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[1];
-//		expected[0] = "cats";
-//		assertEquals(1, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//	
-//	}
+	@Test 
+	public void testInvalidBQFront() {
+		try {
+			callCommand.parse();
+			cmdSubCommand = new CmdSubCommand("``echo cats`");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
+		} catch (ShellException e) {
+			e.printStackTrace();
+		} catch (AbstractApplicationException e) {
+			e.printStackTrace();
+		}
+		expected = new String[1];
+		expected[0] = "echo cats`";
+		assertEquals(1, actual.length);
+		assertTrue(Arrays.equals(expected, actual));
+
+	}
+	
+	@Test 
+	public void testInvalidBQBack() {
+		try {
+			callCommand.parse();
+			cmdSubCommand = new CmdSubCommand("`echo cats``");
+			cmdSubCommand.evaluate(System.in, System.out);
+			actual = cmdSubCommand.getArgsArray();
+		} catch (ShellException e) {
+			e.printStackTrace();
+		} catch (AbstractApplicationException e) {
+			e.printStackTrace();
+		}
+		expected = new String[1];
+		expected[0] = "cats`";
+		assertEquals(1, actual.length);
+		assertTrue(Arrays.equals(expected, actual));
+	
+	}
 	
 	@Test 
 	public void testBQinBQ() {
