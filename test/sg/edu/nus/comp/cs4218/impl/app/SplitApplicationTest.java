@@ -168,12 +168,17 @@ public class SplitApplicationTest {
 	@Test
 	public void testLinesInvalidOutputPath() {
 		try {
-			app.splitFileByLines(FILE1_TXT, "C:\\asdf\\zxcv\\qwer\\file1.txt", 2);
+			String path = currentDir + "asddfaw" + File.separator;
+			if(System.getProperty("os.name").length() > 8){
+				app.splitFileByLines(FILE1_TXT, path, 2);
+			}{
+				app.splitFileByLines(FILE1_TXT, path, 2);
+			}
+			expected = "split: '" + path + "': No such file or directory";
+			assertEquals(expected, output);
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
-		assertEquals(expected, output);
 	}
 
 	@Test
@@ -491,12 +496,17 @@ public class SplitApplicationTest {
 	@Test
 	public void testBytesInvalidOutputPath() {
 		try {
-			app.splitFileByBytes(FILE1_TXT, "C:\\asdf\\zxcv\\qwer\\file1.txt", "2");
+			String path = currentDir + "asddfaw" + File.separator;
+			if(System.getProperty("os.name").length() > 8){
+				app.splitFileByBytes(FILE1_TXT, path, "2");
+			}{
+				app.splitFileByBytes(FILE1_TXT, path, "2");
+			}
+			expected = "split: '" + path + "': No such file or directory";
+			assertEquals(expected, output);
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: 'C:\\asdf\\zxcv\\qwer\\file1.txt': No such file or directory";
-		assertEquals(expected, output);
 	}
 
 	@Test

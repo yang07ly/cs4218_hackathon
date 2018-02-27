@@ -198,7 +198,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
+		expected = "cmp: '" + Paths.get(Environment.currentDirectory)+ "': this is a directory";
 		try {
 			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -210,7 +210,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileB() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
+		expected = "cmp: '" + Paths.get(Environment.currentDirectory)+ "': this is a directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, path.toString(), false, false, false);
 		} catch (Exception e) {
@@ -359,7 +359,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileStreamDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: 'C:\\Users\\UserPC\\Documents\\CS4218_team02_2018\\test_system\\cmp_test_system': this is a directory";
+		expected = "cmp: '" + path.toString() + "': this is a directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
