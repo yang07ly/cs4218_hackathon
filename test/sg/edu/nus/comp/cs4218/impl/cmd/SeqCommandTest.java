@@ -13,7 +13,7 @@ import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 public class SeqCommandTest {
 
 	SeqCommand sequenceCommand;
-	
+
 	Vector<String> expected,actual;
 	String errorMsg;
 	
@@ -71,34 +71,28 @@ public class SeqCommandTest {
 	
 	@Test
 	public void testSeqWithInvalidSeqFront() {
+		String expected = "shell: " + SeqCommand.EXP_INVALID_SEQ;
 		sequenceCommand = new SeqCommand("; echo a; echo b");
 		try {
 			sequenceCommand.parse();
 		} catch (ShellException e) {
-			 e.printStackTrace();
+			 errorMsg = e.getMessage();
 		}
-		
-		expected.add("echo a");
-		expected.add(" echo b");
-		expected.add(" echo c");
-		assertEquals(sequenceCommand.argsArray.size(), 3);
-		assertEquals(sequenceCommand.argsArray, expected);
+		assertEquals(expected, errorMsg);
+	
 	}
 	
 	@Test
 	public void testSeqWithInvalidSeqBack() {
+		String expected = "shell: " + SeqCommand.EXP_INVALID_SEQ;
 		sequenceCommand = new SeqCommand("echo a; echo b; echo c;");
 		try {
 			sequenceCommand.parse();
 		} catch (ShellException e) {
-			 e.printStackTrace();
+			 errorMsg = e.getMessage();
 		}
 		
-		expected.add("echo a");
-		expected.add(" echo b");
-		expected.add(" echo c");
-		assertEquals(sequenceCommand.argsArray.size(), 3);
-		assertEquals(sequenceCommand.argsArray, expected);
+		assertEquals(expected, errorMsg);
 	}
 	
 }
