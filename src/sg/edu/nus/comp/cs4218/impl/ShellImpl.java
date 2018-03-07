@@ -10,9 +10,13 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
 import sg.edu.nus.comp.cs4218.impl.app.CdApplication;
 import sg.edu.nus.comp.cs4218.impl.app.CmpApplication;
+import sg.edu.nus.comp.cs4218.impl.app.DiffApplication;
 import sg.edu.nus.comp.cs4218.impl.app.EchoApplication;
 import sg.edu.nus.comp.cs4218.impl.app.ExitApplication;
+import sg.edu.nus.comp.cs4218.impl.app.GrepApplication;
 import sg.edu.nus.comp.cs4218.impl.app.LsApplication;
+import sg.edu.nus.comp.cs4218.impl.app.MkdirApplication;
+import sg.edu.nus.comp.cs4218.impl.app.PasteApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SplitApplication;
 import sg.edu.nus.comp.cs4218.impl.cmd.CallCommand;
@@ -79,13 +83,19 @@ public class ShellImpl implements Shell {
 			absApp = new SedApplication();
 		} else if (("exit").equals(app)) { // exit
 			absApp = new ExitApplication();
-		} else if (("cmp").equals(app)) { // exit
+		} else if (("cmp").equals(app)) { // cmp Options... FILE
 			absApp = new CmpApplication();
-		} 
-		else if (("split").equals(app)) { // exit
+		} else if (("split").equals(app)) { // split [Options] [FILE [PREFIX]]
 			absApp = new SplitApplication();
-		} 
-		else { // invalid command
+		} else if (("mkdir").equals(app)) { // mkdir FOLDERS
+			absApp = new MkdirApplication();
+		} else if (("grep").equals(app)) { // grep [-v] PATTERN [FILE]...
+			absApp = new GrepApplication();
+		} else if (("paste").equals(app)) { // paste [FILE]...
+			absApp = new PasteApplication();
+		} else if (("diff").equals(app)) { // diff [Options] FILES...
+			absApp = new DiffApplication();
+		} else { // invalid command
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
 		absApp.run(argsArray, inputStream, outputStream);
