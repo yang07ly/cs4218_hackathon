@@ -16,10 +16,10 @@ import sg.edu.nus.comp.cs4218.Environment;
 public class DiffApplicationTest {
 
 	private static final String FILE2_WITH_BLANKS = "file2_withBlankLines.txt";
-	private static final String ASDF_NOT_FOUND = "diff: 'asdf': No such file or directory";
-	private static final String LINE2_LINE6 = "<line2\n>line6";
-	private static final String EMPTY_ARGS = "diff: can't have empty argument";
-	private static final String FILE_NOT_FOUND = "diff: ' ': No such file or directory";
+	private static final String ASDF_NOT_FOUND = "diff: asdf: No such file or directory";
+	private static final String LINE2_LINE6 = "< line2\n> line6\n";
+	private static final String EMPTY_ARGS = "diff: : No such file or directory";
+	private static final String FILE_NOT_FOUND = "diff:  : No such file or directory";
 	private static final String DIR1 = "dir1";
 	private static final String FILE3_TXT = "file3.txt";
 	private static final String FILE2_TXT = "file2.txt";
@@ -45,7 +45,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testRunExtraOperand() {
-		expected = "diff: extra operand";
+		expected = "diff: More than 2 files specified";
 		String[] args = {FILE1_TXT, FILE2_TXT, FILE3_TXT};
 		try {
 			app.run(args, null, null);
@@ -302,7 +302,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileTrueFalseFalseNoDiff() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE1_COPY_TXT;
-		expected = "Files 'file1.txt' and 'file1_copy.txt' are identical";
+		expected = "Files " + file1 + " and " + file2 + " are identical\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, true, false, false);
 		} catch (Exception e) {
@@ -326,7 +326,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileFalseFalseTrue() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE2_TXT;
-		expected = "Files 'file1.txt' and 'file2.txt' differ";
+		expected = "Files " + file1 + " and " + file2 + " differ\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, false, false, true);
 		} catch (Exception e) {
@@ -350,7 +350,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileFalseTrueTrue() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE2_WITH_BLANKS;
-		expected = "Files 'file1.txt' and 'file2_withBlankLines.txt' differ";
+		expected = "Files " + file1 + " and " + file2 + " differ\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, false, true, true);
 		} catch (Exception e) {
@@ -386,7 +386,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileTrueTrueFalseNoDiff() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE1_WITH_BLANKS;
-		expected = "Files 'file1.txt' and 'file1_withBlankLines.txt' are identical";
+		expected = "Files " + file1 + " and " + file2 + " are identical\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, true, true, false);
 		} catch (Exception e) {
@@ -399,7 +399,7 @@ public class DiffApplicationTest {
 	public void testFileStreamRel() {
 		expected = LINE2_LINE6;
 		try {
-			InputStream fileStream = new FileInputStream(new File(FILE2_TXT));
+			InputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, false, false, false);
 		} catch (Exception e) {
 			output = e.getMessage();
@@ -421,7 +421,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyStream() {
-		expected = "<line1\n<line2\n<line3\n<line5\n";
+		expected = "< line1\n< line2\n< line3\n< line5\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + "emptyFile.txt"));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, false, false, false);
@@ -433,7 +433,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamTrueFalseFalse() {
-		expected = "<line1\n<line2\n<line3\n<line5\n";
+		expected = "< line2\n> line6\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, true, false, false);
@@ -445,7 +445,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamTrueFalseFalseNoDiff() {
-		expected = "Files 'file1.txt' and 'file1_copy.txt' are identical";
+		expected = "Files file1.txt and - are identical\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + FILE1_COPY_TXT));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, true, false, false);
@@ -469,7 +469,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamFalseFalseTrue() {
-		expected = "Files 'file1.txt' and 'file2.txt' differ";
+		expected = "Files file1.txt and - differ\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, false, false, true);
@@ -493,7 +493,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamFalseTrueTrue() {
-		expected = "Files 'file1.txt' and 'file2_withBlankLines.txt' differ";
+		expected = "Files file1.txt and - differ\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + FILE2_WITH_BLANKS));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, false, true, true);
@@ -529,7 +529,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testFileStreamTrueTrueFalseNoDiff() {
-		expected = "Files 'file1.txt' and 'file1_withBlankLines.txt' are identical";
+		expected = "Files file1.txt and - are identical\n";
 		try {
 			InputStream fileStream = new FileInputStream(new File(currentDir + FILE1_WITH_BLANKS));
 			output = app.diffFileAndStdin(FILE1_TXT, fileStream, true, true, false);
