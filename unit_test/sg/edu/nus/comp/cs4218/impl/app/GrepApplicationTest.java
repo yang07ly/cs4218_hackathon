@@ -53,8 +53,10 @@ public class GrepApplicationTest {
 	
 	public static final String GREP_OPTION = "-v";
 
-	public static final String STRING_COLON = ":";
+	public static final String STRING_COLON = ": ";
 	public static final String STRING_GREP = "grep: ";
+	
+	public static final String EXP_NULL_POINTER = "grep: Null Pointer Exception";
 
 	GrepApplication grepApp;
 	String expected, result;
@@ -84,7 +86,7 @@ public class GrepApplicationTest {
 	public void testGrepTextFromAbsoluteFile() {
 		expected = FILE1_LINE3 + FILE1_LINE5 + FILE1_LINEA;		
 		try {
-			result = grepApp.grepFromMultipleFiles(PATTERN_FILE, false, Environment.currentDirectory + File.separator + FILE_1);
+			result = grepApp.grepFromMultipleFiles(PATTERN_HAS, false, Environment.currentDirectory + File.separator + FILE_1);
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -141,7 +143,8 @@ public class GrepApplicationTest {
 		expected = FILE_1 + STRING_COLON + FILE1_LINE2 +
 				FILE_1 + STRING_COLON + FILE1_LINE3 +
 				file2FullPath + STRING_COLON + FILE2_LINEB +
-				file2FullPath + STRING_COLON + FILE2_LINEC;
+				file2FullPath + STRING_COLON + FILE2_LINEC +
+				file2FullPath + STRING_COLON + FILE2_LINE1;
 		try {
 			result = grepApp.grepFromMultipleFiles(PATTERN_SINGLE_A, false, FILE_1, file2FullPath);
 		} catch (GrepException e) {
@@ -174,7 +177,7 @@ public class GrepApplicationTest {
 
 	@Test
 	public void testInvalidGrepNullPatternFromFile() {	
-		expected = "grep: Pattern Null Pointer Exception";
+		expected = EXP_NULL_POINTER;
 		try {
 			result = grepApp.grepFromMultipleFiles(null, false, FILE_1);
 		} catch (GrepException e) {
@@ -185,7 +188,7 @@ public class GrepApplicationTest {
 
 	@Test
 	public void testInvalidGrepNoFile() {	
-		expected = "grep: File Null Pointer Exception";
+		expected = EXP_NULL_POINTER;
 		try {
 			result = grepApp.grepFromMultipleFiles(PATTERN_FILE, false);
 		} catch (GrepException e) {
@@ -328,7 +331,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepNullPatternFromInputStream() {	
-		expected = "grep: Pattern Null Pointer Exception";
+		expected = EXP_NULL_POINTER;
 		try {
 			result = grepApp.grepFromStdin(null, false, stdin);
 		} catch (GrepException e) {
@@ -339,7 +342,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepNullInputStream() {	
-		expected = "grep: Stdin Null Pointer Exception";
+		expected = EXP_NULL_POINTER;
 		try {
 			result = grepApp.grepFromStdin(PATTERN_HAS, false, null);
 		} catch (GrepException e) {
@@ -354,6 +357,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {PATTERN_SDIGIT, FILE_1};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -366,6 +370,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {PATTERN_SDIGIT};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -378,6 +383,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {GREP_OPTION, PATTERN_DIGIT, FILE_1};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -386,10 +392,12 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testGrepOptionPositionEndOfStream() {	
-		expected = STREAM_LINE1 + STREAM_LINE2 +  STREAM_LINE3 +  STREAM_LINE4;
+		expected = STREAM_LINEA;
 		try {
 			String[] strArr = {PATTERN_DIGIT, GREP_OPTION};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -402,6 +410,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {PATTERN_DIGIT, FILE_2, GREP_OPTION};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -414,6 +423,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {PATTERN_DIGIT, GREP_OPTION, FILE_1};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -430,6 +440,7 @@ public class GrepApplicationTest {
 		try {
 			String[] strArr = {PATTERN_DIGIT, FILE_2, GREP_OPTION, FILE_1};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -438,7 +449,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepNullArgs() {	
-		expected = "Usage: grep [OPTION]... PATTERN [FILE]...";
+		expected = EXP_NULL_POINTER;
 		try {
 			grepApp.run(null, stdin, stdout);
 		} catch (GrepException e) {
@@ -449,7 +460,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepEmptyArgs() {	
-		expected = "Usage: grep [OPTION]... PATTERN [FILE]...";
+		expected = STRING_GREP + "pattern is not specified";
 		try {
 			grepApp.run(new String[0], stdin, stdout);
 		} catch (GrepException e) {
@@ -460,10 +471,11 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepNoPattern() {	
-		expected = "Usage: grep [OPTION]... PATTERN [FILE]...";
+		expected = STRING_GREP + "pattern is not specified";
 		try {
 			String[] strArr = {GREP_OPTION};
 			grepApp.run(strArr, stdin, stdout);
+			result = stdout.toString();
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
@@ -472,7 +484,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepOption() {	
-		expected = "grep: option requires an argument -- 'i'";
+		expected = "grep: invalid option -- 'i'";
 		try {
 			String[] strArr = {"-i", PATTERN_FILE, FILE_1};
 			grepApp.run(strArr, stdin, stdout);
@@ -496,7 +508,7 @@ public class GrepApplicationTest {
 	
 	@Test
 	public void testInvalidGrepNullOutputStream() {	
-		expected = "grep: Stdout Null Pointer Exception";
+		expected = EXP_NULL_POINTER;
 		try {
 			String[] strArr = {PATTERN_FILE, FILE_1};
 			grepApp.run(strArr, stdin, null);
