@@ -38,9 +38,9 @@ import sg.edu.nus.comp.cs4218.exception.SedException;
  * replacement rules. However, this separation symbol should not be used inside the
  * regexp and the replacement string.
  * </dd>
- * </dl>
  * <dt>FILE</dt>
  * <dd>the name of the file(s). If no files are specified, use stdin.</dd>
+ * </dl>
  * </p>
  */
 public class SedApplication implements SedInterface {
@@ -48,10 +48,11 @@ public class SedApplication implements SedInterface {
 	public static final String EXP_NULL_POINTER = "Null Pointer Exception";
 
 	/**
-	 * Runs the cat application with the specified arguments.
+	 * Runs the sed application with the specified arguments.
 	 * 
 	 * @param args
-	 *            Array of arguments for the application. Each array element is
+	 *            Array of arguments for the application. The first array element
+	 *            should be the REPLACEMENT option followed by elements containing
 	 *            the path to a file. If no files are specified stdin is used.
 	 * @param stdin
 	 *            An InputStream. The input for the command is read from this
