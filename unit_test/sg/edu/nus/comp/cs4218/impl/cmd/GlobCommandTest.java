@@ -33,7 +33,7 @@ public class GlobCommandTest {
 	public void testGlobEmpty() {
 		expected = new String[] {FILE_EMPTY};
 		try {
-			result = globCmd.globFileAndDirectory(FILE_EMPTY);
+			result = globCmd.evaluate(FILE_EMPTY);
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -44,7 +44,7 @@ public class GlobCommandTest {
 	public void testGlobMutipleSpaces() {
 		expected = new String[] {FILE_SPACES};
 		try {
-			result = globCmd.globFileAndDirectory(FILE_SPACES);
+			result = globCmd.evaluate(FILE_SPACES);
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -55,7 +55,7 @@ public class GlobCommandTest {
 	public void testGlobExistingFile() {
 		expected = new String[] {FILE_1};
 		try {
-			result = globCmd.globFileAndDirectory(FILE_1);
+			result = globCmd.evaluate(FILE_1);
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -66,7 +66,7 @@ public class GlobCommandTest {
 	public void testGlobNonExistingFile() {
 		expected = new String[] {FILE_NONEXISTENT};
 		try {
-			result = globCmd.globFileAndDirectory(FILE_NONEXISTENT);
+			result = globCmd.evaluate(FILE_NONEXISTENT);
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -75,9 +75,9 @@ public class GlobCommandTest {
 
 	@Test
 	public void testGlobEverythingRelative() {
-		expected = new String[] {FOLDER_1, FOLDER_2, FILE_1, FILE_2};
+		expected = new String[] {FILE_1, FILE_2, FOLDER_1, FOLDER_2};
 		try {
-			result = globCmd.globFileAndDirectory("*");
+			result = globCmd.evaluate("*");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -86,12 +86,12 @@ public class GlobCommandTest {
 
 	@Test
 	public void testGlobEverythingAbsolute() {
-		expected = new String[] {Environment.currentDirectory + File.separator + FOLDER_1, 
-				Environment.currentDirectory + File.separator + FOLDER_2, 
-				Environment.currentDirectory + File.separator + FILE_1, 
-				Environment.currentDirectory + File.separator + FILE_2};
+		expected = new String[] {Environment.currentDirectory + File.separator + FILE_1, 
+				Environment.currentDirectory + File.separator + FILE_2,
+				Environment.currentDirectory + File.separator + FOLDER_1, 
+				Environment.currentDirectory + File.separator + FOLDER_2};
 		try {
-			result = globCmd.globFileAndDirectory(Environment.currentDirectory + File.separator + "*");
+			result = globCmd.evaluate(Environment.currentDirectory + File.separator + "*");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -102,7 +102,7 @@ public class GlobCommandTest {
 	public void testGlobAllFolders() {
 		expected = new String[] {FOLDER_1, FOLDER_2};
 		try {
-			result = globCmd.globFileAndDirectory("*/");
+			result = globCmd.evaluate("*/");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -113,7 +113,7 @@ public class GlobCommandTest {
 	public void testGlobAtFront() {
 		expected = new String[] {FILE_1, FILE_2};
 		try {
-			result = globCmd.globFileAndDirectory("*.txt");
+			result = globCmd.evaluate("*.txt");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -122,9 +122,9 @@ public class GlobCommandTest {
 
 	@Test
 	public void testGlobAtEnd() {
-		expected = new String[] {FOLDER_1, FOLDER_2, FILE_1, FILE_2};
+		expected = new String[] {FILE_1, FILE_2, FOLDER_1, FOLDER_2};
 		try {
-			result = globCmd.globFileAndDirectory("f*");
+			result = globCmd.evaluate("f*");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -135,7 +135,7 @@ public class GlobCommandTest {
 	public void testGlobAtMiddle() {
 		expected = new String[] {FILE_1, FILE_2};
 		try {
-			result = globCmd.globFileAndDirectory("f*.txt");
+			result = globCmd.evaluate("f*.txt");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -146,7 +146,7 @@ public class GlobCommandTest {
 	public void testGlobParentDirectory() {
 		expected = new String[] {FOLDER_1 + File.separator + FILE_1, FOLDER_2 + File.separator + FILE_1};
 		try {
-			result = globCmd.globFileAndDirectory("*" + File.separator + FILE_1);
+			result = globCmd.evaluate("*" + File.separator + FILE_1);
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -155,9 +155,9 @@ public class GlobCommandTest {
 
 	@Test
 	public void testGlobMultipleInSingleFolder() {
-		expected = new String[] {FOLDER_1, FILE_1};
+		expected = new String[] {FILE_1, FOLDER_1};
 		try {
-			result = globCmd.globFileAndDirectory("*1*");
+			result = globCmd.evaluate("*1*");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -171,7 +171,7 @@ public class GlobCommandTest {
 				FOLDER_2 + File.separator + FILE_1, 
 				FOLDER_2 + File.separator + FILE_2};
 		try {
-			result = globCmd.globFileAndDirectory("*" + File.separator + "file*");
+			result = globCmd.evaluate("*" + File.separator + "file*");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
@@ -180,11 +180,12 @@ public class GlobCommandTest {
 
 	@Test
 	public void testInvalidGlobNull() {
+		expected = new String[] {"   "};
 		try {
-			result = globCmd.globFileAndDirectory("   ");
+			result = globCmd.evaluate("   ");
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage();
 		}
-		assertEquals("shell: Null Pointer Exception", exceptionMessage);
+		assertArrayEquals(expected, result);
 	}
 }
