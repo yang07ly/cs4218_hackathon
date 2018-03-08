@@ -99,7 +99,6 @@ public class ShellImpl implements Shell {
 			throw new ShellException(app + ": " + EXP_INVALID_APP);
 		}
 		absApp.run(argsArray, inputStream, outputStream);
-//		cat articles/text1.txt | grep 'Interesting String'
 	}
 
 	/**
