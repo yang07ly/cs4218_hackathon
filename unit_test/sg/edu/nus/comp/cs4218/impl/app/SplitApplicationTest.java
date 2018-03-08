@@ -1,4 +1,5 @@
 package sg.edu.nus.comp.cs4218.impl.app;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
@@ -36,7 +37,8 @@ public class SplitApplicationTest {
 
 	@Before
 	public void setUp() {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system"+ File.separator + "split_test_system";
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
+				+ "split_test_system";
 		currentDir = Environment.currentDirectory + File.separator;
 		app = new SplitApplication();
 		outputStream = new ByteArrayOutputStream();
@@ -58,7 +60,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testRunExtraOperand() {
-		String[] splitArgs = { FILE1_TXT, "-s" , "-c"};
+		String[] splitArgs = { FILE1_TXT, "-s", "-c" };
 		expected = "split: -s: invalid flag";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -71,7 +73,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testNegativeLines() {
-		String[] splitArgs = { FILE1_TXT, "-l" , "-2"};
+		String[] splitArgs = { FILE1_TXT, "-l", "-2" };
 		expected = "split: -2: invalid number of lines";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -84,7 +86,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testRunSplitMoreThanOneWay() {
-		String[] splitArgs = { FILE1_TXT, "-l" , "-2", "-b", "3"};
+		String[] splitArgs = { FILE1_TXT, "-l", "-2", "-b", "3" };
 		expected = "split: cannot split in more than one way";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -97,7 +99,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testRunSplitMoreThanOneWay2() {
-		String[] splitArgs = { FILE1_TXT, "-b", "3", "-l" , "-2"};
+		String[] splitArgs = { FILE1_TXT, "-b", "3", "-l", "-2" };
 		expected = "split: cannot split in more than one way";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -110,7 +112,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testRunSplit2Ways() {
-		String[] splitArgs = { FILE1_TXT, "-b" ,"2" , "-l", "2" };
+		String[] splitArgs = { FILE1_TXT, "-b", "2", "-l", "2" };
 		expected = "split: cannot split in more than one way";
 		try {
 			app.run(splitArgs, System.in, outputStream);
@@ -123,7 +125,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesEmptyFileName() {
-		expected = "split: can't have empty argument";
+		expected = "split: : No such file or directory";
 		try {
 			app.splitFileByLines("", "", 4);
 		} catch (Exception e) {
@@ -134,7 +136,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesSpaceFileName() {
-		expected = "split: ' ': No such file or directory";
+		expected = "split:  : No such file or directory";
 		try {
 			app.splitFileByLines(" ", "", 4);
 		} catch (Exception e) {
@@ -145,7 +147,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testLinesFileNotFound() {
-		expected = "split: 'asdf': No such file or directory";
+		expected = "split: asdf: No such file or directory";
 		try {
 			app.splitFileByLines("asdf", "", 4);
 		} catch (Exception e) {
@@ -161,7 +163,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: 'asdf.txt': No such file or directory";
+		expected = "split: asdf.txt: No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -169,9 +171,10 @@ public class SplitApplicationTest {
 	public void testLinesInvalidOutputPath() {
 		try {
 			String path = currentDir + "asddfaw" + File.separator;
-			if(System.getProperty("os.name").length() > 8){
+			if (System.getProperty("os.name").length() > 8) {
 				app.splitFileByLines(FILE1_TXT, path, 2);
-			}{
+			}
+			{
 				app.splitFileByLines(FILE1_TXT, path, 2);
 			}
 			expected = "split: '" + path + "': No such file or directory";
@@ -191,10 +194,10 @@ public class SplitApplicationTest {
 		expected = "split: 0: invalid number of lines";
 		assertEquals(expected, output);
 	}
-	
+
 	/*
-		These tests are all valid test cases for splitFileByLines
-	*/
+	 * These tests are all valid test cases for splitFileByLines
+	 */
 	@Test
 	public void testSplitStreamByDefaultLines() {
 		try {
@@ -217,10 +220,10 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testSplitStreamByBytes() {
-		String[] myArgs = {"-b", "6"};
+		String[] myArgs = { "-b", "6" };
 		try {
 			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
 			app.run(myArgs, fileStream, outputStream);
@@ -233,7 +236,7 @@ public class SplitApplicationTest {
 			BufferedReader fileReader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			char[] buffer = new char[10];
 			int count = fileReader.read(buffer, 0, 10);
-			assertEquals(ASDFGH, new String(buffer,0,count));
+			assertEquals(ASDFGH, new String(buffer, 0, count));
 			fileReader.close();
 			Files.delete(Paths.get(currentDir + XAA));
 		} catch (IOException e) {
@@ -241,10 +244,10 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testSplitFileByLines() {
-		String[] myArgs = {currentDir + FILE1_TXT, "-l", "6"};
+		String[] myArgs = { currentDir + FILE1_TXT, "-l", "6" };
 		try {
 			app.run(myArgs, null, outputStream);
 			output = outputStream.toString();
@@ -264,10 +267,10 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testSplitFileByBytes() {
-		String[] myArgs = {currentDir + FILE2_TXT, "-b", "6"};
+		String[] myArgs = { currentDir + FILE2_TXT, "-b", "6" };
 		try {
 			app.run(myArgs, null, outputStream);
 			output = outputStream.toString();
@@ -279,7 +282,7 @@ public class SplitApplicationTest {
 			BufferedReader fileReader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
 			char[] buffer = new char[10];
 			int count = fileReader.read(buffer, 0, 10);
-			assertEquals(ASDFGH, new String(buffer,0,count));
+			assertEquals(ASDFGH, new String(buffer, 0, count));
 			fileReader.close();
 			Files.delete(Paths.get(currentDir + XAA));
 		} catch (IOException e) {
@@ -287,7 +290,7 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testLinesRelativeAny() {
 		try {
@@ -311,7 +314,7 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testLinesRelativePath() {
 		Path path = Paths.get(Environment.currentDirectory).resolve(OUTPUT2);
@@ -337,10 +340,10 @@ public class SplitApplicationTest {
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
-		
+
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testLinesRelativeNull() {
 		try {
@@ -417,10 +420,10 @@ public class SplitApplicationTest {
 		} catch (IOException e) {
 			output = e.getMessage();
 		}
-		
+
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testLinesAbsoluteNull() {
 		Path source = Paths.get(Environment.currentDirectory);
@@ -435,7 +438,7 @@ public class SplitApplicationTest {
 			assertEquals(ASDFGH, reader.readLine());
 			assertEquals(QWERTY, reader.readLine());
 			reader.close();
-			reader = new BufferedReader(new FileReader(new File(currentDir +  XAB)));
+			reader = new BufferedReader(new FileReader(new File(currentDir + XAB)));
 			assertEquals(ZXCVBN, reader.readLine());
 			reader.close();
 			Files.delete(Paths.get(currentDir + XAA));
@@ -451,7 +454,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesEmptyFileName() {
-		expected = "split: can't have empty argument";
+		expected = "split: : No such file or directory";
 		try {
 			app.splitFileByBytes("", "", "1");
 		} catch (Exception e) {
@@ -462,7 +465,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesSpaceFileName() {
-		expected = "split: ' ': No such file or directory";
+		expected = "split:  : No such file or directory";
 		try {
 			app.splitFileByBytes(" ", "", "1");
 		} catch (Exception e) {
@@ -473,7 +476,7 @@ public class SplitApplicationTest {
 
 	@Test
 	public void testBytesFileNotFound() {
-		expected = "split: 'asdf': No such file or directory";
+		expected = "split: asdf: No such file or directory";
 		try {
 			app.splitFileByBytes("asdf", "", "1");
 		} catch (Exception e) {
@@ -489,7 +492,7 @@ public class SplitApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		expected = "split: 'asdf.txt': No such file or directory";
+		expected = "split: asdf.txt: No such file or directory";
 		assertEquals(expected, output);
 	}
 
@@ -497,9 +500,10 @@ public class SplitApplicationTest {
 	public void testBytesInvalidOutputPath() {
 		try {
 			String path = currentDir + "asddfaw" + File.separator;
-			if(System.getProperty("os.name").length() > 8){
+			if (System.getProperty("os.name").length() > 8) {
 				app.splitFileByBytes(FILE1_TXT, path, "2");
-			}{
+			}
+			{
 				app.splitFileByBytes(FILE1_TXT, path, "2");
 			}
 			expected = "split: '" + path + "': No such file or directory";
@@ -588,20 +592,20 @@ public class SplitApplicationTest {
 		}
 		char[] buffer = new char[512];
 		String expected = "";
-		for(int i = 0; i < 512; i++) {
+		for (int i = 0; i < 512; i++) {
 			expected += "a";
 		}
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
-			reader.read(buffer, 0 , 512);
+			reader.read(buffer, 0, 512);
 			assertEquals(expected, new String(buffer));
 			reader.close();
-			
+
 			buffer = new char[512];
 			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
-			int count = reader.read(buffer, 0 , 512);
+			int count = reader.read(buffer, 0, 512);
 			reader.close();
-			assertEquals("a", new String(buffer,0, count));
+			assertEquals("a", new String(buffer, 0, count));
 			Files.delete(Paths.get(currentDir + "aa"));
 			Files.delete(Paths.get(currentDir + "ab"));
 		} catch (IOException e) {
@@ -620,18 +624,18 @@ public class SplitApplicationTest {
 		}
 		char[] buffer = new char[1024];
 		String expected = "";
-		for(int i = 0; i < 1024; i++) {
+		for (int i = 0; i < 1024; i++) {
 			expected += "a";
 		}
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
-			reader.read(buffer, 0 , 1024);
+			reader.read(buffer, 0, 1024);
 			assertEquals(expected, new String(buffer));
 			reader.close();
-			
+
 			buffer = new char[1024];
 			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
-			int count = reader.read(buffer, 0 , 1024);
+			int count = reader.read(buffer, 0, 1024);
 			reader.close();
 			assertEquals("a", new String(buffer, 0, count));
 			Files.delete(Paths.get(currentDir + "aa"));
@@ -651,19 +655,19 @@ public class SplitApplicationTest {
 		}
 		char[] buffer = new char[1048576];
 		StringBuilder stringBuilder = new StringBuilder(1048576);
-		for(int i = 0; i < 1048576; i++) {
+		for (int i = 0; i < 1048576; i++) {
 			stringBuilder.append('a');
 		}
 		String expected = new String(stringBuilder);
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
-			reader.read(buffer, 0 , 1048576);
+			reader.read(buffer, 0, 1048576);
 			assertEquals(expected, new String(buffer));
 			reader.close();
-			
+
 			buffer = new char[1];
 			reader = new BufferedReader(new FileReader(new File(currentDir + "ab")));
-			reader.read(buffer, 0 , 1);
+			reader.read(buffer, 0, 1);
 			reader.close();
 			assertEquals("a", new String(buffer));
 			Files.delete(Paths.get(currentDir + "aa"));
@@ -718,18 +722,18 @@ public class SplitApplicationTest {
 		}
 		char[] buffer = new char[512];
 		String expected = "";
-		for(int i = 0; i < 512; i++) {
+		for (int i = 0; i < 512; i++) {
 			expected += "a";
 		}
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(outputFile.toString())));
-			reader.read(buffer, 0 , 512);
+			reader.read(buffer, 0, 512);
 			assertEquals(expected, new String(buffer));
 			reader.close();
-			
+
 			buffer = new char[1];
 			reader = new BufferedReader(new FileReader(new File(outputFileB.toString())));
-			reader.read(buffer, 0 , 1);
+			reader.read(buffer, 0, 1);
 			reader.close();
 			Files.delete(Paths.get(outputFile.toString()));
 			Files.delete(Paths.get(outputFileB.toString()));
@@ -738,7 +742,7 @@ public class SplitApplicationTest {
 		}
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testBytesAbsoluteNullInteger() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE2_TXT);
@@ -764,7 +768,7 @@ public class SplitApplicationTest {
 			output = IO_ERROR_IN_TEST;
 		}
 	}
-	
+
 	@Test
 	public void testBytesAbsolutePathKiloByte() {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + "1024bytes.txt");
@@ -776,17 +780,17 @@ public class SplitApplicationTest {
 		}
 		char[] buffer = new char[1024];
 		String expected = "";
-		for(int i = 0; i < 1024; i++) {
+		for (int i = 0; i < 1024; i++) {
 			expected += "a";
 		}
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(path2.toString() + "aa")));
-			reader.read(buffer, 0 , 1024);
+			reader.read(buffer, 0, 1024);
 			assertEquals(expected, new String(buffer));
 			reader.close();
 			buffer = new char[1024];
 			reader = new BufferedReader(new FileReader(new File(path2.toString() + "ab")));
-			int count = reader.read(buffer, 0 , 1024);
+			int count = reader.read(buffer, 0, 1024);
 			assertEquals("a", new String(buffer, 0, count));
 			reader.close();
 			Files.delete(Paths.get(path2.toString() + "aa"));

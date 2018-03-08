@@ -22,7 +22,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testNoQuotes() {
 		expected = ASD;
-		cmdString = "echo asd";
+		cmdString = "asd";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -35,7 +35,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testUnclosedSQ() {
 		expected = UNCLOSED_QUOTES;
-		cmdString = "echo 'asd";
+		cmdString = "'asd";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -48,7 +48,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testClosedSQ() {
 		expected = ASD;
-		cmdString = "echo 'asd'";
+		cmdString = "'asd'";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -60,7 +60,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testMultipleSQ() {
-		cmdString = "echo 'asd' 'omg'";
+		cmdString = "'asd' 'omg'";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -74,7 +74,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testUnclosedDQ() {
 		expected = UNCLOSED_QUOTES;
-		cmdString = "echo \"asd";
+		cmdString = "\"asd";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -87,7 +87,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testClosedDQ() {
 		expected = ASD;
-		cmdString = "echo \"asd\"";
+		cmdString = "\"asd\"";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -99,7 +99,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testMultipleDQ() {
-		cmdString = "echo \"asd\" \"omg\"";
+		cmdString = "\"asd\" \"omg\"";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -112,7 +112,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testMultipleSQDQ() {
-		cmdString = "echo \"DQ1\" 'SQ1' 'SQ2' \"DQ2\"";
+		cmdString = "\"DQ1\" 'SQ1' 'SQ2' \"DQ2\"";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -128,7 +128,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testDQWithinSQ() {
 		expected = "\"DQ within SQ\"";
-		cmdString = "echo '\"DQ within SQ\"'";
+		cmdString = "'\"DQ within SQ\"'";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class QuoteCommandTest {
 
 	@Test
 	public void testSQWithinDQ() {
-		cmdString = "echo \"'SQ within DQ'\"";
+		cmdString = "\"'SQ within DQ'\"";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -153,7 +153,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testMultipleSQWithUnclosedDQ() {
 		expected = UNCLOSED_QUOTES;
-		cmdString = "echo 'Invalid' 'Quotes' \"asd";
+		cmdString = "'Invalid' 'Quotes' \"asd";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -166,7 +166,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testMultipleDQWithUnclosedSQ() {
 		expected = UNCLOSED_QUOTES;
-		cmdString = "echo \"Invalid\" \"Quotes\" 'asd";
+		cmdString = "\"Invalid\" \"Quotes\" 'asd";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -179,7 +179,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testBQWithinSQ() {
 		expected = "`abc`";
-		cmdString = "echo '`echo abc`'";
+		cmdString = "'`abc`'";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -192,7 +192,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testBQWithinDQ() {
 		expected = "abc";
-		cmdString = "echo \"`echo abc`\"";
+		cmdString = "\"`abc`\"";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -205,7 +205,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testSQWithinText() {
 		expected = "abcde";
-		cmdString = "echo ab'c'de";
+		cmdString = "ab'c'de";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {
@@ -218,7 +218,7 @@ public class QuoteCommandTest {
 	@Test
 	public void testDQWithinText() {
 		expected = "abcde";
-		cmdString = "echo ab\"c\"de";
+		cmdString = "ab\"c\"de";
 		try {
 			output = command.evaluate(cmdString);
 		} catch (Exception e) {

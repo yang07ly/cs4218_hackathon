@@ -39,7 +39,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testExtraOperand() {
-		expected = "cmp: Can't compare more than 2 sources";
+		expected = "cmp: requires 2 files to be specified";
 		String[] args = { FILE1_TXT, FILE2_TXT, "-cl", "file3.txt" };
 		try {
 			app.run(args, System.in, outputStream);
@@ -114,7 +114,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testHyphenFlag() {
-		expected = "cmp: Can't compare more than 2 sources";
+		expected = "cmp: requires 2 files to be specified";
 		String[] args = { FILE1_TXT, FILE2_TXT, "-" };
 		try {
 			app.run(args, System.in, outputStream);
@@ -153,7 +153,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileEmptyFileA() {
-		expected = "cmp: can't have empty argument";
+		expected = "cmp: : No such file or directory";
 		try {
 			output = app.cmpTwoFiles("", FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileEmptyFileB() {
-		expected = "cmp: can't have empty argument";
+		expected = "cmp: : No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, "", false, false, false);
 		} catch (Exception e) {
@@ -175,7 +175,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileSpaceFileA() {
-		expected = "cmp: ' ': No such file or directory";
+		expected = "cmp:  : No such file or directory";
 		try {
 			output = app.cmpTwoFiles(" ", FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -186,7 +186,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileSpaceFileB() {
-		expected = "cmp: ' ': No such file or directory";
+		expected = "cmp:  : No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, " ", false, false, false);
 		} catch (Exception e) {
@@ -198,7 +198,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: '" + Paths.get(Environment.currentDirectory) + "': this is a directory";
+		expected = "cmp: " + Paths.get(Environment.currentDirectory) + ": Is a directory";
 		try {
 			output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, false);
 		} catch (Exception e) {
@@ -210,7 +210,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileFileDirectoryFileB() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: '" + Paths.get(Environment.currentDirectory) + "': this is a directory";
+		expected = "cmp: " + Paths.get(Environment.currentDirectory) + ": Is a directory";
 		try {
 			output = app.cmpTwoFiles(FILE2_TXT, path.toString(), false, false, false);
 		} catch (Exception e) {
@@ -221,7 +221,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileA() {
-		expected = "cmp: 'file3.txt': No such file or directory";
+		expected = "cmp: file3.txt: No such file or directory";
 		try {
 			output = app.cmpTwoFiles(FILE3_TXT, FILE1_TXT, false, false, false);
 		} catch (Exception e) {
@@ -232,7 +232,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileFileNonExistentialFileb() {
-		expected = "cmp: 'file4.txt': No such file or directory";
+		expected = "cmp: file4.txt: No such file or directory";
 		try {
 			output = app.cmpTwoFiles("file4.txt", FILE1_TXT, false, false, false);
 		} catch (Exception e) {
@@ -344,7 +344,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyFileA() {
-		expected = "cmp: can't have empty argument";
+		expected = "cmp: : No such file or directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -357,7 +357,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamSpaceFileA() {
-		expected = "cmp: ' ': No such file or directory";
+		expected = "cmp:  : No such file or directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -371,7 +371,7 @@ public class CmpApplicationTest {
 	@Test
 	public void testFileStreamDirectoryFileA() {
 		Path path = Paths.get(Environment.currentDirectory);
-		expected = "cmp: '" + path.toString() + "': this is a directory";
+		expected = "cmp: " + path.toString() + ": Is a directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -384,7 +384,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamNonExistentialFileA() {
-		expected = "cmp: 'file3.txt': No such file or directory";
+		expected = "cmp: file3.txt: No such file or directory";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 			InputStream inputStream = new FileInputStream(file);
