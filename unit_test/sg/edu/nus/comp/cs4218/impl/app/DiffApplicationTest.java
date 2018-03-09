@@ -15,6 +15,8 @@ import sg.edu.nus.comp.cs4218.Environment;
 
 public class DiffApplicationTest {
 
+	private static final String AND = " and ";
+	private static final String FILES = "Files ";
 	private static final String FILE2_WITH_BLANKS = "file2_withBlankLines.txt";
 	private static final String ASDF_NOT_FOUND = "diff: asdf: No such file or directory";
 	private static final String LINE2_LINE6 = "< line2\n> line6\n";
@@ -302,7 +304,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileTrueFalseFalseNoDiff() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE1_COPY_TXT;
-		expected = "Files " + file1 + " and " + file2 + " are identical\n";
+		expected = FILES + file1 + AND + file2 + " are identical\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, true, false, false);
 		} catch (Exception e) {
@@ -326,7 +328,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileFalseFalseTrue() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE2_TXT;
-		expected = "Files " + file1 + " and " + file2 + " differ\n";
+		expected = FILES + file1 + AND + file2 + " differ\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, false, false, true);
 		} catch (Exception e) {
@@ -350,7 +352,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileFalseTrueTrue() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE2_WITH_BLANKS;
-		expected = "Files " + file1 + " and " + file2 + " differ\n";
+		expected = FILES + file1 + AND + file2 + " differ\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, false, true, true);
 		} catch (Exception e) {
@@ -386,7 +388,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testFileFileTrueTrueFalseNoDiff() {
 		String file1 = currentDir + FILE1_TXT, file2 = currentDir + FILE1_WITH_BLANKS;
-		expected = "Files " + file1 + " and " + file2 + " are identical\n";
+		expected = FILES + file1 + AND + file2 + " are identical\n";
 		try {
 			output = app.diffTwoFiles(file1, file2, true, true, false);
 		} catch (Exception e) {
@@ -541,7 +543,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testDirDirRelRel() {
-		expected = "Only in 'dir1': emptyFile.txt\nOnly in 'dir2': file2.txt\n";
+		expected = "Only in dir1: emptyFile.txt\nOnly in dir2: file2.txt\n";
 		try {
 			output = app.diffTwoDir(DIR1, "dir2", false, false, false);
 		} catch (Exception e) {
@@ -552,7 +554,8 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testDirDirAbsAbs() {
-		expected = "Only in 'dir1': emptyFile.txt\nOnly in 'dir2': file2.txt\n";
+		expected = "Only in " + currentDir + DIR1 + ": emptyFile.txt\nOnly in " 
+				+ currentDir + "dir2: file2.txt\n";
 		try {
 			output = app.diffTwoDir(currentDir + DIR1, currentDir + "dir2", false, false, false);
 		} catch (Exception e) {

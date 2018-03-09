@@ -8,7 +8,7 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.exception.DiffException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
-public class DiffExtension {
+public final class DiffExtension {
 	private DiffExtension() {}
 
 	public static void preProcessLines(BufferedReader reader, HashSet<String> set, Vector<String> lines, boolean isNoBlank)

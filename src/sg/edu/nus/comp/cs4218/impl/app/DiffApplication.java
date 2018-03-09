@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Vector;
 
@@ -69,8 +70,8 @@ public class DiffApplication implements DiffInterface {
 		}
 	}
 
-	private String diffFiles(String fileNameA, String fileNameB, BufferedReader readerA, BufferedReader readerB, Boolean isShowSame, Boolean isNoBlank,
-			Boolean isSimple) throws DiffException {
+	private String diffFiles(String fileNameA, String fileNameB, BufferedReader readerA, BufferedReader readerB,
+			Boolean isShowSame, Boolean isNoBlank, Boolean isSimple) throws DiffException {
 		HashSet<String> setA = new HashSet<String>();
 		HashSet<String> setB = new HashSet<String>();
 		Vector<String> linesOfA = new Vector<String>();
@@ -79,28 +80,28 @@ public class DiffApplication implements DiffInterface {
 		DiffExtension.preProcessLines(readerB, setB, linesOfB, isNoBlank);
 		StringBuilder stringBuilder = new StringBuilder();
 		Boolean isSame = true;
-		for(int i = 0; i < linesOfA.size(); i++) {
+		for (int i = 0; i < linesOfA.size(); i++) {
 			String difference = null;
-			if(!setB.contains(linesOfA.get(i))) {
-				difference =  "< " + linesOfA.get(i) + "\n";
+			if (!setB.contains(linesOfA.get(i))) {
+				difference = "< " + linesOfA.get(i) + "\n";
 				stringBuilder.append(difference);
 				isSame = false;
 			}
 		}
-		for(int i = 0; i < linesOfB.size(); i++) {
+		for (int i = 0; i < linesOfB.size(); i++) {
 			String difference = null;
-			if(!setA.contains(linesOfB.get(i))) {
-				difference =  "> " + linesOfB.get(i) + "\n";
+			if (!setA.contains(linesOfB.get(i))) {
+				difference = "> " + linesOfB.get(i) + "\n";
 				stringBuilder.append(difference);
 				isSame = false;
 			}
 		}
 		String message = new String(stringBuilder);
-		if(isShowSame && isSame) {
+		if (isShowSame && isSame) {
 			message = "Files " + fileNameA + " and " + fileNameB + " are identical\n";
-		}else if(isSimple && !isSame){
+		} else if (isSimple && !isSame) {
 			message = "Files " + fileNameA + " and " + fileNameB + " differ\n";
-		}else {
+		} else {
 			message = new String(stringBuilder);
 		}
 		return message;
@@ -109,8 +110,41 @@ public class DiffApplication implements DiffInterface {
 	@Override
 	public String diffTwoDir(String folderA, String folderB, Boolean isShowSame, Boolean isNoBlank, Boolean isSimple)
 			throws DiffException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			StringBuilder stringBuilder = new StringBuilder();
+			File dirA = FileUtil.getFileOrDirectoryFromPath(folderA),
+					dirB = FileUtil.getFileOrDirectoryFromPath(folderB);
+			String[] dirAFiles = dirA.list(), dirBFiles = dirB.list();
+			String pathA = folderA + File.separator, pathB = folderB + File.separator;
+			for (int i = 0; i < dirAFiles.length; i++) {
+				String message = "";
+				if (Arrays.asList(dirBFiles).contains(dirAFiles[i])) {
+					String filePathA = pathA + dirAFiles[i];
+					String filePathB = pathB + dirAFiles[i];
+					if (FileUtil.isDirectory(dirAFiles[i])) {
+						message = "Common subdirectories: " + filePathA + " and " + filePathB + "\n";
+						stringBuilder.append(message);
+					} else {
+						message = diffTwoFiles(filePathA, filePathB, isShowSame, isNoBlank, isSimple);
+						stringBuilder.append(message);
+					}
+				} else {
+					message = "Only in " + folderA + ": " + dirAFiles[i] + "\n";
+					stringBuilder.append(message);
+				}
+			}
+
+			for (int i = 0; i < dirBFiles.length; i++) {
+				String message = "";
+				if (!Arrays.asList(dirAFiles).contains(dirBFiles[i])) {
+					message = "Only in " + folderB + ": " + dirBFiles[i] + "\n";
+					stringBuilder.append(message);
+				}
+			}
+			return new String(stringBuilder);
+		} catch (IOException e) {
+			throw new DiffException(e.getMessage());
+		}
 	}
 
 	@Override
