@@ -49,8 +49,19 @@ public class DiffApplication implements DiffInterface {
 
 	public String diffDirAndFile(String folder, String fileNameB, Boolean isShowSame, Boolean isNoBlank,
 			Boolean isSimple) throws DiffException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			String fileNameA = folder + File.separator + fileNameB;
+			File fileA = FileUtil.getFileFromPath(fileNameA);
+			File fileB = FileUtil.getFileFromPath(fileNameB);
+			BufferedReader readerA = new BufferedReader(new FileReader(fileA));
+			BufferedReader readerB = new BufferedReader(new FileReader(fileB));
+			String message = diffFiles(fileNameA, fileNameB, readerA, readerB, isShowSame, isNoBlank, isSimple);
+			readerA.close();
+			readerB.close();
+			return message;
+		} catch (IOException e) {
+			throw new DiffException(e.getMessage());
+		}
 	}
 
 	@Override
