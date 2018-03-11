@@ -1,0 +1,6 @@
+//1. Test echo one
+echo haha
+haha
+//2. Test echo two
+echo one    two
+one two
