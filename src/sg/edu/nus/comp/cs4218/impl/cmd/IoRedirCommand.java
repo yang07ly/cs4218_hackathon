@@ -2,202 +2,91 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 /**
- * IO Redirection Command is a call command which contain "<" or ">" iff the backquotes are not surrounded by 
- * single quotes (if any).
+ * IO Redirection Command is a call command which contain "<" or ">" iff the
+ * backquotes are not surrounded by single quotes (if any).
  * 
  * Command format: <redirection> ::= “<“ [ <whitespace> ] <argument> |
-                  “>“ [ <whitespace> ] <argument>
+ * “>“ [ <whitespace> ] <argument>
  **/
 
-public class IoRedirCommand implements Command {
-	
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
+public class IoRedirCommand {
 
-	@Override
-	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void terminate() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * Extraction of input redirection from cmdLine with two slots at end of
-	 * cmdVector reserved for <inputredir and >outredir. For valid inputs,
-	 * assumption that input redir and output redir are always at the end of the
-	 * command and input stream first the output stream if both are in the args
-	 * 
-	 * @param str
-	 *            String of command to split.
-	 * @param cmdVector
-	 *            Vector of String to store the found result into.
-	 * @param endIdx
-	 *            Index of str to start parsing from.
-	 * 
-	 * @return endIdx Index of string where the parsing of arguments stopped
-	 *         (due to no more matches).
-	 * 
-	 * @throws ShellException
-	 *             When more than one input redirection string is found, or when
-	 *             invalid syntax is encountered..
-	 */
-	int extractInputRedir(String str, Vector<String> cmdVector, int endIdx) 
-			throws ShellException {
-		String substring = str.substring(endIdx);
-		String strTrm = substring.trim();
-		if (strTrm.startsWith(">") || strTrm.isEmpty()) {
-			return endIdx;
-		}
-		if (!strTrm.startsWith("<")) {
-			throw new ShellException(EXP_SYNTAX);
-		}
-
-		int newEndIdx = endIdx;
-		Pattern inputRedirP = Pattern
-				.compile("[\\s]+<[\\s]+(([^\\n\"`'<>]*))[\\s]");
-		Matcher inputRedirM;
-		String inputRedirS = "";
-		int cmdVectorIndex = cmdVector.size() - 2;
-
-		while (!substring.matches("\\s*")) {
-			inputRedirM = inputRedirP.matcher(substring);
-			inputRedirS = "";
-			if (inputRedirM.find()) {
-				if (!cmdVector.get(cmdVectorIndex).isEmpty()) {
-					throw new ShellException(EXP_SYNTAX);
-				}
-				inputRedirS = inputRedirM.group(1);
-				cmdVector.set(cmdVectorIndex, inputRedirS);
-				newEndIdx = newEndIdx + inputRedirM.end() - 1;
-			} else {
-				break;
+	public String[] evaluate(String[] args) throws AbstractApplicationException, ShellException {
+		Vector<String> trimmedArgs = new Vector<String>();
+		boolean isPrevIORedir = false;
+		for (int i = 0; i < args.length; i++) {
+			if (isPrevIORedir) {
+				isPrevIORedir = false;
+				continue;
 			}
-			substring = str.substring(newEndIdx);
-		}
-		return newEndIdx;
-	}
-
-	/**
-	 * Extraction of output redirection from cmdLine with two slots at end of
-	 * cmdVector reserved for <inputredir and >outredir. For valid inputs,
-	 * assumption that input redir and output redir are always at the end of the
-	 * command and input stream first the output stream if both are in the args.
-	 * 
-	 * @param str
-	 *            String of command to split.
-	 * @param cmdVector
-	 *            Vector of String to store the found result into.
-	 * @param endIdx
-	 *            Index of str to start parsing from.
-	 * 
-	 * @return endIdx Index of string where the parsing of arguments stopped
-	 *         (due to no more matches).
-	 * 
-	 * @throws ShellException
-	 *             When more than one input redirection string is found, or when
-	 *             invalid syntax is encountered..
-	 */
-	int extractOutputRedir(String str, Vector<String> cmdVector, int endIdx)
-			throws ShellException {
-		String substring = str.substring(endIdx);
-		String strTrm = substring.trim();
-		if (strTrm.isEmpty()) {
-			return endIdx;
-		} 
-		if (!strTrm.startsWith(">")) {
-			throw new ShellException(EXP_SYNTAX);
-		}
-
-		int newEndIdx = endIdx;
-		Pattern inputRedirP = Pattern
-				.compile("[\\s]+>[\\s]+(([^\\n\"`'<>]*))[\\s]");
-		Matcher inputRedirM;
-		String inputRedirS = "";
-		int cmdVectorIdx = cmdVector.size() - 1;
-		while (!substring.matches("\\s*")) {
-
-			inputRedirM = inputRedirP.matcher(substring);
-			inputRedirS = "";
-			if (inputRedirM.find()) {
-				if (!cmdVector.get(cmdVectorIdx).isEmpty()) {
-					throw new ShellException(EXP_SYNTAX);
-				}
-				inputRedirS = inputRedirM.group(1);
-				cmdVector.set(cmdVectorIdx, inputRedirS);
-				newEndIdx = newEndIdx + inputRedirM.end() - 1;
-			} else {
-				break;
+			if (args[i].equals("<") || args[i].equals(">")) {
+				isPrevIORedir = true;
+				continue;
 			}
-			substring = str.substring(newEndIdx);
+			trimmedArgs.add(args[i]);
 		}
-		return newEndIdx;
-	}
-	
-	/**
-	 * Static method to creates an inputStream based on the file name or file
-	 * path.
-	 * 
-	 * @param inputStreamS
-	 *            String of file name or file path
-	 * 
-	 * @return InputStream of file opened
-	 * 
-	 * @throws ShellException
-	 *             If file is not found.
-	 */
-	public InputStream openInputRedir(String inputStreamS)
-			throws ShellException {
-		File inputFile = Paths.get(Environment.currentDirectory).resolve(inputStreamS).toFile();
-		FileInputStream fInputStream = null;
-		try {
-			fInputStream = new FileInputStream(inputFile);
-		} catch (FileNotFoundException e) {
-			throw new ShellException("File not found");
-		}
-		return fInputStream;
+		return args;
 	}
 
-	/**
-	 * Static method to creates an outputStream based on the file name or file
-	 * path.
-	 * 
-	 * @param onputStreamS
-	 *            String of file name or file path.
-	 * 
-	 * @return OutputStream of file opened.
-	 * 
-	 * @throws ShellException
-	 *             If file destination cannot be opened or inaccessible.
-	 */
-	public OutputStream openOutputRedir(String outputStreamS) 
-			throws ShellException{
-		File outputFile = Paths.get(Environment.currentDirectory).resolve(outputStreamS).toFile();
-		FileOutputStream fOutputStream = null;
+	public InputStream setInputStream(String[] args) throws ShellException {
 		try {
-			fOutputStream = new FileOutputStream(outputFile);
-		} catch (FileNotFoundException e) {
-			throw new ShellException("File not found");
+			boolean hasFile = false;
+			InputStream input = null;
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].equals("<")) {
+					if (hasFile) {
+						throw new ShellException("only 1 input can be specified");
+					}
+					hasFile = true;
+					File inputFile = FileUtil.getFileFromPath(args[i + 1]);
+					input = new FileInputStream(inputFile);
+				}
+			}
+			return input;
+		} catch (IOException e) {
+			throw new ShellException(e.getMessage());
+		} catch (ArrayIndexOutOfBoundsException arrayE) {
+			throw new ShellException("no input file specified");
 		}
-		return fOutputStream;
 	}
-	
+
+	public OutputStream setOutputStream(String[] args) throws ShellException {
+		try {
+			boolean hasFile = false;
+			OutputStream output = null;
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].equals(">")) {
+					if (hasFile) {
+						throw new ShellException("only 1 output can be specified");
+					}
+					hasFile = true;
+					Path path = Paths.get(Environment.currentDirectory).resolve(args[i + 1]);
+					File outputFile = new File(path.toString());
+					output = new FileOutputStream(outputFile);
+				}
+			}
+			return output;
+		} catch (IOException e) {
+			throw new ShellException(e.getMessage());
+		} catch (ArrayIndexOutOfBoundsException arrayE) {
+			throw new ShellException("no output file specified");
+		} catch (InvalidPathException pathE) {
+			throw new ShellException("invalid file specified");
+		}
+	}
 }

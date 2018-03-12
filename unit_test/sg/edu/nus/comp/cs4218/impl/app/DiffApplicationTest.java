@@ -562,4 +562,15 @@ public class DiffApplicationTest {
 		}
 		assertEquals(expected, output);
 	}
+
+	@Test
+	public void testFileFileLastLineEmpty() {
+		expected = "> \n";
+		try {
+			output = app.diffTwoFiles(currentDir + "file3.txt", currentDir + "file3_lastLineEmpty.txt", false, false, false);
+		} catch (Exception e) {
+			output = e.getMessage();
+		}
+		assertEquals(expected, output);
+	}
 }
