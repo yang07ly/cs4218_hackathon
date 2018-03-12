@@ -128,4 +128,23 @@ public final class FileUtil {
 		}
 		return file.isDirectory();
 	}
+
+	/**
+	 * Reads contents of a file
+	 * 
+	 * @param fileName
+	 * 			  String of the file/folder path.
+	 */
+	public static byte[] readAllBytes(String fileName) 
+			throws IOException {
+		Path currentDir = Paths.get(Environment.currentDirectory);
+		try {
+			Path filePath = currentDir.resolve(fileName);
+			return Files.readAllBytes(filePath);
+		} catch (Exception e) {
+			throw new IOException(fileName + ": No such file or directory");
+		}
+
+	}
+
 }

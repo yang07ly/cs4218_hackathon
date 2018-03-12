@@ -47,8 +47,8 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testRunExtraOperand() {
-		expected = "diff: More than 2 files specified";
-		String[] args = {FILE1_TXT, FILE2_TXT, FILE3_TXT};
+		expected = "diff: requires 2 files to be specified";
+		String[] args = { FILE1_TXT, FILE2_TXT, FILE3_TXT };
 		try {
 			app.run(args, null, null);
 		} catch (Exception e) {
@@ -554,8 +554,7 @@ public class DiffApplicationTest {
 
 	@Test
 	public void testDirDirAbsAbs() {
-		expected = "Only in " + currentDir + DIR1 + ": emptyFile.txt\nOnly in " 
-				+ currentDir + "dir2: file2.txt\n";
+		expected = "Only in " + currentDir + DIR1 + ": emptyFile.txt\nOnly in " + currentDir + "dir2: file2.txt\n";
 		try {
 			output = app.diffTwoDir(currentDir + DIR1, currentDir + "dir2", false, false, false);
 		} catch (Exception e) {

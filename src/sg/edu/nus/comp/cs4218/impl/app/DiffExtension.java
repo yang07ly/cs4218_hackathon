@@ -9,14 +9,15 @@ import sg.edu.nus.comp.cs4218.exception.DiffException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 public final class DiffExtension {
-	private DiffExtension() {}
+	private DiffExtension() {
+	}
 
-	public static void preProcessLines(BufferedReader reader, HashSet<String> set, Vector<String> lines, boolean isNoBlank)
-			throws DiffException {
+	public static void preProcessLines(BufferedReader reader, HashSet<String> set, Vector<String> lines,
+			boolean isNoBlank) throws DiffException {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-				if(isNoBlank && isEmpty(line)) {
+				if (isNoBlank && isEmpty(line)) {
 					continue;
 				}
 				set.add(line);
@@ -26,15 +27,15 @@ public final class DiffExtension {
 			throw new DiffException("IO error occured");
 		}
 	}
-	
+
 	public static boolean isEmpty(String string) {
-		for(int i = 0; i < string.length(); i++) {
-			if(!Character.isWhitespace(string.charAt(i))) {
+		for (int i = 0; i < string.length(); i++) {
+			if (!Character.isWhitespace(string.charAt(i))) {
 				return false;
 			}
 		}
 		return true;
-    }
+	}
 
 	public static void getArguments(String[] args, boolean flags[], boolean[] hasFilesDirStream, Vector<String> files,
 			Vector<String> directories) throws DiffException {
@@ -71,10 +72,10 @@ public final class DiffExtension {
 					}
 				}
 			} else if (FileUtil.isDirectory(args[i])) {
-				flags[1] = true;
+				hasFilesDirStream[1] = true;
 				directories.add(args[i]);
 			} else {
-				flags[0] = true;
+				hasFilesDirStream[0] = true;
 				files.add(args[i]);
 			}
 		}

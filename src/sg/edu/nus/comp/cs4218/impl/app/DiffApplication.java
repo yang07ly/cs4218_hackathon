@@ -1,6 +1,8 @@
 package sg.edu.nus.comp.cs4218.impl.app;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,26 +24,32 @@ public class DiffApplication implements DiffInterface {
 		if (args == null || args.length == 0) {
 			throw new DiffException("No files specified");
 		} else {
-			if (args.length > 2) {
-				throw new DiffException("More than 2 files specified");
-			}
 			Vector<String> files = new Vector<String>();
 			Vector<String> directories = new Vector<String>();
 			boolean[] flags = new boolean[3];
 			boolean[] hasFilesDirStream = new boolean[3];
 			DiffExtension.getArguments(args, flags, hasFilesDirStream, files, directories);
+			if ((files.size() + directories.size()) != 2) {
+				throw new DiffException("requires 2 files to be specified");
+			}
 			String[] allFiles = files.toArray(new String[files.size()]);
 			String[] allDir = directories.toArray(new String[directories.size()]);
+			String message = "";
 			if (hasFilesDirStream[0]) {
 				if (hasFilesDirStream[1]) {
-					diffDirAndFile(allDir[0], allFiles[0], flags[0], flags[1], flags[2]);
+					message = diffDirAndFile(allDir[0], allFiles[0], flags[0], flags[1], flags[2]);
 				} else if (hasFilesDirStream[2]) {
-					diffFileAndStdin(allFiles[0], stdin, flags[0], flags[1], flags[2]);
+					message = diffFileAndStdin(allFiles[0], stdin, flags[0], flags[1], flags[2]);
 				} else {
-					diffTwoFiles(allFiles[0], allFiles[1], flags[0], flags[1], flags[2]);
+					message = diffTwoFiles(allFiles[0], allFiles[1], flags[0], flags[1], flags[2]);
 				}
 			} else if (hasFilesDirStream[1]) {
-				diffTwoDir(allDir[0], allDir[1], flags[0], flags[1], flags[2]);
+				message = diffTwoDir(allDir[0], allDir[1], flags[0], flags[1], flags[2]);
+			}
+			try {
+				stdout.write(message.getBytes());
+			} catch (IOException e) {
+				throw new DiffException(e.getMessage());
 			}
 
 		}
@@ -49,29 +57,28 @@ public class DiffApplication implements DiffInterface {
 
 	public String diffDirAndFile(String folder, String fileNameB, Boolean isShowSame, Boolean isNoBlank,
 			Boolean isSimple) throws DiffException {
-		try {
-			String fileNameA = folder + File.separator + fileNameB;
-			File fileA = FileUtil.getFileFromPath(fileNameA);
-			File fileB = FileUtil.getFileFromPath(fileNameB);
-			BufferedReader readerA = new BufferedReader(new FileReader(fileA));
-			BufferedReader readerB = new BufferedReader(new FileReader(fileB));
-			String message = diffFiles(fileNameA, fileNameB, readerA, readerB, isShowSame, isNoBlank, isSimple);
-			readerA.close();
-			readerB.close();
-			return message;
-		} catch (IOException e) {
-			throw new DiffException(e.getMessage());
-		}
+		String fileNameA = folder + File.separator + fileNameB;
+		String message = diffTwoFiles(fileNameA, fileNameB, isShowSame, isNoBlank, isSimple);
+		return message;
 	}
 
 	@Override
 	public String diffTwoFiles(String fileNameA, String fileNameB, Boolean isShowSame, Boolean isNoBlank,
 			Boolean isSimple) throws DiffException {
 		try {
-			File fileA = FileUtil.getFileFromPath(fileNameA);
-			File fileB = FileUtil.getFileFromPath(fileNameB);
-			BufferedReader readerA = new BufferedReader(new FileReader(fileA));
-			BufferedReader readerB = new BufferedReader(new FileReader(fileB));
+			byte[] byteArrayA = FileUtil.readAllBytes(fileNameA);
+			byte[] byteArrayB = FileUtil.readAllBytes(fileNameB);
+			byte[] newLine = System.getProperty("line.separator").getBytes();
+			ByteArrayOutputStream outputStreamA = new ByteArrayOutputStream();
+			ByteArrayOutputStream outputStreamB = new ByteArrayOutputStream();
+			outputStreamA.write(byteArrayA);
+			outputStreamA.write(newLine);
+			outputStreamB.write(byteArrayB);
+			outputStreamB.write(newLine);
+			byteArrayA = outputStreamA.toByteArray();
+			byteArrayB = outputStreamB.toByteArray();
+			BufferedReader readerA = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteArrayA)));
+			BufferedReader readerB = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteArrayB)));
 			String message = diffFiles(fileNameA, fileNameB, readerA, readerB, isShowSame, isNoBlank, isSimple);
 			readerA.close();
 			readerB.close();
