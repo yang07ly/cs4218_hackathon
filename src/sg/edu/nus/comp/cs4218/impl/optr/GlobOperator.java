@@ -1,12 +1,16 @@
-package sg.edu.nus.comp.cs4218.impl.cmd;
+package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.StringJoiner;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
 
@@ -15,7 +19,58 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
  * valid path in the system by replacing all the unquoted asterisk symbols 
  * in specified path by some (possibly empty) sequences of non-slash characters.
  */
-public class GlobCommand {
+public class GlobOperator {
+	final private ShellImpl shell;
+	
+	public GlobOperator(ShellImpl shellImpl) {
+		shell = shellImpl;
+	}
+	
+	/**
+	 * Returns all the paths to existing files and directories such that these 
+	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
+	 * specified path by some (possibly empty) sequences of non-slash characters.
+	 * If no such path exist, the specified path is return without changes.
+	 * 
+	 * @param fileNames
+	 * 			  Array of String specifying the of the file paths.
+	 * @return String Array
+	 * 			  paths that matches the wildcard fileNames
+	 * 
+	 * @throws IOException
+	 *            If the specified path is null.
+	 */
+	public String[] evaluate(String... fileNames) throws AbstractApplicationException, ShellException {
+		Vector<String> newArgs = new Vector<String>();
+		
+		for (int i = 0; i < fileNames.length; i++) {
+			//get indices of * and do not glob arg if does not contain *
+			HashSet<Integer> wildCardIndices = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuote(fileNames[i], '*')));
+			if (wildCardIndices.isEmpty()) {
+				newArgs.add(fileNames[i]);
+				continue;
+			}
+
+			//replace * with regex wildcard .*?
+			StringJoiner regexArg = new StringJoiner("");
+			for (int j = 0; j < fileNames[i].length(); j++) {
+				if (wildCardIndices.contains(j)) {
+					regexArg.add(".*?");
+				} else {
+					regexArg.add(fileNames[i].substring(j, j+1));
+				}
+			}
+			
+			//get globbed paths
+			String[] removedQuote = shell.removeQuote(regexArg.toString());
+			String[] paths = evaluate(removedQuote[0]);
+			for (int j = 0; j < paths.length; j++) {
+				newArgs.add(paths[j]);
+			}
+		}
+				
+		return newArgs.toArray(new String[newArgs.size()]);
+	}
 	
 	/**
 	 * Returns all the paths to existing files and directories such that these 
@@ -25,11 +80,13 @@ public class GlobCommand {
 	 * 
 	 * @param fileName
 	 * 			  String of the file path.
+	 * @return String Array
+	 * 			  paths that matches the wildcard fileName
 	 * 
 	 * @throws IOException
 	 *            If the specified path is null.
 	 */
-	public String[] evaluate(String fileName) throws AbstractApplicationException, ShellException {
+	private String[] evaluate(String fileName) throws ShellException {
 		if (fileName == null) {
 			throw new ShellException("Null Pointer Exception");
 		}
@@ -74,7 +131,7 @@ public class GlobCommand {
 		}
 		
 		if (dirList.isEmpty() ) {
-			return new String[] {fileName};
+			return new String[] {fileName.replace(".*?", "*")};
 		} else {
 			return dirList.toArray(new String[dirList.size()]);
 		}
@@ -112,7 +169,7 @@ public class GlobCommand {
 				continue;
 			}
 			
-			if (nextDir.contains("*")) {
+			if (nextDir.contains(".*?")) {
 				appendMatchedPath(newList, dirList.get(i), nextDir);
 			} else {
 				appendPath(newList, dirList.get(i), nextDir);
@@ -135,7 +192,8 @@ public class GlobCommand {
 	 * 			  String of file or folder in the parent directory.
 	 */
 	private void appendMatchedPath(Vector<String> paths, String parent, String wildCardName) {
-		String regex = wildCardName.replace("*",".*?");
+		//String regex = wildCardName.replace("*",".*?");
+		String regex = wildCardName;
 		String[] filesInDir;
 		try {
 			filesInDir = FileUtil.getFolderContent(parent);

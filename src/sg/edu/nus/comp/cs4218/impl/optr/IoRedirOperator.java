@@ -1,4 +1,4 @@
-package sg.edu.nus.comp.cs4218.impl.cmd;
+package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,9 +24,9 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  * “>“ [ <whitespace> ] <argument>
  **/
 
-public class IoRedirCommand {
+public class IoRedirOperator {
 
-	public String[] evaluate(String[] args) throws AbstractApplicationException, ShellException {
+	public String[] evaluate(String... args) throws AbstractApplicationException, ShellException {
 		Vector<String> trimmedArgs = new Vector<String>();
 		boolean isPrevIORedir = false;
 		for (int i = 0; i < args.length; i++) {
@@ -43,7 +43,7 @@ public class IoRedirCommand {
 		return args;
 	}
 
-	public InputStream setInputStream(String[] args) throws ShellException {
+	public InputStream getInputStream(String... args) throws ShellException {
 		try {
 			boolean hasFile = false;
 			InputStream input = null;
@@ -61,11 +61,11 @@ public class IoRedirCommand {
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
 		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			throw new ShellException("no input file specified");
+			return null;
 		}
 	}
 
-	public OutputStream setOutputStream(String[] args) throws ShellException {
+	public OutputStream getOutputStream(String... args) throws ShellException {
 		try {
 			boolean hasFile = false;
 			OutputStream output = null;
@@ -83,10 +83,10 @@ public class IoRedirCommand {
 			return output;
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
-		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			throw new ShellException("no output file specified");
 		} catch (InvalidPathException pathE) {
 			throw new ShellException("invalid file specified");
-		}
+		}  catch (ArrayIndexOutOfBoundsException arrayE) {
+			return null;
+		} 
 	}
 }

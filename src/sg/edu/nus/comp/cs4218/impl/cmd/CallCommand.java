@@ -4,13 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
+import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
  * A Call Command is a sub-command consisting of at least one non-keyword and
@@ -22,34 +21,18 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
  */
 
 public class CallCommand implements Command {
-	public static final String EXP_INVALID_APP = "Invalid app.";
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
-	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
-			+ "operator cannot be used side by side.";
-	public static final String EXP_SAME_REDIR = "Input redirection file same as "
-			+ "output redirection file.";
-	public static final String EXP_STDOUT = "Error writing to stdout.";
-	public static final String EXP_NOT_SUPPORTED = " not supported yet";
+	private final ShellImpl shell;
+	private final String cmdline;
+	
+	private String app;
+	private String[] argsArray;
 
-	String app;
-	String cmdline, inputStreamS, outputStreamS;
-	String[] argsArray;
-	Boolean error;
-	String errorMsg; 
-	IoRedirCommand ioRedirCommand;
-	CmdSubCommand cmdSubCommmand;
-
-	public CallCommand(String cmdline) {
+	public CallCommand(ShellImpl shellImpl, String cmdline) {
+		shell = shellImpl;
 		this.cmdline = cmdline.trim();
-		app = inputStreamS = outputStreamS = "";
-		error = false;
-		errorMsg = "";
+		
+		app = "";
 		argsArray = new String[0];
-		ioRedirCommand = new IoRedirCommand();
-	}
-
-	public CallCommand() {
-		this("");
 	}
 
 	/**
@@ -69,29 +52,32 @@ public class CallCommand implements Command {
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		if (error) {
-			throw new ShellException(errorMsg);
-		}
-
 		InputStream inputStream;
 		OutputStream outputStream;
 		
-		cmdSubCommmand = new CmdSubCommand(argsArray);
-		cmdSubCommmand.evaluate(stdin, stdout);
-		argsArray = cmdSubCommmand.getArgsArray();
-		if (("").equals(inputStreamS)) {// empty
+		//perform globbing
+		argsArray = shell.performGlob(argsArray);
+		
+		//perform command substitution
+		argsArray = shell.performCmdSub(argsArray);
+		
+		//extract IO Redirection
+		argsArray = shell.removeStreamFromArgs(argsArray);
+		inputStream = shell.getInputStream(argsArray);
+		if (inputStream == null) {// empty
 			inputStream = stdin;
-		} else { // not empty
-			inputStream = ioRedirCommand.openInputRedir(inputStreamS);
 		}
-		if (("").equals(outputStreamS)) { // empty
+		outputStream = shell.getOutputStream(argsArray);
+		if (outputStream == null) { // empty
 			outputStream = stdout;
-		} else {
-			outputStream = ioRedirCommand.openOutputRedir(outputStreamS);
 		}
-		ShellImpl.runApp(app, argsArray, inputStream, outputStream);
-		ShellImpl.closeInputStream(inputStream);
-		ShellImpl.closeOutputStream(outputStream);
+		
+		//remove quotes from evaluated arguments
+		argsArray = shell.removeQuote(argsArray);
+		
+		shell.runApp(app, argsArray, inputStream, outputStream);
+		StreamUtil.closeInputStream(inputStream);
+		StreamUtil.closeOutputStream(outputStream);
 	}
 
 	/**
@@ -106,60 +92,46 @@ public class CallCommand implements Command {
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
-
-		Vector<String> cmdVector = new Vector<String>();
-		Boolean result = true;
-		int endIdx = 0;
-		String str = " " + cmdline + " ";
-		try {
-			endIdx = extractArgs(str, cmdVector);
-			cmdVector.add(""); // reserved for input redir
-			cmdVector.add(""); // reserved for output redir
-			endIdx = ioRedirCommand.extractInputRedir(str, cmdVector, endIdx);
-			endIdx = ioRedirCommand.extractOutputRedir(str, cmdVector, endIdx);
-			// System.out.println(cmdVector.toString());
-		} catch (ShellException e) {
-			result = false;
+		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, ' ');
+		if (spaceIndices.length == 0) {
+			app = cmdline;
+			return;
 		}
-		if (str.substring(endIdx).matches("\\s*")) {
-			result = true;
-		} else {
-			result = false;
-		} 
-		if (!result) {
-			this.app = cmdVector.get(0);
-			error = true;
-			if (("").equals(errorMsg)) {
-				errorMsg = ShellImpl.EXP_SYNTAX;
+		
+		Arrays.sort(spaceIndices);
+		app = cmdline.substring(0, spaceIndices[0]);
+		
+		Vector<String> cmdArgs = new Vector<String>();
+		int startIndex = spaceIndices[0] + 1;
+		for (int i = 1; i < spaceIndices.length; i++) {
+			if (startIndex != spaceIndices[i]) {
+				cmdArgs.add(cmdline.substring(startIndex, spaceIndices[i]));
 			}
-			throw new ShellException(errorMsg);
+			startIndex = spaceIndices[i] + 1;
 		}
-		String[] cmdTokensArray = cmdVector
-				.toArray(new String[cmdVector.size()]);
-		this.app = cmdTokensArray[0];
-		int nTokens = cmdTokensArray.length;
-
-		// process inputRedir and/or outputRedir
-		processIoRedir(cmdTokensArray, nTokens);
-
+		if (startIndex < cmdline.length()) {
+			cmdArgs.add(cmdline.substring(startIndex, cmdline.length()));
+		}
+		
+		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}
 
-	private void processIoRedir(String[] cmdTokensArray, int nTokens) throws ShellException {
-		if (nTokens >= 3) { // last 2 for inputRedir & >outputRedir
-			this.inputStreamS = cmdTokensArray[nTokens - 2].trim();
-			this.outputStreamS = cmdTokensArray[nTokens - 1].trim();
-			if (!("").equals(inputStreamS)
-					&& inputStreamS.equals(outputStreamS)) {
-				error = true;
-				errorMsg = ShellImpl.EXP_SAME_REDIR;
-				throw new ShellException(errorMsg);
-			} 
-			this.argsArray = Arrays.copyOfRange(cmdTokensArray, 1,
-					cmdTokensArray.length - 2);
-		} else {
-			this.argsArray = new String[0]; 
-		}
-	}
+//	private void processIoRedir(String[] cmdTokensArray, int nTokens) throws ShellException {
+//		if (nTokens >= 3) { // last 2 for inputRedir & >outputRedir
+//			this.inputStreamS = cmdTokensArray[nTokens - 2].trim();
+//			this.outputStreamS = cmdTokensArray[nTokens - 1].trim();
+//			if (!("").equals(inputStreamS)
+//					&& inputStreamS.equals(outputStreamS)) {
+//				error = true;
+//				errorMsg = EXP_SAME_REDIR;
+//				throw new ShellException(errorMsg);
+//			} 
+//			this.argsArray = Arrays.copyOfRange(cmdTokensArray, 1,
+//					cmdTokensArray.length - 2);
+//		} else {
+//			this.argsArray = new String[0]; 
+//		}
+//	}
 
 
 	/**
@@ -183,55 +155,52 @@ public class CallCommand implements Command {
 	 *             If an error in the syntax of the command is detected while
 	 *             parsing.
 	 */
-	int extractArgs(String str, Vector<String> cmdVector) throws ShellException {
-		//		System.out.println(str);
-		//		str = "echo `echo a; echo b`";
-		//		System.out.println(str);
-		String patternDash = "[\\s]+(-[A-Za-z]*)[\\s]";
-		String patternUQ = "[\\s]+([^\\s\"'`\\n;|<>]*)[\\s]";
-		String patternDQ = "[\\s]+\"([^\\n\"`]*)\"[\\s]";
-		String patternSQ = "[\\s]+\'([^\\n']*)\'[\\s]";
-		String patternBQ = "[\\s]+(`[^\\n`]*`)[\\s]";
-		String patternBQinDQ = "[\\s]+\"([^\\n\"`]*`[^\\n]*`[^\\n\"`]*)\"[\\s]";
-		String[] patterns = { patternDash, patternUQ, patternDQ, patternSQ,
-				patternBQ, patternBQinDQ };
-		String substring;
-		int newStartIdx = 0, smallestStartIdx, smallestPattIdx, newEndIdx = 0;
-		do {
-			substring = str.substring(newEndIdx);
-			smallestStartIdx = -1;
-			smallestPattIdx = -1;
-			if (substring.trim().startsWith("<")
-					|| substring.trim().startsWith(">")) {
-				break;
-			}
-			for (int i = 0; i < patterns.length; i++) {
-				Pattern pattern = Pattern.compile(patterns[i]);
-				Matcher matcher = pattern.matcher(substring);
-				if (matcher.find()
-						&& (matcher.start() < smallestStartIdx || smallestStartIdx == -1)) {
-					smallestPattIdx = i;
-					smallestStartIdx = matcher.start();
-				}
-			}
-			if (smallestPattIdx != -1) { // if a pattern is found
-				Pattern pattern = Pattern.compile(patterns[smallestPattIdx]);
-				Matcher matcher = pattern.matcher(str.substring(newEndIdx));
-				if (matcher.find()) {
-					String matchedStr = matcher.group(1);
-					newStartIdx = newEndIdx + matcher.start();
-					if (newStartIdx != newEndIdx) {
-						error = true;
-						errorMsg = ShellImpl.EXP_SYNTAX;
-						throw new ShellException(errorMsg);
-					} // check if there's any invalid token not detected
-					cmdVector.add(matchedStr);
-					newEndIdx = newEndIdx + matcher.end() - 1;
-				}
-			}
-		} while (smallestPattIdx != -1);
-		return newEndIdx;
-	}
+//	int extractArgs(String str, Vector<String> cmdVector) throws ShellException {
+//		String patternDash = "[\\s]+(-[A-Za-z]*)[\\s]";
+//		String patternUQ = "[\\s]+([^\\s\"'`\\n;|<>]*)[\\s]";
+//		String patternDQ = "[\\s]+\"([^\\n\"`]*)\"[\\s]";
+//		String patternSQ = "[\\s]+\'([^\\n']*)\'[\\s]";
+//		String patternBQ = "[\\s]+(`[^\\n`]*`)[\\s]";
+//		String patternBQinDQ = "[\\s]+\"([^\\n\"`]*`[^\\n]*`[^\\n\"`]*)\"[\\s]";
+//		String[] patterns = { patternDash, patternUQ, patternDQ, patternSQ,
+//				patternBQ, patternBQinDQ };
+//		String substring;
+//		int newStartIdx = 0, smallestStartIdx, smallestPattIdx, newEndIdx = 0;
+//		do {
+//			substring = str.substring(newEndIdx);
+//			smallestStartIdx = -1;
+//			smallestPattIdx = -1;
+//			if (substring.trim().startsWith("<")
+//					|| substring.trim().startsWith(">")) {
+//				break;
+//			}
+//			for (int i = 0; i < patterns.length; i++) {
+//				Pattern pattern = Pattern.compile(patterns[i]);
+//				Matcher matcher = pattern.matcher(substring);
+//				if (matcher.find()
+//						&& (matcher.start() < smallestStartIdx || smallestStartIdx == -1)) {
+//					smallestPattIdx = i;
+//					smallestStartIdx = matcher.start();
+//				}
+//			}
+//			if (smallestPattIdx != -1) { // if a pattern is found
+//				Pattern pattern = Pattern.compile(patterns[smallestPattIdx]);
+//				Matcher matcher = pattern.matcher(str.substring(newEndIdx));
+//				if (matcher.find()) {
+//					String matchedStr = matcher.group(1);
+//					newStartIdx = newEndIdx + matcher.start();
+//					if (newStartIdx != newEndIdx) {
+//						error = true;
+//						errorMsg = EXP_SYNTAX;
+//						throw new ShellException(errorMsg);
+//					} // check if there's any invalid token not detected
+//					cmdVector.add(matchedStr);
+//					newEndIdx = newEndIdx + matcher.end() - 1;
+//				}
+//			}
+//		} while (smallestPattIdx != -1);
+//		return newEndIdx;
+//	}
 
 
 	/**
@@ -239,8 +208,6 @@ public class CallCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		// TODO Auto-generated method stub
-
+		//not used
 	}
-
 }

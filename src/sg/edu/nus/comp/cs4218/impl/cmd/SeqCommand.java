@@ -1,53 +1,35 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 /**
  * A Sequence Command is a semicolon operator consisting of commands
  * 
  * <p>
- * <b>Command format:</b> <code> <seq> ::= <command> “;” <command></code>
+ * <b>Command format:</b> <code> <seq> ::= <command> ";" <command></code>
  * </p>
  */
 
 public class SeqCommand implements Command {
-	public static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
-	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
-			+ "operator cannot be used side by side.";
-	public static final String EXP_SAME_REDIR = "Input redirection file same as "
-			+ "output redirection file.";
-	public static final String EXP_STDOUT = "Error writing to stdout.";
-	public static final String EXP_NOT_SUPPORTED = " not supported yet";
+	private static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
 	
-	public static final char CHAR_BQ = '`';
-	public static final char CHAR_DQ = '"';
-	public static final char CHAR_SQ = '\'';
-	public static final char SEQ_OPERATOR = ';';
-	public static final String PIPE_OPERATOR = "|";
+	private final ShellImpl shell;
+	private final String cmdline;
+	
+	private String[] argsArray;
 
-	String app;
-	String cmdline, inputStreamS, outputStreamS;
-	Vector<String> argsArray;
-	Boolean error;
-	String errorMsg;
-
-	public SeqCommand(String cmdline) {
+	public SeqCommand(ShellImpl shellImpl, String cmdline) {
+		shell = shellImpl;
 		this.cmdline = cmdline.trim();
-		app = inputStreamS = outputStreamS = "";
-		error = false;
-		errorMsg = "";
-		argsArray = new Vector<String>();
-	}
-
-	public SeqCommand() {
-		this("");
 	}
 
 	/**
@@ -67,22 +49,30 @@ public class SeqCommand implements Command {
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		if (error) {
-			throw new ShellException(errorMsg);
-		}
-		for (int i = 0; i < argsArray.size(); i++) {
-			String args = argsArray.get(i);
-			if (args.contains(PIPE_OPERATOR)) {
-				PipeCommand pipeCommand = new PipeCommand(args);
-				pipeCommand.parse();
-				pipeCommand.evaluate(stdin, stdout);
-			} else {
-				CallCommand callCommand = new CallCommand(args);
-				callCommand.parse();
-				callCommand.evaluate(stdin, stdout);
-			}
+		if (argsArray.length == 0) {
+			return;
 		}
 		
+		for (int i = 0; i < argsArray.length; i++) {
+			try {
+				String args = argsArray[i];
+				if (args.contains("|")) {
+					PipeCommand pipeCmd = new PipeCommand(shell, args);
+					pipeCmd.parse();
+					pipeCmd.evaluate(stdin, stdout);
+				} else {
+					CallCommand callCmd = new CallCommand(shell, args);
+					callCmd.parse();
+					callCmd.evaluate(stdin, stdout);
+				}
+			} catch (AbstractApplicationException | ShellException e) {
+				try {
+					stdout.write((e.getMessage() + "\n").getBytes());
+				} catch (IOException e1) {
+					throw new ShellException("IO Exception");
+				}
+			}
+		}
 	}
 
 	/**
@@ -95,38 +85,35 @@ public class SeqCommand implements Command {
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
-		int sizeBQ = 0;
-		int sizeDQ = 0;
-		int sizeSQ = 0;
-		int index = 0;
-		
-		if (cmdline.length() == 0) {
+		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, ';');
+		if (spaceIndices.length == 0) {
+			argsArray = new String[] {cmdline};
 			return;
 		}
 		
-		if (cmdline.charAt(0) == SEQ_OPERATOR || cmdline.charAt(cmdline.length() - 1) == SEQ_OPERATOR) {
+		Arrays.sort(spaceIndices);
+		Vector<String> cmdArgs = new Vector<String>();
+		int startIndex = 0;
+		for (int i = 0; i < spaceIndices.length; i++) {
+			String callCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			if (callCmd.matches("\\s*")) {
+				throw new ShellException(EXP_INVALID_SEQ);
+			}
+			cmdArgs.add(callCmd);
+			startIndex = spaceIndices[i] + 1;
+		}
+		if (startIndex >= cmdline.length()) {
 			throw new ShellException(EXP_INVALID_SEQ);
 		}
-		
-		for (int i = 0; i < cmdline.length(); i++) {
-			if (cmdline.charAt(i) == CHAR_BQ) {
-				sizeBQ++;	
-			} else if (cmdline.charAt(i) == CHAR_DQ) {
-				sizeDQ++;
-			} else if (cmdline.charAt(i) == CHAR_SQ) {
-				sizeSQ++;
-			} else if (cmdline.charAt(i) == SEQ_OPERATOR && sizeBQ % 2 == 0) {
-				String command = cmdline.substring(index, i);
-				argsArray.add(command);
-				index = i + 1;
-			} 
-			
-			if (i == cmdline.length() - 1 && (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)) {
-				argsArray.add(cmdline.substring(index, i + 1));
-				break;
+		if (startIndex < cmdline.length()) {
+			String callCmd = cmdline.substring(startIndex, cmdline.length());
+			if (callCmd.matches("\\s*")) {
+				throw new ShellException(EXP_INVALID_SEQ);
 			}
-			
+			cmdArgs.add(callCmd);
 		}
+		
+		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}
 	
 	/**
@@ -134,7 +121,6 @@ public class SeqCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		// TODO Auto-generated method stub
-
+		// not used
 	}
 }

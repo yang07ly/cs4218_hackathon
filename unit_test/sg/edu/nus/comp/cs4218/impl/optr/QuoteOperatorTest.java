@@ -1,14 +1,16 @@
-package sg.edu.nus.comp.cs4218.impl.cmd;
+package sg.edu.nus.comp.cs4218.impl.optr;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class QuoteCommandTest {
+import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
+
+public class QuoteOperatorTest {
 	private static final String ASD = "asd";
 	private static final String UNCLOSED_QUOTES = "Quote: Unclosed quotes";
-	QuoteCommand command;
+	QuoteOperator command;
 	String expected, cmdString;
 	String[] output;
 

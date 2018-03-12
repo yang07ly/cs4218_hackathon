@@ -11,6 +11,7 @@ import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
+import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
  * A Pipe Command is a left-associative operator consisting of call/pipe and call commands
@@ -22,35 +23,15 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 public class PipeCommand implements Command{
 	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
-	public static final String EXP_REDIR_PIPE = "File output redirection and pipe "
-			+ "operator cannot be used side by side.";
-	public static final String EXP_SAME_REDIR = "Input redirection file same as "
-			+ "output redirection file.";
-	public static final String EXP_STDOUT = "Error writing to stdout.";
-	public static final String EXP_NOT_SUPPORTED = " not supported yet";
+	
+	private final ShellImpl shell;
+	private final String cmdline;
+	private String[] argsArray;
 
-	public static final char CHAR_BQ = '`';
-	public static final char CHAR_DQ = '"';
-	public static final char CHAR_SQ = '\'';
-	public static final char PIPE_OPERATOR = '|';
-
-	String app;
-	String cmdline, inputStreamS, outputStreamS;
-	Vector<String> argsArray;
-	Boolean error;
-	String errorMsg;
-
-	public PipeCommand(String cmdline) {
+	public PipeCommand(ShellImpl shellImpl, String cmdline) {
+		shell = shellImpl;
 		this.cmdline = cmdline.trim();
-		app = inputStreamS = outputStreamS = "";
-		error = false;
-		errorMsg = "";
-		argsArray = new Vector<String>();
-	}
-
-	public PipeCommand() {
-		this("");
+		argsArray = new String[0];
 	}
 
 	/**
@@ -69,18 +50,18 @@ public class PipeCommand implements Command{
 	 */
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
-		if (argsArray.isEmpty()) {
+		if (argsArray.length == 0) {
 			return;
 		}
 		
 		InputStream inputStream = stdin;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		String command = argsArray.get(0);
-		CallCommand callCommand = new CallCommand(command);
+		String command = argsArray[0];
+		CallCommand callCommand = new CallCommand(shell, command);
 		callCommand.parse();
 		callCommand.evaluate(inputStream, outputStream);
 
-		for (int i = 1; i < argsArray.size(); i++) {
+		for (int i = 1; i < argsArray.length; i++) {
 			if (outputStream.size() > 0) {
 				byte[] temp = Arrays.copyOfRange(outputStream.toByteArray(), 0, outputStream.size() - 1);
 				inputStream = new ByteArrayInputStream(temp);
@@ -89,14 +70,13 @@ public class PipeCommand implements Command{
 			}
 			outputStream = new ByteArrayOutputStream();
 			
-			command = argsArray.get(i);
-			callCommand = new CallCommand(command);
+			command = argsArray[i];
+			callCommand = new CallCommand(shell, command);
 			callCommand.parse();
 			callCommand.evaluate(inputStream, outputStream);
 		}
 
-		ShellImpl.writeToStdout(outputStream, stdout);
-		ShellImpl.outputStreamToInputStream(outputStream);
+		StreamUtil.writeToStdout(outputStream, stdout);
 		return;
 	}
 
@@ -110,39 +90,35 @@ public class PipeCommand implements Command{
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
-
-		int sizeBQ = 0;
-		int sizeDQ = 0;
-		int sizeSQ = 0;
-		int index = 0;
-
-		if (cmdline.length() == 0) {
+		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, '|');
+		if (spaceIndices.length == 0) {
+			argsArray = new String[] {cmdline};
 			return;
 		}
-
-		if (cmdline.charAt(0) == PIPE_OPERATOR || cmdline.charAt(cmdline.length() - 1) == PIPE_OPERATOR) {
+		
+		Arrays.sort(spaceIndices);
+		Vector<String> cmdArgs = new Vector<String>();
+		int startIndex = 0;
+		for (int i = 0; i < spaceIndices.length; i++) {
+			String callCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			if (callCmd.matches("\\s*")) {
+				throw new ShellException(EXP_INVALID_PIPE);
+			}
+			cmdArgs.add(callCmd);
+			startIndex = spaceIndices[i] + 1;
+		}
+		if (startIndex >= cmdline.length()) {
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
-
-		for (int i = 0; i < cmdline.length(); i++) {
-			if (cmdline.charAt(i) == CHAR_BQ) {
-				sizeBQ++;	
-			} else if (cmdline.charAt(i) == CHAR_DQ) {
-				sizeDQ++;
-			} else if (cmdline.charAt(i) == CHAR_SQ) {
-				sizeSQ++;
-			} else if (cmdline.charAt(i) == PIPE_OPERATOR && sizeBQ % 2 == 0) {
-				argsArray.add(cmdline.substring(index, i));
-				index = i + 1;
-			} 
-			if ((i == cmdline.length() - 1) && (sizeSQ % 2 == 0 || sizeDQ % 2 == 0 || sizeBQ % 2 == 0)) {
-				{
-					argsArray.add(cmdline.substring(index, i + 1));
-					break;
-				}
+		if (startIndex < cmdline.length()) {
+			String callCmd = cmdline.substring(startIndex, cmdline.length());
+			if (callCmd.matches("\\s*")) {
+				throw new ShellException(EXP_INVALID_PIPE);
 			}
-
+			cmdArgs.add(callCmd);
 		}
+		
+		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}
 
 	/**
@@ -150,8 +126,6 @@ public class PipeCommand implements Command{
 	 */
 	@Override
 	public void terminate() {
-		// TODO Auto-generated method stub
-
+		// not used
 	}
-
 }

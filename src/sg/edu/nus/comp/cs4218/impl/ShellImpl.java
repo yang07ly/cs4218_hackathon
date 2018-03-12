@@ -4,7 +4,6 @@ import java.io.*;
 
 import sg.edu.nus.comp.cs4218.Application;
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
@@ -19,8 +18,11 @@ import sg.edu.nus.comp.cs4218.impl.app.MkdirApplication;
 import sg.edu.nus.comp.cs4218.impl.app.PasteApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SplitApplication;
-import sg.edu.nus.comp.cs4218.impl.cmd.CallCommand;
 import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
+import sg.edu.nus.comp.cs4218.impl.optr.CmdSubOperator;
+import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
+import sg.edu.nus.comp.cs4218.impl.optr.IoRedirOperator;
+import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
 
 /**
  * A Shell is a command interpreter and forms the backbone of the entire
@@ -33,18 +35,20 @@ import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
  * </p>
  */
 
-public class ShellImpl implements Shell {
-
-	public static final String EXP_INVALID_APP = "Invalid app.";
-	public static final String EXP_SYNTAX = "Invalid syntax encountered.";
-	public static final String EXP_REDIR_PIPE = "File output redirection and "
-			+ "pipe operator cannot be used side by side.";
-	public static final String EXP_SAME_REDIR = "Input redirection file same "
-			+ "as output redirection file.";
-	public static final String EXP_STDOUT = "Error writing to stdout.";
-	public static final String EXP_NOT_SUPPORTED = " not supported yet";
-
-
+public class ShellImpl {
+	
+	CmdSubOperator cmdSubOptr;
+	GlobOperator globOptr;
+	IoRedirOperator ioRedirOptr;
+	QuoteOperator quoteOptr;
+	
+	public ShellImpl() {
+		cmdSubOptr = new CmdSubOperator(this);
+		globOptr = new GlobOperator(this);
+		ioRedirOptr = new IoRedirOperator();
+		quoteOptr = new QuoteOperator();
+	}
+	
 	/**
 	 * Static method to run the application as specified by the application
 	 * command keyword and arguments.
@@ -67,7 +71,7 @@ public class ShellImpl implements Shell {
 	 * @throws ShellException
 	 *             If an unsupported or invalid application command is detected.
 	 */
-	public static void runApp(String app, String[] argsArray,
+	public void runApp(String app, String[] argsArray,
 			InputStream inputStream, OutputStream outputStream)
 			throws AbstractApplicationException, ShellException {
 		Application absApp = null;
@@ -96,96 +100,44 @@ public class ShellImpl implements Shell {
 		} else if (("diff").equals(app)) { // diff [Options] FILES...
 			absApp = new DiffApplication();
 		} else { // invalid command
-			throw new ShellException(app + ": " + EXP_INVALID_APP);
+			throw new ShellException(app + ": Invalid app.");
 		}
 		absApp.run(argsArray, inputStream, outputStream);
 	}
 
-	/**
-	 * Static method to close an inputStream.
-	 * 
-	 * @param inputStream
-	 *            InputStream to be closed.
-	 * 
-	 * @throws ShellException
-	 *             If inputStream cannot be closed successfully.
-	 */
-	public static void closeInputStream(InputStream inputStream)
-			throws ShellException {
-		if (inputStream != System.in) {
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				throw new ShellException(e.getMessage());
-			}
-		}
+	public void parseAndEvaluate(String cmdline, OutputStream stdout)
+			throws AbstractApplicationException, ShellException {
+		SeqCommand seqCmd = new SeqCommand(this, cmdline);
+		seqCmd.parse();
+		seqCmd.evaluate(System.in, stdout);
 	}
-
-	/**
-	 * Static method to close an outputStream. If outputStream provided is
-	 * System.out, it will be ignored.
-	 * 
-	 * @param outputStream
-	 *            OutputStream to be closed.
-	 * 
-	 * @throws ShellException
-	 *             If outputStream cannot be closed successfully.
-	 */
-	public static void closeOutputStream(OutputStream outputStream)
-			throws ShellException {
-		if (outputStream != System.out) {
-			try {
-				outputStream.close();
-			} catch (IOException e) {
-				throw new ShellException(e.getMessage());
-			}
-		}
+	
+	public Integer[] getIndicesOfCharNotInQuote(String source, char character) throws ShellException {
+		return quoteOptr.getIndices(source, character);
 	}
-
-	/**
-	 * Static method to write output of an outputStream to another outputStream,
-	 * usually System.out.
-	 * 
-	 * @param outputStream
-	 *            Source outputStream to get stream from.
-	 * @param stdout
-	 *            Destination outputStream to write stream to.
-	 * @throws ShellException
-	 *             If exception is thrown during writing.
-	 */
-	public static void writeToStdout(OutputStream outputStream,
-			OutputStream stdout) {
-		if (outputStream instanceof FileOutputStream) {
-			return;
-		}
-		try {
-			stdout.write(((ByteArrayOutputStream) outputStream).toByteArray());
-		} catch (IOException e) {
-			try {
-				throw new ShellException(EXP_STDOUT);
-			} catch (ShellException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+	
+	public String[] removeQuote(String... source) throws AbstractApplicationException, ShellException {
+		return quoteOptr.evaluate(source);
 	}
-
-	/**
-	 * Static method to pipe data from an outputStream to an inputStream, for
-	 * the evaluation of the Pipe Commands.
-	 * 
-	 * @param outputStream
-	 *            Source outputStream to get stream from.
-	 * 
-	 * @return InputStream with data piped from the outputStream.
-	 * 
-	 * @throws ShellException
-	 *             If exception is thrown during piping.
-	 */
-	public static InputStream outputStreamToInputStream(
-			OutputStream outputStream) throws ShellException {
-		return new ByteArrayInputStream(
-				((ByteArrayOutputStream) outputStream).toByteArray());
+	
+	public String[] performGlob(String... source) throws AbstractApplicationException, ShellException {
+		return globOptr.evaluate(source);
+	}
+	
+	public String[] performCmdSub(String... source) throws AbstractApplicationException, ShellException {
+		return cmdSubOptr.evaluate(source);
+	}
+	
+	public String[] removeStreamFromArgs(String... source) throws AbstractApplicationException, ShellException {
+		return ioRedirOptr.evaluate(source);
+	}
+	
+	public InputStream getInputStream(String... source) throws ShellException {
+		return ioRedirOptr.getInputStream(source);
+	}
+	
+	public OutputStream getOutputStream(String... source) throws ShellException {
+		return ioRedirOptr.getOutputStream(source);
 	}
 
 	/**
@@ -194,7 +146,6 @@ public class ShellImpl implements Shell {
 	 * @param args
 	 *            List of strings arguments, unused.
 	 */
-
 	public static void main(String... args) {
 		ShellImpl shell = new ShellImpl();
 
@@ -219,135 +170,5 @@ public class ShellImpl implements Shell {
 				System.out.println(e.getMessage());
 			}
 		}
-	}
-
-	@Override
-	public void parseAndEvaluate(String cmdline, OutputStream stdout)
-			throws AbstractApplicationException, ShellException {
-		InputStream stdin = System.in;
-		SeqCommand sequenceCommand = new SeqCommand(cmdline);
-		sequenceCommand.parse();
-		sequenceCommand.evaluate(stdin, stdout);
-	}
-
-	@Override
-	public String pipeTwoCommands(String args) {
-		return pipeMultipleCommands(args);
-	}
-
-	@Override
-	public String pipeMultipleCommands(String args) {
-		String[] commands = args.split("|");
-		InputStream inputBuffer = null;
-		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-
-		for (int i = 0; i < commands.length; i++) {
-			CallCommand command = new CallCommand(commands[i]);
-			inputBuffer = new ByteArrayInputStream(outputBuffer.toByteArray());
-			outputBuffer = new ByteArrayOutputStream();
-			try {
-				command.parse();
-				command.evaluate(inputBuffer, outputBuffer);
-			} catch (ShellException e) {
-				return pipeWithException(args);
-			} catch (AbstractApplicationException e) {
-				e.printStackTrace();
-			}
-		}
-		return outputBuffer.toString();
-	}
-
-	@Override
-	public String pipeWithException(String args) {
-		String[] commands = args.split("|");
-		InputStream inputBuffer = null;
-		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-		String exceptionMessage = "";
-		for (int i = 0; i < commands.length; i++) {
-			CallCommand command = new CallCommand(commands[i]);
-			inputBuffer = new ByteArrayInputStream(outputBuffer.toByteArray());
-			outputBuffer = new ByteArrayOutputStream();
-			try {
-				command.parse();
-				command.evaluate(inputBuffer, outputBuffer);
-			} catch (ShellException e) {
-				exceptionMessage = e.getMessage();
-			} catch (AbstractApplicationException e) {
-				e.printStackTrace();
-			}
-		}
-		return exceptionMessage;
-	}
-
-	@Override
-	public String globNoPaths(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String globOneFile(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String globFilesDirectories(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String globWithException(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectInput(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectOutput(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectInputWithNoFile(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectOutputWithNoFile(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectInputWithException(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String redirectOutputWithException(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String performCommandSubstitution(String args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
- 
-	@Override
-	public String performCommandSubstitutionWithException(String args) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
