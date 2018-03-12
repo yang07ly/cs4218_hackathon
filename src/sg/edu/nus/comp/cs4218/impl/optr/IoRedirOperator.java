@@ -20,22 +20,17 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  * IO Redirection Command is a call command which contain "<" or ">" iff the
  * backquotes are not surrounded by single quotes (if any).
  * 
- * Command format: <redirection> ::= "<" [ <whitespace> ] <argument> |
- * ">" [ <whitespace> ] <argument>
+ * Command format: <redirection> ::= "<" [ <whitespace> ] <argument> | ">" [
+ * <whitespace> ] <argument>
  **/
 
 public class IoRedirOperator {
 
 	public String[] evaluate(String... args) throws AbstractApplicationException, ShellException {
 		Vector<String> trimmedArgs = new Vector<String>();
-		boolean isPrevIORedir = false;
 		for (int i = 0; i < args.length; i++) {
-			if (isPrevIORedir) {
-				isPrevIORedir = false;
-				continue;
-			}
 			if (args[i].equals("<") || args[i].equals(">")) {
-				isPrevIORedir = true;
+				i++;
 				continue;
 			}
 			trimmedArgs.add(args[i]);
@@ -61,7 +56,7 @@ public class IoRedirOperator {
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
 		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			 throw new ShellException("no input file specified");		
+			throw new ShellException("no input file specified");
 		}
 	}
 
@@ -85,8 +80,8 @@ public class IoRedirOperator {
 			throw new ShellException(e.getMessage());
 		} catch (InvalidPathException pathE) {
 			throw new ShellException("invalid file specified");
-		}  catch (ArrayIndexOutOfBoundsException arrayE) {
-            throw new ShellException("no output file specified");
-		} 
+		} catch (ArrayIndexOutOfBoundsException arrayE) {
+			throw new ShellException("no output file specified");
+		}
 	}
 }

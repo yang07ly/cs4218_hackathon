@@ -58,8 +58,7 @@ public class DiffApplication implements DiffInterface {
 	public String diffDirAndFile(String folder, String fileNameB, Boolean isShowSame, Boolean isNoBlank,
 			Boolean isSimple) throws DiffException {
 		String fileNameA = folder + File.separator + fileNameB;
-		String message = diffTwoFiles(fileNameA, fileNameB, isShowSame, isNoBlank, isSimple);
-		return message;
+		return diffTwoFiles(fileNameA, fileNameB, isShowSame, isNoBlank, isSimple);
 	}
 
 	@Override

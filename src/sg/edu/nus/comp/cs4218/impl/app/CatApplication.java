@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -71,19 +72,20 @@ public class CatApplication implements Application {
 						byte[] byteFileArray = Files.readAllBytes(filePath);
 						stdout.write(byteFileArray);
 						stdout.write("\n".getBytes());
-					}catch(CatException catE) {
-						if(numOfFiles == 1) {
+					} catch (CatException catE) {
+						if (numOfFiles == 1) {
 							throw catE;
 						}
 						try {
-							String message = catE.getMessage()+"\n";
+							String message = catE.getMessage() + "\n";
 							stdout.write(message.getBytes());
 						} catch (IOException e) {
 							throw new CatException("Could not write to output stream");
 						}
-					}
-					catch (IOException e) {
+					} catch (IOException e) {
 						throw new CatException("Could not write to output stream");
+					} catch (InvalidPathException pathE) {
+						throw new CatException(args[i] + ": invalid path");
 					}
 				}
 
