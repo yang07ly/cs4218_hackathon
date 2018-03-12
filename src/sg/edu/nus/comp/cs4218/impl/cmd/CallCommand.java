@@ -62,7 +62,6 @@ public class CallCommand implements Command {
 		argsArray = shell.performCmdSub(argsArray);
 		
 		//extract IO Redirection
-		argsArray = shell.removeStreamFromArgs(argsArray);
 		inputStream = shell.getInputStream(argsArray);
 		if (inputStream == null) {// empty
 			inputStream = stdin;
@@ -71,6 +70,7 @@ public class CallCommand implements Command {
 		if (outputStream == null) { // empty
 			outputStream = stdout;
 		}
+		argsArray = shell.removeStreamFromArgs(argsArray);
 		
 		//remove quotes from evaluated arguments
 		argsArray = shell.removeQuote(argsArray);

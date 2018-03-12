@@ -40,7 +40,7 @@ public class IoRedirOperator {
 			}
 			trimmedArgs.add(args[i]);
 		}
-		return args;
+		return trimmedArgs.toArray(new String[trimmedArgs.size()]);
 	}
 
 	public InputStream getInputStream(String... args) throws ShellException {
@@ -61,7 +61,7 @@ public class IoRedirOperator {
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
 		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			return null;
+			 throw new ShellException("no input file specified");		
 		}
 	}
 
@@ -86,7 +86,7 @@ public class IoRedirOperator {
 		} catch (InvalidPathException pathE) {
 			throw new ShellException("invalid file specified");
 		}  catch (ArrayIndexOutOfBoundsException arrayE) {
-			return null;
+            throw new ShellException("no output file specified");
 		} 
 	}
 }
