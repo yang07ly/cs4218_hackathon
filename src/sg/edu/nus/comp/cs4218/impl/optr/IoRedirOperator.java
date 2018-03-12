@@ -20,8 +20,8 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  * IO Redirection Command is a call command which contain "<" or ">" iff the
  * backquotes are not surrounded by single quotes (if any).
  * 
- * Command format: <redirection> ::= “<“ [ <whitespace> ] <argument> |
- * “>“ [ <whitespace> ] <argument>
+ * Command format: <redirection> ::= "<" [ <whitespace> ] <argument> |
+ * ">" [ <whitespace> ] <argument>
  **/
 
 public class IoRedirOperator {
