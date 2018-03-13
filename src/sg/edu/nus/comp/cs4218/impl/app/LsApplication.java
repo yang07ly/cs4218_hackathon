@@ -107,8 +107,7 @@ public class LsApplication implements LsInterface {
 				outputStr += printFolders(folders, isRecursive);
 			}
 		}
-		return outputStr;
-		
+		return outputStr.trim();
 	}
 	
 	/**

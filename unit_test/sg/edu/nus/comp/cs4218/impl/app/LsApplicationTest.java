@@ -18,10 +18,10 @@ public class LsApplicationTest {
 	public static final String FOLDER1 = "folder1";
 	public static final String FOLDER1_1 = "folder1_1";
 	public static final String FOLDER2 = "folder2";
-	public static final String FOLDER1AND2 = "folder1  folder2\n";
+	public static final String FOLDER1AND2 = "folder1  folder2";
 	public static final String FILE1 = "file1.txt";
-	public static final String FOLDER1_CONTENT = "file1_in_folder1.txt  file2_in_folder1.txt  folder1_1\n";
-	public static final String FOLDER2_CONTENT = "file1_in_folder2.txt  file2_in_folder2.txt\n";
+	public static final String FOLDER1_CONTENT = "file1_in_folder1.txt  file2_in_folder1.txt  folder1_1";
+	public static final String FOLDER2_CONTENT = "file1_in_folder2.txt  file2_in_folder2.txt";
 	
 	LsApplication lsApp;
 	String expected, result;
@@ -47,7 +47,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testListFile() {
-		expected = "file1.txt\n";
+		expected = "file1.txt";
 		try {
 			result = lsApp.listFolderContent(false, false, FILE1);
 		} catch (LsException e) {
@@ -69,7 +69,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testListAbsoluteFolderContent() {
-		expected = "file1_in_folder1_1.txt  file2_in_folder1_1.txt\n";
+		expected = "file1_in_folder1_1.txt  file2_in_folder1_1.txt";
 		try {
 			result = lsApp.listFolderContent(false, false, Environment.currentDirectory + "/folder1/folder1_1");
 		} catch (LsException e) {
@@ -80,7 +80,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testDisplayNameContainQuote() {
-		expected = "'file name with space.txt'\n";
+		expected = "'file name with space.txt'";
 		try {
 			result = lsApp.listFolderContent(false, false, "file name with space.txt");
 		} catch (LsException e) {
@@ -111,7 +111,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testListMutipleFiles() {
-		expected = "file1.txt  file2.txt\n";
+		expected = "file1.txt  file2.txt";
 		try {
 			result = lsApp.listFolderContent(false, false, FILE1, "file2.txt");
 		} catch (LsException e) {
@@ -123,7 +123,7 @@ public class LsApplicationTest {
 	@Test
 	public void testListMultipleFoldersContent() {
 		expected = FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				FOLDER2 + STRING_COLON + "\n" + 
 				FOLDER2_CONTENT;
 		try {
@@ -138,7 +138,7 @@ public class LsApplicationTest {
 	public void testListMutipleFilesAndFolders() {
 		expected = Environment.currentDirectory + File.separator + FILE1 + "  file2.txt\n\n" + 
 				Environment.currentDirectory + File.separator + FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				FOLDER2 + STRING_COLON + "\n" + 
 				FOLDER2_CONTENT;
 		try {
@@ -152,7 +152,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testDirectoryListCurrentFolder() {
-		expected = ".\n";
+		expected = ".";
 		try {
 			result = lsApp.listFolderContent(true, false);
 		} catch (LsException e) {
@@ -163,7 +163,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testDirectoryListRelativeFile() {
-		expected = FOLDER2 + File.separator + "file1_in_folder2.txt\n";
+		expected = FOLDER2 + File.separator + "file1_in_folder2.txt";
 		try {
 			result = lsApp.listFolderContent(true, false, FOLDER2 + "/file1_in_folder2.txt");
 		} catch (LsException e) {
@@ -174,7 +174,7 @@ public class LsApplicationTest {
 
 	@Test
 	public void testDirectoryListAbsoluteFolder() {
-		expected = Environment.currentDirectory + File.separator + FOLDER2 + "\n";
+		expected = Environment.currentDirectory + File.separator + FOLDER2;
 		try {
 			result = lsApp.listFolderContent(true, false, Environment.currentDirectory + File.separator + FOLDER2);
 		} catch (LsException e) {
@@ -187,7 +187,7 @@ public class LsApplicationTest {
 	public void testDirectoryListFilesAndFolders() {
 		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + "file1_in_folder1.txt  " +
 				Environment.currentDirectory + File.separator + FOLDER2 + "  "  +
-				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt\n";
+				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt";
 		try {
 			result = lsApp.listFolderContent(true, false, Environment.currentDirectory + File.separator + FOLDER2, 
 					FOLDER2 + "/file2_in_folder2.txt", FOLDER1, 
@@ -206,7 +206,7 @@ public class LsApplicationTest {
 				"'." + File.separator + "folder name with space':\n" + 
 				"file1_in_folder_spaces.txt  file2_in_folder_spaces.txt\n\n" + 
 				".\\folder1:\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				"." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
 				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n\n" + 
 				"." + File.separator + FOLDER2 + STRING_COLON + "\n" + 
@@ -222,9 +222,9 @@ public class LsApplicationTest {
 	@Test
 	public void testRecursiveListAbsoluteFolder() {
 		expected =  Environment.currentDirectory + File.separator + FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				Environment.currentDirectory + File.separator + FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n";
+				"file1_in_folder1_1.txt  file2_in_folder1_1.txt";
 		try {
 			result = lsApp.listFolderContent(false, true, Environment.currentDirectory + "/folder1");
 		} catch (LsException e) {
@@ -236,7 +236,7 @@ public class LsApplicationTest {
 	@Test
 	public void testRecursiveListMultipleFolders() {
 		expected =  FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
 				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n\n" +
 				FOLDER2 + STRING_COLON + "\n" + 
@@ -256,9 +256,9 @@ public class LsApplicationTest {
 				Environment.currentDirectory + File.separator + FOLDER2 + STRING_COLON + "\n" + 
 				"file1_in_folder2.txt  file2_in_folder2.txt\n\n" +
 				FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + 
+				FOLDER1_CONTENT + "\n" + "\n" + 
 				FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n"; 
+				"file1_in_folder1_1.txt  file2_in_folder1_1.txt"; 
 		try {
 			result = lsApp.listFolderContent(false, true, Environment.currentDirectory + File.separator + FOLDER2, 
 					FOLDER2 + "/file1_in_folder2.txt", FOLDER1, 
@@ -273,7 +273,7 @@ public class LsApplicationTest {
 	public void testDirectoryAndRecursiveListFilesAndFolders() {
 		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + "file1_in_folder1.txt  " +
 				Environment.currentDirectory + File.separator + FOLDER2 + "  "  +
-				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt\n";
+				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt";
 		try {
 			result = lsApp.listFolderContent(true, true, Environment.currentDirectory + File.separator + FOLDER2, 
 					FOLDER2 + "/file2_in_folder2.txt", FOLDER1, 
@@ -330,7 +330,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testOptionCombiSingleDash() {
-		expected = Environment.currentDirectory + File.separator + FOLDER1 + "\n";
+		expected = Environment.currentDirectory + File.separator + FOLDER1;
 		try {
 			String[] strArr = {"-dR", Environment.currentDirectory + "/folder1"};
 			lsApp.run(strArr, null, stdout);
@@ -344,7 +344,7 @@ public class LsApplicationTest {
 	@Test
 	public void testOptionCombiDoubleDashNoSpace() {
 		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + FOLDER1_1 + 
-				File.separator + "file2_in_folder1_1.txt  " + FOLDER2 + "\n";
+				File.separator + "file2_in_folder1_1.txt  " + FOLDER2;
 		try {
 			String[] strArr = {"-d-R", Environment.currentDirectory + "/folder1/folder1_1/file2_in_folder1_1.txt", FOLDER2};
 			lsApp.run(strArr, null, stdout);
@@ -357,7 +357,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testOptionCombiDoubleDashWithSpace() {
-		expected = FOLDER1 + File.separator + FOLDER1_1 + "\n";
+		expected = FOLDER1 + File.separator + FOLDER1_1;
 		try {
 			String[] strArr = {"-d", "-R", FOLDER1 + "/folder1_1"};
 			lsApp.run(strArr, null, stdout);
@@ -370,7 +370,7 @@ public class LsApplicationTest {
 	
 	@Test
 	public void testOptionCombiDiffSeq() {
-		expected = FOLDER1 + File.separator + FOLDER1_1 + File.separator + "file2_in_folder1_1.txt\n";
+		expected = FOLDER1 + File.separator + FOLDER1_1 + File.separator + "file2_in_folder1_1.txt";
 		try {
 			String[] strArr = {"-R-d", FOLDER1 + "/folder1_1/file2_in_folder1_1.txt"};
 			lsApp.run(strArr, null, stdout);
