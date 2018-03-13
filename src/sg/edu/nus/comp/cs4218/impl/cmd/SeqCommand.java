@@ -61,7 +61,7 @@ public class SeqCommand implements Command {
 				pipeCmd.evaluate(stdin, stdout);
 			} catch (AbstractApplicationException | ShellException e) {
 				try {
-					stdout.write((e.getMessage() + "\n").getBytes());
+					stdout.write((e.getMessage()).getBytes());
 				} catch (IOException e1) {
 					throw new ShellException("IO Exception");
 				}

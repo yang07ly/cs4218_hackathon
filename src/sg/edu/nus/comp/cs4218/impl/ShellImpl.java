@@ -166,6 +166,7 @@ public class ShellImpl {
 					continue;
 				}
 				shell.parseAndEvaluate(readLine, System.out);
+				System.out.println();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
