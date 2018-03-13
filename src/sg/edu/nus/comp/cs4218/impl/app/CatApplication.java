@@ -53,14 +53,11 @@ public class CatApplication implements Application {
 				while ((intCount = stdin.read()) != -1) {
 					stdout.write(intCount);
 				}
-				stdout.write("\n".getBytes());
 			} catch (Exception exIO) {
 				throw new CatException("Exception Caught");
 			}
 		} else {
-
 			int numOfFiles = args.length;
-
 			if (numOfFiles > 0) {
 				Path filePath;
 				Path currentDir = Paths.get(Environment.currentDirectory);
@@ -71,24 +68,28 @@ public class CatApplication implements Application {
 						checkIfFileIsReadable(filePath, args[i]);
 						byte[] byteFileArray = Files.readAllBytes(filePath);
 						stdout.write(byteFileArray);
-						stdout.write("\n".getBytes());
-					} catch (CatException catE) {
-						if (numOfFiles == 1) {
+						if (i < numOfFiles - 1) {
+							stdout.write("\n".getBytes());
+						}
+					} catch(CatException catE) {
+						if(numOfFiles == 1) {
 							throw catE;
 						}
 						try {
-							String message = catE.getMessage() + "\n";
+							String message = catE.getMessage();
 							stdout.write(message.getBytes());
+							if (i < numOfFiles - 1) {
+								stdout.write("\n".getBytes());
+							}
 						} catch (IOException e) {
 							throw new CatException("Could not write to output stream");
 						}
 					} catch (IOException e) {
 						throw new CatException("Could not write to output stream");
-					} catch (InvalidPathException pathE) {
-						throw new CatException(args[i] + ": invalid path");
-					}
+                    } catch (InvalidPathException pathE) {
+                        throw new CatException(args[i] + ": invalid path");
+                    }
 				}
-
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 public class CatApplicationTest {
 
 	private static final String FILE1_TXT = "file1.txt";
+	private static final String FILE1_CONTENT = "asdf";
 	CatApplication app;
 	OutputStream outputStream;
 	String expected, output, currentDir;
@@ -60,7 +61,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testOneFile() {
-		expected = "asdf\n";
+		expected = FILE1_CONTENT;
 		String[] args = {FILE1_TXT};
 		
 		try {
@@ -75,7 +76,7 @@ public class CatApplicationTest {
 	@Test
 	public void testAbsolutePath() {
 		String path = Environment.currentDirectory + File.separator + FILE1_TXT;
-		expected = "asdf\n";
+		expected = FILE1_CONTENT;
 		String[] args = {path};
 		
 		try {
@@ -89,7 +90,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFiles() {
-		expected = "asdf\nqwer\n";
+		expected = "asdf\nqwer";
 		String[] args = {FILE1_TXT,"file2.txt"};
 		
 		try {
@@ -103,7 +104,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFilesWithInvalidFiles() {
-		expected = "asdf\ncat: asdf: No such file or directory\nqwer\n";
+		expected = "asdf\ncat: asdf: No such file or directory\nqwer";
 		String[] args = {FILE1_TXT, "asdf", "file2.txt"};
 		
 		try {
@@ -117,7 +118,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testStream() {
-		expected = "asdf\n";
+		expected = FILE1_CONTENT;
 		try {
 			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
 			app.run(null, fileStream, outputStream);
