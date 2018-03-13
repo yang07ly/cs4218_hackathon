@@ -79,7 +79,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -150,18 +150,18 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
 	public void testGrepEmptyFromEmptyFile() {
-		expected = "\n";
+		expected = "";
 		try {
 			result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_EMPTY);
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -205,7 +205,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -216,7 +216,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -227,7 +227,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -238,7 +238,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -249,7 +249,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -260,7 +260,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -271,7 +271,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 
 	@Test
@@ -282,7 +282,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -293,7 +293,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -304,18 +304,18 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
 	public void testGrepEmptyFromEmptyInputStream() {	
-		expected = "\n";
+		expected = "";
 		try {
 			result = grepApp.grepFromStdin(PATTERN_EMPTY, false, new ByteArrayInputStream("".getBytes()));
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -326,7 +326,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -337,7 +337,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -348,7 +348,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -361,7 +361,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -374,7 +374,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -387,7 +387,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -401,7 +401,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -414,7 +414,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -427,7 +427,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -444,7 +444,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -455,7 +455,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -466,7 +466,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -479,7 +479,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -491,7 +491,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -503,7 +503,7 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 	
 	@Test
@@ -515,6 +515,6 @@ public class GrepApplicationTest {
 		} catch (GrepException e) {
 			result = e.getMessage();
 		}
-		assertEquals(expected, result);
+		assertEquals(expected.trim(), result);
 	}
 }

@@ -108,7 +108,7 @@ public class GrepApplication implements GrepInterface {
 			BufferedReader content = new BufferedReader(inStream);
 			String line = content.readLine();
 			if (line == null) {
-				return "\n";
+				return "";
 			}
 			
 			do {
@@ -120,7 +120,7 @@ public class GrepApplication implements GrepInterface {
 		} catch (IOException e) {
 			throw new GrepException("IOException");
 		}
-		return outputStr;
+		return outputStr.trim();
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class GrepApplication implements GrepInterface {
 				throw new GrepException("IOException: " + e);
 			}
 		}
-		return outputStr;
+		return outputStr.trim();
 	}
 	
 	/**
