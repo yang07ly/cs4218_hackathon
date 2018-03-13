@@ -21,10 +21,10 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 public class SeqCommand implements Command {
 	private static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
-	
+
 	private final ShellImpl shell;
 	private final String cmdline;
-	
+
 	private String[] argsArray;
 
 	public SeqCommand(ShellImpl shellImpl, String cmdline) {
@@ -52,19 +52,13 @@ public class SeqCommand implements Command {
 		if (argsArray.length == 0) {
 			return;
 		}
-		
+
 		for (int i = 0; i < argsArray.length; i++) {
 			try {
 				String args = argsArray[i];
-				if (args.contains("|")) {
-					PipeCommand pipeCmd = new PipeCommand(shell, args);
-					pipeCmd.parse();
-					pipeCmd.evaluate(stdin, stdout);
-				} else {
-					CallCommand callCmd = new CallCommand(shell, args);
-					callCmd.parse();
-					callCmd.evaluate(stdin, stdout);
-				}
+				PipeCommand pipeCmd = new PipeCommand(shell, args);
+				pipeCmd.parse();
+				pipeCmd.evaluate(stdin, stdout);
 			} catch (AbstractApplicationException | ShellException e) {
 				try {
 					stdout.write((e.getMessage() + "\n").getBytes());
@@ -90,7 +84,7 @@ public class SeqCommand implements Command {
 			argsArray = new String[] {cmdline};
 			return;
 		}
-		
+
 		Arrays.sort(spaceIndices);
 		Vector<String> cmdArgs = new Vector<String>();
 		int startIndex = 0;
@@ -112,10 +106,10 @@ public class SeqCommand implements Command {
 			}
 			cmdArgs.add(callCmd);
 		}
-		
+
 		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}
-	
+
 	/**
 	 * Terminates current execution of the command (unused for now)
 	 */
