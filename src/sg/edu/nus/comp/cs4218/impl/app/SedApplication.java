@@ -93,7 +93,7 @@ public class SedApplication implements SedInterface {
 		}
 
 		try {
-			stdout.write(outputStr.getBytes());
+			stdout.write(outputStr.trim().getBytes());
 		} catch (IOException e) {
 			throw new SedException("IOException");
 		}

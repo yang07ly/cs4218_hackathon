@@ -360,7 +360,7 @@ public class SedApplicationTest {
 				"3. replaced replaced replaced\n" + 
 				"4. replaced replaced replaced replaced\n" + 
 				"5. replacedesreplacedest\n" + 
-				"6. replacedesreplacedesreplacedest\n";
+				"6. replacedesreplacedesreplacedest";
 		try {
 			String[] strArr = {"s1test1replaced1", TESTFILE1};
 			sedApp.run(strArr, null, stdout);
@@ -373,7 +373,7 @@ public class SedApplicationTest {
 	
 	@Test
 	public void testOtherSeparatingCharAlpha() {
-		expected = "Text from Inputreplaced\nreplaced of texts in replaced\n";
+		expected = "Text from Inputreplaced\nreplaced of texts in replaced";
 		try {
 			String[] strArr = {"szstreamzreplacedz"};
 			sedApp.run(strArr, stdin, stdout);
@@ -399,7 +399,7 @@ public class SedApplicationTest {
 				"3. replaced replaced replaced replaced\n" + 
 				"4. replaced replaced replaced\n" + 
 				"5. replaced replaced\n" + 
-				"6. replaced\n";
+				"6. replaced";
 		try {
 			String[] strArr = {STRING_COMMAND, TESTFILE1, TESTFILE2};
 			sedApp.run(strArr, null, stdout);
