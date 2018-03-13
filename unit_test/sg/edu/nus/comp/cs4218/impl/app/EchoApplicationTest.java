@@ -27,7 +27,7 @@ public class EchoApplicationTest {
 
 	@Test
 	public void testEchoText() {
-		expected = "text\n";
+		expected = "text";
 		try {
 			String[] strArr = {"text"};
 			echoApp.run(strArr, null, stdout);
@@ -40,7 +40,7 @@ public class EchoApplicationTest {
 	
 	@Test
 	public void testEchoMultipleText() {
-		expected = "text1 text2\n";
+		expected = "text1 text2";
 		try {
 			String[] strArr = {"text1", "text2"};
 			echoApp.run(strArr, null, stdout);
@@ -53,7 +53,7 @@ public class EchoApplicationTest {
 	
 	@Test
 	public void testEchoEmptyString() {
-		expected = "\n";
+		expected = "";
 		try {
 			String[] strArr = {""};
 			echoApp.run(strArr, null, stdout);
@@ -66,7 +66,7 @@ public class EchoApplicationTest {
 	
 	@Test
 	public void testEchoSpaces() {
-		expected = "   \n";
+		expected = "   ";
 		try {
 			String[] strArr = {"   "};
 			echoApp.run(strArr, null, stdout);
@@ -79,7 +79,7 @@ public class EchoApplicationTest {
 	
 	@Test
 	public void testEchoEmptyArgs() {
-		expected = "\n";
+		expected = "";
 		try {
 			String[] strArr = {};
 			echoApp.run(strArr, null, stdout);
@@ -92,7 +92,7 @@ public class EchoApplicationTest {
 	
 	@Test
 	public void testEchoTextWithSpaces() {
-		expected = "text1     text2\n";
+		expected = "text1     text2";
 		try {
 			String[] strArr = {"text1     text2"};
 			echoApp.run(strArr, null, stdout);
