@@ -42,6 +42,10 @@ public class QuoteOperator implements Operator {
 	 *            	If the quotes are not closed.
 	 */
 	public Integer[] getIndices(String source, char sepChar) throws ShellException {
+		if (source == null) {
+			throw new ShellException("Null Pointer Exception");
+		}
+		
 		init();
 		
 		Vector<Integer> indices = new Vector<Integer>();
@@ -107,6 +111,10 @@ public class QuoteOperator implements Operator {
 	public String[] evaluate(String... cmdArgs) throws AbstractApplicationException, ShellException {
 		String[] newCmdArgs = new String[cmdArgs.length];
 		for (int i = 0; i < cmdArgs.length; i++) {
+			if (cmdArgs[i] == null) {
+				throw new ShellException("Null Pointer Exception");
+			}
+			
 			init();
 	
 			for (int j = 0; j < cmdArgs[i].length(); j++) {

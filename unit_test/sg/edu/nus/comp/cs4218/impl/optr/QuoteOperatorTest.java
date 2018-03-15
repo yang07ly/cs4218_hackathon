@@ -1,232 +1,554 @@
 package sg.edu.nus.comp.cs4218.impl.optr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
+import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
 
 public class QuoteOperatorTest {
-	private static final String ASD = "asd";
-	private static final String UNCLOSED_QUOTES = "Quote: Unclosed quotes";
-	QuoteOperator command;
-	String expected, cmdString;
-	String[] output;
-
+	private static final String NOT_CLOSED_EXP = "shell: Quotes not closed";
+	private static final String NULL_PTR_EXP = "shell: Null Pointer Exception";
+	private static final String UNEXPECTED_EXP = "Unexpected Exception: ";
+	
+	private QuoteOperator quoteOptr;
+	private String[] input, output, expected;
+	private String inputStr;
+	private char sepChar;
+	private Integer[] outputInt, expectedInt;
+	
+	@Rule
+    public ExpectedException thrown = ExpectedException.none();
+	
 	@Before
 	public void setup() {
-		expected = "";
-		cmdString = "";
-		output = new String[1];
+		quoteOptr = new QuoteOperator();
+		input = output = expected = new String[0];
+		inputStr = "";
+		sepChar = '\u0000';
+		outputInt = expectedInt = new Integer[0];
 	}
 
 	@Test
-	public void testNoQuotes() {
-		expected = ASD;
-		cmdString = "asd";
-		try {
-			output = command.evaluate(cmdString);
-		} catch (Exception e) {
-			output[0] = e.getMessage();
-		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+	public void testRemoveNoQuotes() throws AbstractApplicationException, ShellException {
+		expected = new String[] {"some message"};
+		input = new String[] {"some message"};
+		output = quoteOptr.evaluate(input);
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testUnclosedSQ() {
-		expected = UNCLOSED_QUOTES;
-		cmdString = "'asd";
+	public void testRemoveSQClosed() {
+		expected = new String[] {"message within single quotes"};
+		input = new String[] {"'message within single quotes'"};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testClosedSQ() {
-		expected = ASD;
-		cmdString = "'asd'";
+	public void testRemoveSQMultiple() {
+		expected = new String[] {"SQ message 1, SQ message 2"};
+		input = new String[] {"'SQ message 1', 'SQ message 2'"};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveSQWithinWord() {
+		expected = new String[] {"SQ out in in out SQ"};
+		input = new String[] {"SQ out i'n i'n out SQ"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveDQClosed() {
+		expected = new String[] {"message within double quotes"};
+		input = new String[] {"\"message within double quotes\""};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testMultipleSQ() {
-		cmdString = "'asd' 'omg'";
+	public void testRemoveDQMultiple() {
+		expected = new String[] {"DQ message 1, DQ message 2"};
+		input = new String[] {"\"DQ message 1\", \"DQ message 2\""};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(2, output.length);
-		assertEquals(ASD, output[0]);
-		assertEquals("omg", output[1]);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveDQWithinWord() {
+		expected = new String[] {"DQ out in in out DQ"};
+		input = new String[] {"DQ out i\"n i\"n out DQ"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveBQClosed() {
+		expected = new String[] {"message within back quotes"};
+		input = new String[] {"`message within back quotes`"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testUnclosedDQ() {
-		expected = UNCLOSED_QUOTES;
-		cmdString = "\"asd";
+	public void testRemoveBQMultiple() {
+		expected = new String[] {"BQ message 1, BQ message 2"};
+		input = new String[] {"`BQ message 1`, `BQ message 2`"};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveBQWithinWord() {
+		expected = new String[] {"BQ out in in out BQ"};
+		input = new String[] {"BQ out i`n i`n out BQ"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testClosedDQ() {
-		expected = ASD;
-		cmdString = "\"asd\"";
+	public void testRemoveMultipleQuotes() {
+		expected = new String[] {"SQ DQ BQ"};
+		input = new String[] {"'SQ' \"DQ\" `BQ`"};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testMultipleDQ() {
-		cmdString = "\"asd\" \"omg\"";
+	public void testRemoveDQWithinSQ() {
+		expected = new String[] {"\"DQ within SQ\""};
+		input = new String[] {"'\"DQ within SQ\"'"};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(2, output.length);
-		assertEquals(ASD, output[0]);
-		assertEquals("omg", output[1]);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveBQWithinSQ() {
+		expected = new String[] {"`BQ within SQ`"};
+		input = new String[] {"'`BQ within SQ`'"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testMultipleSQDQ() {
-		cmdString = "\"DQ1\" 'SQ1' 'SQ2' \"DQ2\"";
+	public void testRemoveSQWithinDQ() {
+		expected = new String[] {"'SQ within DQ'"};
+		input = new String[] {"\"'SQ within DQ'\""};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(4, output.length);
-		assertEquals("DQ1", output[0]);
-		assertEquals("SQ1", output[1]);
-		assertEquals("SQ2", output[2]);
-		assertEquals("DQ2", output[3]);
+		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testDQWithinSQ() {
-		expected = "\"DQ within SQ\"";
-		cmdString = "'\"DQ within SQ\"'";
+	public void testRemoveBQWithinDQ() {
+		expected = new String[] {"BQ within DQ"};
+		input = new String[] {"\"`BQ within DQ`\""};
 		try {
-			output = command.evaluate(cmdString);
+			output = quoteOptr.evaluate(input);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals("\"DQ within SQ\"", output[0]);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveSQWithinBQ() {
+		expected = new String[] {"SQ 'within' BQ"};
+		input = new String[] {"`SQ 'within' BQ`"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveDQWithinBQ() {
+		expected = new String[] {"DQ \"within\" BQ"};
+		input = new String[] {"`DQ \"within\" BQ`"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testRemoveMultiplElements() {
+		expected = new String[] {"SQ", "DQ", "BQ"};
+		input = new String[] {"'SQ'", "\"DQ\"", "`BQ`"};
+		try {
+			output = quoteOptr.evaluate(input);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testInvalidRemoveSQUnclosed() throws AbstractApplicationException, ShellException {
+		input = new String[] {"'Unclosed SQ"};
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+		quoteOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidDQRemoveUnclosed() throws AbstractApplicationException, ShellException {
+		input = new String[] {"\"Unclosed DQ"};
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+		quoteOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidRemoveBQUnclosed() throws AbstractApplicationException, ShellException {
+		input = new String[] {"`Unclosed BQ"};
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+		quoteOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidRemoveNullInput() throws AbstractApplicationException, ShellException {
+		input = new String[] {null};
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NULL_PTR_EXP);
+        
+		quoteOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testGetCharIndicesNoQuotes() {
+		expectedInt = new Integer[] {4, 10};
+		inputStr = "cmd1; cmd2; cmd3";
+		sepChar = ';';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testSQWithinDQ() {
-		cmdString = "\"'SQ within DQ'\"";
+	public void testGetCharIndicesSQClosed() {
+		expectedInt = new Integer[] {11, 16};
+		inputStr = "'cmd1;cmd2';cmd3;cmd4";
+		sepChar = ';';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals("'SQ within DQ'", output[0]);
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testMultipleSQWithUnclosedDQ() {
-		expected = UNCLOSED_QUOTES;
-		cmdString = "'Invalid' 'Quotes' \"asd";
+	public void testGetCharIndicesSQMultiple() {
+		expectedInt = new Integer[] {5};
+		inputStr = "cmd1 ; 'cmd2 ; cmd3''cmd4 ; cmd5'";
+		sepChar = ';';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesSQWithinWord() {
+		expectedInt = new Integer[] {4, 18};
+		inputStr = "cmd1; cmd'2 ;cmd'3; cmd4";
+		sepChar = ';';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesDQClosed() {
+		expectedInt = new Integer[] {11, 16};
+		inputStr = "\"cmd1|cmd2\"|cmd3|cmd4";
+		sepChar = '|';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testMultipleDQWithUnclosedSQ() {
-		expected = UNCLOSED_QUOTES;
-		cmdString = "\"Invalid\" \"Quotes\" 'asd";
+	public void testGetCharIndicesDQMultiple() {
+		expectedInt = new Integer[] {5};
+		inputStr = "cmd1 | \"cmd2 | cmd3\"\"cmd4 | cmd5\"";
+		sepChar = '|';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesDQWithinWord() {
+		expectedInt = new Integer[] {4, 18};
+		inputStr = "cmd1| cmd\"2| cmd\"3| cmd4";
+		sepChar = '|';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesBQClosed() {
+		expectedInt = new Integer[] {11, 16};
+		inputStr = "`cmd1 arg1` arg2 arg3";
+		sepChar = ' ';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testBQWithinSQ() {
-		expected = "`abc`";
-		cmdString = "'`abc`'";
+	public void testGetCharIndicesBQMultiple() {
+		expectedInt = new Integer[] {4};
+		inputStr = "cmd1 `cmd2 arg2``cmd3 arg3`";
+		sepChar = ' ';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesBQWithinWord() {
+		expectedInt = new Integer[] {4, 20};
+		inputStr = "cmd1 arg`cmd2 arg2`1 arg2";
+		sepChar = ' ';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testBQWithinDQ() {
-		expected = "abc";
-		cmdString = "\"`abc`\"";
+	public void testGetCharIndicesMultipleQuotes() {
+		expectedInt = new Integer[] {5, 11};
+		inputStr = "'S Q' \"D Q\" `B Q`";
+		sepChar = ' ';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testSQWithinText() {
-		expected = "abcde";
-		cmdString = "ab'c'de";
+	public void testGetCharIndicesDQWithinSQ() {
+		expectedInt = new Integer[] {0, 3, 22, 25};
+		inputStr = "\"DQ\" '\"DQ within SQ\"' \"DQ\"";
+		sepChar = '"';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesBQWithinSQ() {
+		expectedInt = new Integer[] {0, 3, 22, 25};
+		inputStr = "`BQ` '`BQ within SQ`' `BQ`";
+		sepChar = '`';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testDQWithinText() {
-		expected = "abcde";
-		cmdString = "ab\"c\"de";
+	public void testGetCharIndicesSQWithinDQ() {
+		expectedInt = new Integer[] {0, 3, 22, 25};
+		inputStr = "'SQ' \"'SQ within DQ'\" 'SQ'";
+		sepChar = '\'';
 		try {
-			output = command.evaluate(cmdString);
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		} catch (Exception e) {
-			output[0] = e.getMessage();
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
-		assertEquals(1, output.length);
-		assertEquals(expected, output[0]);
+		assertArrayEquals(expectedInt, outputInt);
+	}
+
+	@Test
+	public void testGetCharIndicesBQWithinDQ() {
+		expectedInt = new Integer[] {0, 3, 6, 19, 22, 25};
+		inputStr = "`BQ` \"`BQ within DQ`\" `BQ`";
+		sepChar = '`';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesSQWithinBQ() {
+		expectedInt = new Integer[] {0, 3, 22, 25};
+		inputStr = "'SQ' `'SQ within BQ'` 'SQ'";
+		sepChar = '\'';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testGetCharIndicesDQWithinBQ() {
+		expectedInt = new Integer[] {0, 3, 22, 25};
+		inputStr = "\"DQ\" `\"DQ within BQ\"` \"DQ\"";
+		sepChar = '"';
+		try {
+			outputInt = quoteOptr.getIndices(inputStr, sepChar);
+		} catch (Exception e) {
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
+		}
+		assertArrayEquals(expectedInt, outputInt);
+	}
+	
+	@Test
+	public void testInvalidGetCharIndicesSQUnclosed() throws AbstractApplicationException, ShellException {
+		inputStr = "'cmd1; cmd2; cmd3; cmd4";
+		sepChar = ';';
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+		quoteOptr.getIndices(inputStr, sepChar);
+	}
+	
+	@Test
+	public void testInvalidDQGetCharIndicesUnclosed() throws AbstractApplicationException, ShellException {
+		inputStr = "\"cmd1 | cmd2 | cmd3 | cmd4";
+		sepChar = '|';
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+        quoteOptr.getIndices(inputStr, sepChar);
+	}
+	
+	@Test
+	public void testInvalidGetCharIndicesBQUnclosed() throws AbstractApplicationException, ShellException {
+		inputStr = "`cmd1 arg1 arg3 arg4";
+		sepChar = ' ';
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NOT_CLOSED_EXP);
+        
+        quoteOptr.getIndices(inputStr, sepChar);
+	}
+	
+	@Test
+	public void testInvalidGetCharIndicesNullInput() throws AbstractApplicationException, ShellException {
+		inputStr = null;
+		sepChar = ' ';
+		
+		thrown.expect(ShellException.class);
+        thrown.expectMessage(NULL_PTR_EXP);
+        
+        quoteOptr.getIndices(inputStr, sepChar);
 	}
 }
