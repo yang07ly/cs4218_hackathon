@@ -148,40 +148,40 @@ public class CmpApplication implements CmpInterface {
 	 */
 	private String cmpFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff, BufferedReader readerA, BufferedReader readerB) throws IOException {
-		int readValueA = 0, readValueB = 0, byteNumber = 1, lineNumber = 1;
-		String msgWithoutL = fileNameA + " " + fileNameB + " differ: ";
-		String msg = "";
-
+		int readValueA = 0, readValueB = 0, byteNumber = 1, lineNumber = 1, numLinesInMsg = 0;
+		String msgWithoutL = fileNameA + " " + fileNameB + " differ: ", msg = "";
 		readValueA = readerA.read();
 		readValueB = readerB.read();
 		while ((readValueA != -1) || (readValueB != -1)) {
 			if ((readValueB == -1) && isPrintOctalDiff && !isPrintSimplify) {
-				msg += "cmp: EOF on " + fileNameB + "\n";
+				msg += "cmp: EOF on " + fileNameB;
 				break;
-			}
-			if ((readValueA == -1) && isPrintOctalDiff && !isPrintSimplify) {
-				msg += "cmp: EOF on " + fileNameA + "\n";
+			}else if ((readValueA == -1) && isPrintOctalDiff && !isPrintSimplify) {
+				msg += "cmp: EOF on " + fileNameA;
 				break;
 			}
 			if (readValueA != readValueB) {
+				numLinesInMsg++;
+				if (numLinesInMsg > 1) {
+					msg += "\n";
+				}
 				if (isPrintSimplify) { // -s
-					return "Files differ\n";
+					return "Files differ";
 				} else if (isPrintCharDiff) {
 					if (isPrintOctalDiff) { // -cl
 						msg += byteNumber + " " + getOctalString(readValueA) + " " + getChar(readValueA) + " "
-								+ getOctalString(readValueB) + " " + getChar(readValueB) + "\n";
+								+ getOctalString(readValueB) + " " + getChar(readValueB);
 					} else { // -c
 						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
 								+ getOctalString(readValueA) + " " + getChar(readValueA) + " "
 								+ getOctalString(readValueB) + " " + getChar(readValueB);
-						return msgWithoutL + "\n";
+						return msgWithoutL;
 					}
 				} else if (isPrintOctalDiff) { // -l
-					msg += byteNumber + " " + getOctalString(readValueA) + " " + getOctalString(readValueB) + "\n";
-
+					msg += byteNumber + " " + getOctalString(readValueA) + " " + getOctalString(readValueB);
 				} else { // no flags
 					msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber;
-					return msgWithoutL + "\n";
+					return msgWithoutL;
 				}
 			}
 			byteNumber++;

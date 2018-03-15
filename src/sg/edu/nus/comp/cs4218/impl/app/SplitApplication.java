@@ -186,7 +186,7 @@ public class SplitApplication implements SplitInterface {
 	 *            multiply the bytes by 1048576
 	 * @throws Exception
 	 */
-	private void splitStreamByBytes(InputStream stdin, String prefix, String bytesPerFile) throws SplitException {
+	public void splitStreamByBytes(InputStream stdin, String prefix, String bytesPerFile) throws SplitException {
 		String outputPrefix = SplitExtension.getAbsolutePath(prefix);
 		int numBytes = SplitExtension.parseBytes(bytesPerFile);
 		char[] buffer = new char[numBytes];

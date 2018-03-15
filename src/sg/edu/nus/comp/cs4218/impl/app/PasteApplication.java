@@ -105,17 +105,15 @@ public class PasteApplication implements PasteInterface {
 					String line = readers[i].readLine();
 					if (line != null) {
 						hasLines = true;
-						if(i==0) {
+						if (i == 0) {
 							lineBuilder.append(line);
-						}else {
+						} else {
 							line = "\t" + line;
 							lineBuilder.append(line);
 						}
 					}
 				}
-				if(hasLines) {
-					stringBuilder.append(new String(lineBuilder) + "\n");
-				}
+				stringBuilder.append(new String(lineBuilder));
 			}
 			return new String(stringBuilder);
 		} catch (IOException e) {

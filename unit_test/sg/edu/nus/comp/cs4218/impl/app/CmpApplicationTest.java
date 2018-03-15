@@ -18,7 +18,7 @@ import sg.edu.nus.comp.cs4218.Environment;
 public class CmpApplicationTest {
 	private static final String OS_NAME = "os.name";
 	private static final String FILE1_TXT = "file1.txt";
-	private static final String FILES_DIFFER = "Files differ\n";
+	private static final String FILES_DIFFER = "Files differ";
 	private static final String FILE2_TXT = "file2.txt";
 	private static final String CMP_INVALID_FLAGS = "cmp: Invalid flags";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
@@ -269,9 +269,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l\n", output);
+			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l\n", output);
+			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
@@ -293,9 +293,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151\n", output);
+			assertEquals("10 151 154\n11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151\n", output);
+			assertEquals("9 151 154\n10 154 151", output);
 		}
 	}
 
@@ -306,7 +306,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("cmp: EOF on emptyFile.txt\n", output);
+		assertEquals("cmp: EOF on emptyFile.txt", output);
 	}
 
 	@Test
@@ -317,9 +317,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
+			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
 		}
 	}
 
@@ -332,9 +332,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151\n", output);
+			assertEquals("10 151 154\n11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151\n", output);
+			assertEquals("9 151 154\n10 154 151", output);
 		}
 	}
 
@@ -397,7 +397,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyStreamFalseFalseFalse() {
-		expected = "file1.txt - differ: byte 1, line 1\n";
+		expected = "file1.txt - differ: byte 1, line 1";
 		try {
 			File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 			InputStream inputStream = new FileInputStream(file);
@@ -443,9 +443,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l\n", output);
+			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l\n", output);
+			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
@@ -471,9 +471,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151\n", output);
+			assertEquals("10 151 154\n11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151\n", output);
+			assertEquals("9 151 154\n10 154 151", output);
 		}
 	}
 
@@ -486,7 +486,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("cmp: EOF on -\n", output);
+		assertEquals("cmp: EOF on -", output);
 	}
 
 	@Test
@@ -499,7 +499,7 @@ public class CmpApplicationTest {
 		} catch (Exception e) {
 			output = e.getMessage();
 		}
-		assertEquals("cmp: EOF on -\n", output);
+		assertEquals("cmp: EOF on -", output);
 	}
 
 	@Test
@@ -512,9 +512,9 @@ public class CmpApplicationTest {
 			output = e.getMessage();
 		}
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i\n", output);
+			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i\n", output);
+			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
 		}
 	}
 
