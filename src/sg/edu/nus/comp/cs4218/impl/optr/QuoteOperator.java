@@ -6,7 +6,11 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
-public class QuoteOperator{
+/**
+ * A quote operator provides quoting related functions such as getting indices
+ * of character not within quotes or removing quotes.
+ */
+public class QuoteOperator {
 	
 	private boolean hasFoundSQ;
 	private boolean hasFoundDQ;
@@ -21,7 +25,21 @@ public class QuoteOperator{
 
 		singleArg = new StringJoiner("");
 	}
-
+	
+	/**
+	 * Returns all indices of the specified character that is not within
+	 * any quotes.
+	 * 
+	 * @param source
+	 * 			  	String used to check for the specified character.
+	 * @param sepChar
+	 * 			  	Character to find in the string.
+	 * @return Integer Array
+	 * 			  	indices of the specfied character not within quotes.
+	 * 
+	 * @throws ShellException
+	 *            	If the quotes are not closed.
+	 */
 	public Integer[] getIndices(String source, char sepChar) throws ShellException {
 		init();
 		
@@ -41,7 +59,7 @@ public class QuoteOperator{
 				}
 				break;
 			case '\'':
-				if (hasFoundDQ) {
+				if (hasFoundDQ || hasFoundBQ) {
 				} else {
 					if (sepChar == '\'') {
 						indices.add(i);
@@ -72,7 +90,19 @@ public class QuoteOperator{
 
 		return indices.toArray(new Integer[indices.size()]);
 	}
-
+	
+	/**
+	 * Returns the the list of string with quotes removed.
+	 * 
+	 * @param cmdArgs
+	 * 			  	String Array containing the string to have its 
+	 * 				quotes removed.
+	 * @return String Array
+	 * 			  	list of string with its quotes removed.
+	 * 
+	 * @throws ShellException
+	 *            	If the quotes are not closed.
+	 */
 	public String[] evaluate(String... cmdArgs) throws AbstractApplicationException, ShellException {
 		String[] newCmdArgs = new String[cmdArgs.length];
 		for (int i = 0; i < cmdArgs.length; i++) {
@@ -95,7 +125,7 @@ public class QuoteOperator{
 					}
 					break;
 				case '`':
-					if (hasFoundSQ || hasFoundDQ) {
+					if (hasFoundSQ) {
 						singleArg.add("`");
 					} else {
 						hasFoundBQ = !hasFoundBQ;
