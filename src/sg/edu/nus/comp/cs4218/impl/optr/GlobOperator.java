@@ -15,7 +15,7 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
 
 /**
- * A glob command is used to evaluate wildcards specified in the path to a 
+ * A glob operator is used to evaluate wildcards specified in the path to a 
  * valid path in the system by replacing all the unquoted asterisk symbols 
  * in specified path by some (possibly empty) sequences of non-slash characters.
  */
@@ -35,7 +35,7 @@ public class GlobOperator {
 	 * @param fileNames
 	 * 			  Array of String specifying the of the file paths.
 	 * @return String Array
-	 * 			  paths that matches the wildcard fileNames
+	 * 			  paths that matches the wildcard fileNames.
 	 * 
 	 * @throws IOException
 	 *            If the specified path is null.
@@ -81,7 +81,7 @@ public class GlobOperator {
 	 * @param fileName
 	 * 			  String of the file path.
 	 * @return String Array
-	 * 			  paths that matches the wildcard fileName
+	 * 			  paths that matches the wildcard fileName.
 	 * 
 	 * @throws IOException
 	 *            If the specified path is null.
