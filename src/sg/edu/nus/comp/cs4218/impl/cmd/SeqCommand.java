@@ -79,7 +79,7 @@ public class SeqCommand implements Command {
 	 *             redirection file path.
 	 */
 	public void parse() throws ShellException {
-		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, ';');
+		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, ';');
 		if (spaceIndices.length == 0) {
 			argsArray = new String[] {cmdline};
 			return;

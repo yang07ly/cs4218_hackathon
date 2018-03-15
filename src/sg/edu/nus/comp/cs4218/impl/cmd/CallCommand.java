@@ -71,7 +71,7 @@ public class CallCommand implements Command {
 		if (outputStream == null) { // empty
 			outputStream = stdout;
 		}
-		argsArray = shell.removeStreamFromArgs(argsArray);
+		argsArray = shell.removeIOStreamFromArgs(argsArray);
 		
 		shell.runApp(app, argsArray, inputStream, outputStream);
 		StreamUtil.closeInputStream(inputStream);
@@ -87,7 +87,7 @@ public class CallCommand implements Command {
 	 *             the quotes are not closed properly.
 	 */
 	public void parse() throws ShellException {
-		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, ' ');
+		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, ' ');
 		if (spaceIndices.length == 0) {
 			app = cmdline;
 			return;

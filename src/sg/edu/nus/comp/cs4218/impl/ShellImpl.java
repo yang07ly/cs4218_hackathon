@@ -104,7 +104,21 @@ public class ShellImpl {
 		}
 		absApp.run(argsArray, inputStream, outputStream);
 	}
-
+	
+	/**
+	 * Parses and evaluates user's command line.
+	 * 
+	 * @param cmdline
+	 *            String of the user inputed command.
+	 * @param outputStream
+	 *            OutputStream for the application to print its output to.
+	 * 
+	 * @throws AbstractApplicationException
+	 *             If an exception happens while running any of the
+	 *             application(s).
+	 * @throws ShellException
+	 *             If an unsupported or invalid command is detected.
+	 */	
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
 		SeqCommand seqCmd = new SeqCommand(this, cmdline);
@@ -112,23 +126,85 @@ public class ShellImpl {
 		seqCmd.evaluate(System.in, stdout);
 	}
 	
-	public Integer[] getIndicesOfCharNotInQuote(String source, char character) throws ShellException {
+	/**
+	 * Returns all indices of the specified character that is not within
+	 * any quotes.
+	 * 
+	 * @param source
+	 * 			  	String used to check for the specified character.
+	 * @param sepChar
+	 * 			  	Character to find in the string.
+	 * @return Integer Array
+	 * 			  	indices of the specfied character not within quotes.
+	 * 
+	 * @throws ShellException
+	 *            	If the quotes are not closed.
+	 */
+	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException {
 		return quoteOptr.getIndices(source, character);
 	}
 	
-	public String[] removeQuote(String... source) throws AbstractApplicationException, ShellException {
+	/**
+	 * Returns the the list of string with quotes removed.
+	 * 
+	 * @param cmdArgs
+	 * 			  	String Array containing the string to have its 
+	 * 				quotes removed.
+	 * @return String Array
+	 * 			  	list of string with its quotes removed.
+	 * 
+	 * @throws ShellException
+	 *            	If the quotes are not closed.
+	 */
+	public String[] removeQuotes(String... source) throws AbstractApplicationException, ShellException {
 		return quoteOptr.evaluate(source);
 	}
 	
+	/**
+	 * Returns all the paths to existing files and directories such that these 
+	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
+	 * specified path by some (possibly empty) sequences of non-slash characters.
+	 * If no such path exist, the specified path is return without changes.
+	 * 
+	 * @param fileNames
+	 * 			  Array of String specifying the of the file paths.
+	 * @return String Array
+	 * 			  paths that matches the wildcard fileNames.
+	 * 
+	 * @throws IOException
+	 *            If the specified path is null.
+	 */
 	public String[] performGlob(String... source) throws AbstractApplicationException, ShellException {
 		return globOptr.evaluate(source);
 	}
 	
+	/**
+	 * Searches for and processes the commands enclosed by back quotes for
+	 * command substitution. If no back quotes are found, the argsArray from the
+	 * input is returned with its quote removed. If back quotes are found, the 
+	 * back quotes and its enclosed commands substituted with the output from 
+	 * processing the commands enclosed in the back quotes with the back quotes
+	 * and any other quotes removed.
+	 * 
+	 * @param argsArray
+	 *            	String array of the individual arguments.
+	 * 
+	 * @return String array 
+	 * 				List of string with the back quotes command processed and
+	 * 				quotes removed.
+	 * 
+	 * @throws AbstractApplicationException
+	 *             	If an exception happens while processing the application in the
+	 *             	back quotes.
+	 * @throws ShellException
+	 *             	If an exception happens while processing the content in the
+	 *             	back quotes.
+	 */
 	public String[] performCmdSub(String... source) throws AbstractApplicationException, ShellException {
 		return cmdSubOptr.evaluate(source);
 	}
 	
-	public String[] removeStreamFromArgs(String... source) throws AbstractApplicationException, ShellException {
+	public String[] removeIOStreamFromArgs(String... source) throws AbstractApplicationException, ShellException {
 		return ioRedirOptr.evaluate(source);
 	}
 	

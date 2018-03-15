@@ -47,16 +47,16 @@ public class CmdSubOperator implements Operator {
 	public String[] evaluate(String... argsArray) throws AbstractApplicationException, ShellException {
 		Vector<String> results = new Vector<String>();
 		for (int i = 0; i < argsArray.length; i++) {
-			Integer[] bqIndices = shell.getIndicesOfCharNotInQuote(argsArray[i], '`');
+			Integer[] bqIndices = shell.getIndicesOfCharNotInQuotes(argsArray[i], '`');
 			if (bqIndices.length == 0 || bqIndices.length % 2 != 0) {
 				// no command sub present
-				results.add((shell.removeQuote(argsArray[i]))[0]);
+				results.add((shell.removeQuotes(argsArray[i]))[0]);
 				continue;
 			}
 			
 			HashSet<Integer> removeIndices = new HashSet<Integer>();
-			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuote(argsArray[i], '"')));
-			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuote(argsArray[i], '\'')));
+			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(argsArray[i], '"')));
+			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(argsArray[i], '\'')));
 			Arrays.sort(bqIndices);
 			
 			StringJoiner cmdSubResult = new StringJoiner("");

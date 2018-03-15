@@ -46,7 +46,7 @@ public class GlobOperator implements Operator {
 		
 		for (int i = 0; i < fileNames.length; i++) {
 			//get indices of * and do not glob arg if does not contain *
-			HashSet<Integer> wildCardIndices = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuote(fileNames[i], '*')));
+			HashSet<Integer> wildCardIndices = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuotes(fileNames[i], '*')));
 			if (wildCardIndices.isEmpty()) {
 				newArgs.add(fileNames[i]);
 				continue;
@@ -63,7 +63,7 @@ public class GlobOperator implements Operator {
 			}
 			
 			//get globbed paths
-			String[] removedQuote = shell.removeQuote(regexArg.toString());
+			String[] removedQuote = shell.removeQuotes(regexArg.toString());
 			String[] paths = evaluate(removedQuote[0]);
 			for (int j = 0; j < paths.length; j++) {
 				newArgs.add(paths[j]);
