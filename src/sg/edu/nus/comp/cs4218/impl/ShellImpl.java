@@ -166,7 +166,7 @@ public class ShellImpl {
 	 * specified path by some (possibly empty) sequences of non-slash characters.
 	 * If no such path exist, the specified path is return without changes.
 	 * 
-	 * @param fileNames
+	 * @param args
 	 * 			  Array of String specifying the of the file paths.
 	 * @return String Array
 	 * 			  paths that matches the wildcard fileNames.
@@ -174,8 +174,8 @@ public class ShellImpl {
 	 * @throws IOException
 	 *            If the specified path is null.
 	 */
-	public String[] performGlob(String... source) throws AbstractApplicationException, ShellException {
-		return globOptr.evaluate(source);
+	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException {
+		return globOptr.evaluate(args);
 	}
 	
 	/**
@@ -186,7 +186,7 @@ public class ShellImpl {
 	 * processing the commands enclosed in the back quotes with the back quotes
 	 * and any other quotes removed.
 	 * 
-	 * @param argsArray
+	 * @param args
 	 *            	String array of the individual arguments.
 	 * 
 	 * @return String array 
@@ -200,20 +200,20 @@ public class ShellImpl {
 	 *             	If an exception happens while processing the content in the
 	 *             	back quotes.
 	 */
-	public String[] performCmdSub(String... source) throws AbstractApplicationException, ShellException {
-		return cmdSubOptr.evaluate(source);
+	public String[] performCmdSub(String... args) throws AbstractApplicationException, ShellException {
+		return cmdSubOptr.evaluate(args);
 	}
 	
-	public String[] removeIOStreamFromArgs(String... source) throws AbstractApplicationException, ShellException {
-		return ioRedirOptr.evaluate(source);
+	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException {
+		return ioRedirOptr.evaluate(args);
 	}
 	
-	public InputStream getInputStream(String... source) throws ShellException {
-		return ioRedirOptr.getInputStream(source);
+	public InputStream getInputStream(String... args) throws ShellException {
+		return ioRedirOptr.getInputStream(args);
 	}
 	
-	public OutputStream getOutputStream(String... source) throws ShellException {
-		return ioRedirOptr.getOutputStream(source);
+	public OutputStream getOutputStream(String... args) throws ShellException {
+		return ioRedirOptr.getOutputStream(args);
 	}
 
 	/**
