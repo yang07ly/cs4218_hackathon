@@ -39,7 +39,7 @@ public class GlobOperatorTest {
 	private static final String ABS_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
 	private static final String ABS_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
 	
-	private static final String UNEXPECTED = "Unexpected Exception: ";
+	private static final String UNEXPECTED_EXP = "Unexpected Exception: ";
 
 	private GlobOperator globCmd;
 	private String[] input, output, expected;
@@ -61,7 +61,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -73,7 +73,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -85,7 +85,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -97,7 +97,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -109,7 +109,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -121,7 +121,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -133,7 +133,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -145,7 +145,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -157,7 +157,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -169,7 +169,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -181,7 +181,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -193,7 +193,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -205,7 +205,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -217,7 +217,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -229,7 +229,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
@@ -241,7 +241,7 @@ public class GlobOperatorTest {
 		try {
 			output = globCmd.evaluate(input);
 		} catch (Exception e) {
-			Assert.fail(UNEXPECTED + e.getMessage());
+			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
 		assertArrayEquals(expected, output);
 	}
