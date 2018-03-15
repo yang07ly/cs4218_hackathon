@@ -41,9 +41,8 @@ public class GlobOperatorTest {
 	
 	private static final String UNEXPECTED = "Unexpected Exception: ";
 
-	GlobOperator globCmd;
-	String[] expected, result;
-	String exceptionMessage;
+	private GlobOperator globCmd;
+	private String[] expected, result;
 	
 	@Rule
     public ExpectedException thrown = ExpectedException.none();
