@@ -45,7 +45,7 @@ public class ShellImpl {
 	public ShellImpl() {
 		cmdSubOptr = new CmdSubOperator(this);
 		globOptr = new GlobOperator(this);
-		ioRedirOptr = new IoRedirOperator();
+		ioRedirOptr = new IoRedirOperator(this);
 		quoteOptr = new QuoteOperator();
 	}
 	

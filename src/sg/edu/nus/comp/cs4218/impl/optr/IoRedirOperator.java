@@ -9,12 +9,15 @@ import java.io.OutputStream;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 /**
@@ -26,87 +29,130 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  **/
 
 public class IoRedirOperator implements Operator {
+	ShellImpl shell;
+
+	public IoRedirOperator(ShellImpl shell) {
+		this.shell = shell;
+	}
 
 	@Override
 	public String[] evaluate(String... args) throws AbstractApplicationException, ShellException {
 		Vector<String> trimmedArgs = new Vector<String>();
+		boolean hasStream = false;
 		for (int i = 0; i < args.length; i++) {
+			String arg = "";
+			HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '<')));
+			set.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '>')));
 			for (int j = 0; j < args[i].length(); j++) {
-				if ((args[i].charAt(j) == '<') || (args[i].charAt(j) == '<')) {
-					i++;
+				if (((args[i].charAt(j) == '<') || (args[i].charAt(j) == '>')) && set.contains(j)) {
+					if (hasStream || arg.isEmpty()) {
+						arg = "";
+					} else {
+						trimmedArgs.add(arg);
+					}
+					hasStream = true;
 					continue;
 				}
-				trimmedArgs.add(args[i]);
+				arg += args[i].charAt(j);
+			}
+			if (!hasStream && !arg.isEmpty()) {
+				trimmedArgs.add(arg);
 			}
 		}
 		return trimmedArgs.toArray(new String[trimmedArgs.size()]);
 	}
 
-	
 	/**
 	 * Scans the arguments and sets the input stream
+	 * 
 	 * @param args
-	 *            	String array of the individual arguments.
-	 * @return	the input stream
+	 *            String array of the individual arguments.
+	 * @return the input stream
 	 * @throws ShellException
-	 * 			if more than 1 input stream is specified
+	 *             if more than 1 input stream is specified
 	 */
 	public InputStream getInputStream(String... args) throws ShellException {
 		try {
-			boolean hasFile = false;
-			InputStream input = null;
+			String inputFile = null;
+			boolean hasStream = false;
 			for (int i = 0; i < args.length; i++) {
+				String arg = "";
+				HashSet<Integer> set = new HashSet<Integer>(
+						Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '<')));
 				for (int j = 0; j < args[i].length(); j++) {
-					if (args[i].charAt(j) == '<') {
-						if (hasFile) {
+					if ((args[i].charAt(j) == '<') && set.contains(j)) {
+						if (hasStream) {
 							throw new ShellException("only 1 input can be specified");
 						}
-						hasFile = true;
-						File inputFile = FileUtil.getFileFromPath(args[i + 1]);
-						input = new FileInputStream(inputFile);
+						if (!arg.isEmpty()) {
+							inputFile = arg;
+						}
+						arg = "";
+						hasStream = true;
+						continue;
 					}
+					arg += args[i].charAt(j);
+				}
+				if (hasStream && !arg.isEmpty()) {
+					inputFile = arg;
 				}
 			}
-			return input;
+			if (inputFile == null) {
+				if (hasStream) {
+					throw new ShellException("no input file specified");
+				}
+				return null;
+			}
+			return new FileInputStream(FileUtil.getFileFromPath(inputFile));
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
-		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			throw new ShellException("no input file specified");
 		}
 	}
-	
+
 	/**
 	 * Scans the arguments and sets the output stream
-	 * @param args 
-	 *            	String array of the individual arguments.
-	 * @return	the output stream
+	 * 
+	 * @param args
+	 *            String array of the individual arguments.
+	 * @return the output stream
 	 * @throws ShellException
-	 * 			if more than 1 output stream is specified
+	 *             if more than 1 output stream is specified
 	 */
 	public OutputStream getOutputStream(String... args) throws ShellException {
 		try {
-			boolean hasFile = false;
-			OutputStream output = null;
+			String outputFile = null;
+			boolean hasStream = false;
 			for (int i = 0; i < args.length; i++) {
+				String arg = "";
+				HashSet<Integer> set = new HashSet<Integer>(
+						Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '>')));
 				for (int j = 0; j < args[i].length(); j++) {
-					if (args[i].charAt(j) == '<') {
-						if (hasFile) {
+					if ((args[i].charAt(j) == '>') && set.contains(j)) {
+						if (hasStream) {
 							throw new ShellException("only 1 output can be specified");
 						}
-						hasFile = true;
-						Path path = Paths.get(Environment.currentDirectory).resolve(args[i + 1]);
-						File outputFile = new File(path.toString());
-						output = new FileOutputStream(outputFile);
+						arg = "";
+						hasStream = true;
+						continue;
 					}
+					arg += args[i].charAt(j);
+				}
+				if (hasStream && !arg.isEmpty()) {
+					outputFile = arg;
 				}
 			}
-			return output;
+			if (outputFile == null) {
+				if (hasStream) {
+					throw new ShellException("no output file specified");
+				}
+				return null;
+			}
+			Path path = Paths.get(Environment.currentDirectory).resolve(outputFile);
+			return new FileOutputStream(new File(path.toString()));
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
 		} catch (InvalidPathException pathE) {
 			throw new ShellException("invalid file specified");
-		} catch (ArrayIndexOutOfBoundsException arrayE) {
-			throw new ShellException("no output file specified");
 		}
 	}
 }
