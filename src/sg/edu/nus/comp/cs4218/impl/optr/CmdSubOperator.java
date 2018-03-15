@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.StringJoiner;
 import java.util.Vector;
 
+import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
@@ -14,7 +15,7 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
  * A Command Substitution is a call-command surrounded by backquotes (`) if the backquotes are not surrounded by 
  * single quotes (if any).
  **/
-public class CmdSubOperator {
+public class CmdSubOperator implements Operator {
 	final private ShellImpl shell;
 	
 	public CmdSubOperator(ShellImpl shellImpl) {

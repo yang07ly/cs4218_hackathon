@@ -3,6 +3,7 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 import java.util.StringJoiner;
 import java.util.Vector;
 
+import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
@@ -10,7 +11,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
  * A quote operator provides quoting related functions such as getting indices
  * of character not within quotes or removing quotes.
  */
-public class QuoteOperator {
+public class QuoteOperator implements Operator {
 	
 	private boolean hasFoundSQ;
 	private boolean hasFoundDQ;

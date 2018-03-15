@@ -8,6 +8,7 @@ import java.util.StringJoiner;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
+import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
@@ -19,7 +20,7 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
  * valid path in the system by replacing all the unquoted asterisk symbols 
  * in specified path by some (possibly empty) sequences of non-slash characters.
  */
-public class GlobOperator {
+public class GlobOperator implements Operator {
 	final private ShellImpl shell;
 	
 	public GlobOperator(ShellImpl shellImpl) {
