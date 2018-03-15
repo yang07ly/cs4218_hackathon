@@ -45,6 +45,10 @@ public class GlobOperator implements Operator {
 		Vector<String> newArgs = new Vector<String>();
 		
 		for (int i = 0; i < fileNames.length; i++) {
+			if (fileNames[i] == null) {
+				throw new ShellException("Null Pointer Exception");
+			}
+			
 			//get indices of * and do not glob arg if does not contain *
 			HashSet<Integer> wildCardIndices = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuotes(fileNames[i], '*')));
 			if (wildCardIndices.isEmpty()) {
