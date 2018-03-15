@@ -41,7 +41,7 @@ public class GlobOperatorTest {
 	
 	private static final String UNEXPECTED_EXP = "Unexpected Exception: ";
 
-	private GlobOperator globCmd;
+	private GlobOperator globOptr;
 	private String[] input, output, expected;
 	
 	@Rule
@@ -50,7 +50,7 @@ public class GlobOperatorTest {
 	@Before
 	public void setUp() throws Exception {
 		Environment.currentDirectory = TEST_DIR;
-		globCmd = new GlobOperator(new ShellImplStub());
+		globOptr = new GlobOperator(new ShellImplStub());
 		input = output = expected = new String[0];
 	}
 
@@ -59,7 +59,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_EMPTY};
 		input = new String[] {FILE_EMPTY};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -71,7 +71,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_SPACES};
 		input = new String[] {FILE_SPACES};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -83,7 +83,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE1};
 		input = new String[] {FILE1};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -95,7 +95,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_NONEXISTENT};
 		input = new String[] {FILE_NONEXISTENT};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -107,7 +107,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2};
 		input = new String[] {"*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -119,7 +119,7 @@ public class GlobOperatorTest {
 		expected = new String[] {ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2};
 		input = new String[] {Environment.currentDirectory + File.separator + "*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -131,7 +131,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FOLDER1, FOLDER2};
 		input = new String[] {"*/"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -143,7 +143,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2};
 		input = new String[] {"*.txt"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -155,7 +155,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2};
 		input = new String[] {"f*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -167,7 +167,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, };
 		input = new String[] {"f*.txt"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -179,7 +179,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FOLDER1_FILE1, FOLDER2_FILE1};
 		input = new String[] {"*" + File.separator + FILE1};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -191,7 +191,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE1, FOLDER1};
 		input = new String[] {"*1*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -203,7 +203,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2};
 		input = new String[] {"*" + File.separator + "file*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -215,7 +215,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2};
 		input = new String[] {FOLDER1 + File.separator + "*", FOLDER2 + File.separator + "*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -227,7 +227,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FILE_NONEXISTENT};
 		input = new String[] {"file*", FILE_NONEXISTENT};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -239,7 +239,7 @@ public class GlobOperatorTest {
 		expected = new String[] {FILE_W_SPACES};
 		input = new String[] {"\"file name with\"*"};
 		try {
-			output = globCmd.evaluate(input);
+			output = globOptr.evaluate(input);
 		} catch (Exception e) {
 			Assert.fail(UNEXPECTED_EXP + e.getMessage());
 		}
@@ -253,6 +253,6 @@ public class GlobOperatorTest {
 		thrown.expect(ShellException.class);
         thrown.expectMessage("shell: Null Pointer Exception");
 
-		output = globCmd.evaluate(input);
+		output = globOptr.evaluate(input);
 	}
 }
