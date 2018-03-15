@@ -171,7 +171,7 @@ public class ShellImpl {
 	 * @return String Array
 	 * 			  paths that matches the wildcard fileNames.
 	 * 
-	 * @throws IOException
+	 * @throws ShellException
 	 *            If the specified path is null.
 	 */
 	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException {

@@ -38,7 +38,7 @@ public class GlobOperator implements Operator {
 	 * @return String Array
 	 * 			  paths that matches the wildcard fileNames.
 	 * 
-	 * @throws IOException
+	 * @throws ShellException
 	 *            If the specified path is null.
 	 */
 	public String[] evaluate(String... fileNames) throws AbstractApplicationException, ShellException {
