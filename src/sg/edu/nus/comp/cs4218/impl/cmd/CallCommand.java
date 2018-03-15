@@ -45,9 +45,10 @@ public class CallCommand implements Command {
 	 *            OutputStream to write resultant data to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while evaluating the sub-command.
+	 *             If an exception happens while evaluating the application.
 	 * @throws ShellException
-	 *             If an exception happens while evaluating the sub-command.
+	 *             If an exception happens while evaluating globing, IO redirection
+	 *             quoting or command substitution.
 	 */
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
@@ -72,9 +73,6 @@ public class CallCommand implements Command {
 		}
 		argsArray = shell.removeStreamFromArgs(argsArray);
 		
-		//remove quotes from evaluated arguments
-		argsArray = shell.removeQuote(argsArray);
-		
 		shell.runApp(app, argsArray, inputStream, outputStream);
 		StreamUtil.closeInputStream(inputStream);
 		StreamUtil.closeOutputStream(outputStream);
@@ -82,14 +80,11 @@ public class CallCommand implements Command {
 
 	/**
 	 * Parses and splits the sub-command to the call command into its different
-	 * components, namely the application name, the arguments (if any), the
-	 * input redirection file path (if any) and output redirection file path (if
-	 * any).
+	 * components, namely the application name and the arguments (if any).
 	 * 
 	 * @throws ShellException
-	 *             If an exception happens while parsing the sub-command, or if
-	 *             the input redirection file path is same as that of the output
-	 *             redirection file path.
+	 *             If an exception happens while parsing the sub-command where
+	 *             the quotes are not closed properly.
 	 */
 	public void parse() throws ShellException {
 		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuote(cmdline, ' ');

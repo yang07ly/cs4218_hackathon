@@ -2,6 +2,7 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.StringJoiner;
 import java.util.Vector;
 
@@ -10,7 +11,7 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 /**
- * A Command Substitution is a call-command surrounded by backquotes (`) iff the backquotes are not surrounded by 
+ * A Command Substitution is a call-command surrounded by backquotes (`) if the backquotes are not surrounded by 
  * single quotes (if any).
  **/
 public class CmdSubOperator {
@@ -22,57 +23,86 @@ public class CmdSubOperator {
 	
 	/**
 	 * Searches for and processes the commands enclosed by back quotes for
-	 * command substitution.If no back quotes are found, the argsArray from the
-	 * input is returned unchanged. If back quotes are found, the back quotes
-	 * and its enclosed commands substituted with the output from processing the
-	 * commands enclosed in the back quotes.
+	 * command substitution. If no back quotes are found, the argsArray from the
+	 * input is returned with its quote removed. If back quotes are found, the 
+	 * back quotes and its enclosed commands substituted with the output from 
+	 * processing the commands enclosed in the back quotes with the back quotes
+	 * and any other quotes removed.
 	 * 
 	 * @param argsArray
-	 *            String array of the individual commands.
+	 *            	String array of the individual arguments.
 	 * 
-	 * @return String array with the back quotes command processed.
+	 * @return String array 
+	 * 				List of string with the back quotes command processed and
+	 * 				quotes removed.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while processing the content in the
-	 *             back quotes.
+	 *             	If an exception happens while processing the application in the
+	 *             	back quotes.
 	 * @throws ShellException
-	 *             If an exception happens while processing the content in the
-	 *             back quotes.
+	 *             	If an exception happens while processing the content in the
+	 *             	back quotes.
 	 */
 	public String[] evaluate(String... argsArray) throws AbstractApplicationException, ShellException {
 		Vector<String> results = new Vector<String>();
 		for (int i = 0; i < argsArray.length; i++) {
 			Integer[] bqIndices = shell.getIndicesOfCharNotInQuote(argsArray[i], '`');
 			if (bqIndices.length == 0 || bqIndices.length % 2 != 0) {
-				results.add(argsArray[i]);
+				// no command sub present
+				results.add((shell.removeQuote(argsArray[i]))[0]);
 				continue;
 			}
-
-			Arrays.sort(bqIndices);
-			StringJoiner cmdSubResult = new StringJoiner("");
-			int startIndex = 0;
-			for (int j = 0; j < bqIndices.length; j+=2) {
-				cmdSubResult.add(argsArray[i].substring(startIndex, bqIndices[j]));
-				if (bqIndices[j] + 1 != bqIndices[j+1]) {
-					String cmdSubCmd = argsArray[i].substring(bqIndices[j] + 1, bqIndices[j+1]);
-					String cmdSubOut = performCmdSub(cmdSubCmd);
-//					if (cmdSubOut.matches(".*[\"'`].*")) {
-//						cmdSubResult.add(cmdSubOut.replace("'", "'''").replace("\"", "'\"'").replace("`", "'`'"));
-//					} else {
-						cmdSubResult.add(cmdSubOut);
-//					}
-				}
-				startIndex = bqIndices[j+1] + 1;
-			}
-			if (startIndex < argsArray[i].length()) {
-				cmdSubResult.add(argsArray[i].substring(startIndex, argsArray[i].length()));
-			}
 			
+			HashSet<Integer> removeIndices = new HashSet<Integer>();
+			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuote(argsArray[i], '"')));
+			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuote(argsArray[i], '\'')));
+			Arrays.sort(bqIndices);
+			
+			StringJoiner cmdSubResult = new StringJoiner("");
+			StringJoiner cmdSubCmd = new StringJoiner("");
+			int bqIndex = 0;
+			for (int j = 0; j < argsArray[i].length(); j++) {
+				if (removeIndices.contains(j) || j == bqIndices[bqIndex]) {
+					//removed quotes
+					continue;
+				}
+
+				if  (j > bqIndices[bqIndex] && j < bqIndices[bqIndex + 1]) {
+					//command sub characters
+					cmdSubCmd.add(argsArray[0].substring(j, j + 1));
+					continue;
+				}
+				
+				if (j == bqIndices[bqIndex + 1]) {
+					//end of command sub
+					cmdSubResult.add(performCmdSub(cmdSubCmd.toString()));
+					continue;
+				}
+				
+				//other characters
+				cmdSubResult.add(argsArray[0].substring(j, j + 1));
+			}
 			results.add(cmdSubResult.toString());
 		}
 		return results.toArray(new String[results.size()]);		
 	}
 	
+	/**
+	 * Returns the result of processing the command specified in a single line.
+	 * 
+	 * @param cmd
+	 *            	String of the specified command.
+	 * 
+	 * @return String
+	 * 				Result of processing the command appended into a single line.
+	 * 
+	 * @throws AbstractApplicationException
+	 *             	If an exception happens while processing the application in the
+	 *             	back quotes.
+	 * @throws ShellException
+	 *             	If an exception happens while processing the content in the
+	 *             	back quotes.
+	 */
 	private String performCmdSub(String cmd) throws ShellException {
 		ByteArrayOutputStream bqOutputStream = new ByteArrayOutputStream();
 		ShellImpl shell = new ShellImpl();
