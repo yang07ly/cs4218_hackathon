@@ -204,14 +204,38 @@ public class ShellImpl {
 		return cmdSubOptr.evaluate(args);
 	}
 	
+	/**
+	 * Removes any IO redirection operators and their arguments and returns back the string array
+	 * @param args
+	 *            	String array of the individual arguments.
+	 * @return	String array of arguments without IO redirection operators and their arguments
+	 * @throws AbstractApplicationException
+	 * @throws ShellException
+	 */
 	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException {
 		return ioRedirOptr.evaluate(args);
 	}
 	
+	/**
+	 * Scans the arguments and sets the input stream
+	 * @param args
+	 *            	String array of the individual arguments.
+	 * @return	the input stream
+	 * @throws ShellException
+	 * 			if more than 1 input stream is specified
+	 */
 	public InputStream getInputStream(String... args) throws ShellException {
 		return ioRedirOptr.getInputStream(args);
 	}
 	
+	/**
+	 * Scans the arguments and sets the output stream
+	 * @param args 
+	 *            	String array of the individual arguments.
+	 * @return	the output stream
+	 * @throws ShellException
+	 * 			if more than 1 output stream is specified
+	 */
 	public OutputStream getOutputStream(String... args) throws ShellException {
 		return ioRedirOptr.getOutputStream(args);
 	}
