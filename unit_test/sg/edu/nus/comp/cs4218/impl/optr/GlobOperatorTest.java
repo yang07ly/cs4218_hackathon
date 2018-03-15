@@ -253,6 +253,6 @@ public class GlobOperatorTest {
 		thrown.expect(ShellException.class);
         thrown.expectMessage("shell: Null Pointer Exception");
 
-		output = globOptr.evaluate(input);
+		globOptr.evaluate(input);
 	}
 }
