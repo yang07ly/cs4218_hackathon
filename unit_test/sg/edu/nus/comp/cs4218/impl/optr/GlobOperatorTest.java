@@ -33,11 +33,11 @@ public class GlobOperatorTest {
 	private static final String FOLDER1_FILE2 = FOLDER1 + File.separator + FILE2;
 	private static final String FOLDER2_FILE1 = FOLDER2 + File.separator + FILE1;
 	private static final String FOLDER2_FILE2 = FOLDER2 + File.separator + FILE2;
-	private static final String ABSOLUTE_FILE_W_SPACES = TEST_DIR + File.separator + FILE_W_SPACES;
-	private static final String ABSOLUTE_FILE1 = TEST_DIR + File.separator + FILE1;
-	private static final String ABSOLUTE_FILE2 = TEST_DIR + File.separator + FILE2;
-	private static final String ABSOLUTE_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
-	private static final String ABSOLUTE_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
+	private static final String ABS_FILE_W_SPACES = TEST_DIR + File.separator + FILE_W_SPACES;
+	private static final String ABS_FILE1 = TEST_DIR + File.separator + FILE1;
+	private static final String ABS_FILE2 = TEST_DIR + File.separator + FILE2;
+	private static final String ABS_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
+	private static final String ABS_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
 	
 	private static final String UNEXPECTED = "Unexpected Exception: ";
 
@@ -111,7 +111,7 @@ public class GlobOperatorTest {
 
 	@Test
 	public void testGlobEverythingAbsolute() {
-		expected = new String[] {ABSOLUTE_FILE_W_SPACES, ABSOLUTE_FILE1, ABSOLUTE_FILE2, ABSOLUTE_FOLDER1, ABSOLUTE_FOLDER2};
+		expected = new String[] {ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2};
 		try {
 			result = globCmd.evaluate(Environment.currentDirectory + File.separator + "*");
 		} catch (Exception e) {
