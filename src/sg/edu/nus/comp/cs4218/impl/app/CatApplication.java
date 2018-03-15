@@ -44,7 +44,7 @@ public class CatApplication implements Application {
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CatException {
-		if (args == null || args.length == 0) {
+		if (args == null || (args.length == 1 && args[0].equals("-"))) {
 			if (stdin == null || stdout == null) {
 				throw new CatException("Null Pointer Exception");
 			}
@@ -59,28 +59,28 @@ public class CatApplication implements Application {
 		} else {
 			int numOfFiles = args.length;
 			if (numOfFiles > 0) {
-				Path filePath;
-				Path currentDir = Paths.get(Environment.currentDirectory);
-
+				Path filePath, currentDir = Paths.get(Environment.currentDirectory);
 				for (int i = 0; i < numOfFiles; i++) {
+					if(args[i].equals("-")) {
+						continue;
+					}
 					try {
 						filePath = currentDir.resolve(args[i]);
 						checkIfFileIsReadable(filePath, args[i]);
-						byte[] byteFileArray = Files.readAllBytes(filePath);
-						stdout.write(byteFileArray);
-						if (i < numOfFiles - 1) {
+						if (i > 0) {
 							stdout.write("\n".getBytes());
 						}
+						stdout.write(Files.readAllBytes(filePath));
 					} catch(CatException catE) {
 						if(numOfFiles == 1) {
 							throw catE;
 						}
 						try {
-							String message = catE.getMessage();
-							stdout.write(message.getBytes());
-							if (i < numOfFiles - 1) {
+							if (i > 0) {
 								stdout.write("\n".getBytes());
 							}
+							String message = catE.getMessage();
+							stdout.write(message.getBytes());
 						} catch (IOException e) {
 							throw new CatException("Could not write to output stream");
 						}

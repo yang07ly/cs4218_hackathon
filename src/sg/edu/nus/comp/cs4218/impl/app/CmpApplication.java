@@ -29,7 +29,7 @@ public class CmpApplication implements CmpInterface {
 			try {
 				String output = "";
 				if (hasInputFromStream(files)) {
-					if (files.size() == 1) {
+					if (files.size() == 2) {
 						output = cmpFileAndStdin(files.get(0), stdin, flags[0], flags[1], flags[2]);
 					}
 				} else {
