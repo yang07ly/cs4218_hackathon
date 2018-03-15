@@ -5,12 +5,16 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.OutputStream;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
+import sg.edu.nus.comp.cs4218.exception.CatException;
 
 public class CatApplicationTest {
 
@@ -19,6 +23,9 @@ public class CatApplicationTest {
 	CatApplication app;
 	OutputStream outputStream;
 	String expected, output, currentDir;
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Before
 	public void setUp() {
@@ -32,113 +39,79 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testInvalidFile() {
+	public void testInvalidFile() throws CatException {
+		String[] args = { "asdf" };
 		expected = "cat: asdf: No such file or directory";
-		String[] args = {"asdf"};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
+
+		thrown.expect(CatException.class);
+		thrown.expectMessage(expected);
+		app.run(args, System.in, outputStream);
 	}
 
 	@Test
-	public void testDirectory() {
+	public void testDirectory() throws CatException {
 		expected = "cat: " + Environment.currentDirectory + ": Is a directory";
-		String[] args = {Environment.currentDirectory};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
+		String[] args = { Environment.currentDirectory };
+		thrown.expect(CatException.class);
+		thrown.expectMessage(expected);
+		app.run(args, System.in, outputStream);
 	}
 
 	@Test
-	public void testOneFile() {
+	public void testOneFile() throws CatException {
 		expected = FILE1_CONTENT;
-		String[] args = {FILE1_TXT};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
+		String[] args = { FILE1_TXT };
+
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testAbsolutePath() {
+	public void testAbsolutePath() throws CatException {
 		String path = Environment.currentDirectory + File.separator + FILE1_TXT;
 		expected = FILE1_CONTENT;
-		String[] args = {path};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
+		String[] args = { path };
+
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testMultipleFiles() {
+	public void testMultipleFiles() throws CatException {
 		expected = "asdf\nqwer";
-		String[] args = {FILE1_TXT,"file2.txt"};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
+		String[] args = { FILE1_TXT, "file2.txt" };
+
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testMultipleFilesWithInvalidFiles() {
+	public void testMultipleFilesWithInvalidFiles() throws CatException {
 		expected = "asdf\ncat: asdf: No such file or directory\nqwer";
-		String[] args = {FILE1_TXT, "asdf", "file2.txt"};
-		
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
+		String[] args = { FILE1_TXT, "asdf", "file2.txt" };
+
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testStream() {
+	public void testStream() throws CatException, FileNotFoundException {
 		expected = FILE1_CONTENT;
-		try {
-			FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
-			app.run(null, fileStream, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
+		FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
+		app.run(null, fileStream, outputStream);
+		output = outputStream.toString();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testNullArgsNullStream() {
+	public void testNullArgsNullStream() throws CatException {
 		expected = "cat: Null Pointer Exception";
-		
-		try {
-			app.run(null, null, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
+		thrown.expect(CatException.class);
+		thrown.expectMessage(expected);
+		app.run(null, null, outputStream);
 	}
 }

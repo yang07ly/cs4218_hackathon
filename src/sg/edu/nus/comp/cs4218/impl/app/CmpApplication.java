@@ -108,7 +108,7 @@ public class CmpApplication implements CmpInterface {
 
 	@Override
 	public String cmpTwoFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
-			Boolean isPrintOctalDiff) throws CmpException, IOException {
+			Boolean isPrintOctalDiff) throws CmpException {
 		try {
 			File fileA = FileUtil.getFileFromPath(fileNameA);
 			File fileB = FileUtil.getFileFromPath(fileNameB);

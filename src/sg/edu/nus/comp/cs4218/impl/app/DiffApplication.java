@@ -57,6 +57,16 @@ public class DiffApplication implements DiffInterface {
 		}
 	}
 
+	/**
+	 * compares two files in the current directory and another directory of the same name
+	 * @param folder directory of the file to compare
+	 * @param fileNameB filename of the files to compare
+	 * @param isShowSame boolean flag for showing if files are identical
+	 * @param isNoBlank boolean flag for skipping blank lines
+	 * @param isSimpleboolean flag for simplifying output if files are different
+	 * @return message output
+	 * @throws DiffException
+	 */
 	public String diffDirAndFile(String folder, String fileNameB, Boolean isShowSame, Boolean isNoBlank,
 			Boolean isSimple) throws DiffException {
 		String fileNameA = folder + File.separator + fileNameB;
@@ -89,6 +99,18 @@ public class DiffApplication implements DiffInterface {
 		}
 	}
 
+	/**
+	 * compares two files and output the difference, if any
+	 * @param fileNameA filename of first file
+	 * @param fileNameB filename of second file
+	 * @param readerA reader of first file
+	 * @param readerB reader of second file
+	 * @param isShowSame boolean flag for showing if files are identical
+	 * @param isNoBlank boolean flag for skipping blank lines
+	 * @param isSimpleboolean flag for simplifying output if files are different
+	 * @return message output
+	 * @throws DiffException
+	 */
 	private String diffFiles(String fileNameA, String fileNameB, BufferedReader readerA, BufferedReader readerB,
 			Boolean isShowSame, Boolean isNoBlank, Boolean isSimple) throws DiffException {
 		HashSet<String> setA = new HashSet<String>();
