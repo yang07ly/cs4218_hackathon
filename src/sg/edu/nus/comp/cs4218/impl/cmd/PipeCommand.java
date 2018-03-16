@@ -62,12 +62,7 @@ public class PipeCommand implements Command{
 		callCommand.evaluate(inputStream, outputStream);
 
 		for (int i = 1; i < argsArray.length; i++) {
-			if (outputStream.size() > 0) {
-				byte[] temp = Arrays.copyOfRange(outputStream.toByteArray(), 0, outputStream.size() - 1);
-				inputStream = new ByteArrayInputStream(temp);
-			} else {
-				inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-			}
+			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			outputStream = new ByteArrayOutputStream();
 			
 			command = argsArray[i];
