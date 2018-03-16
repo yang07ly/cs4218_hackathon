@@ -63,31 +63,36 @@ public class CmdSubOperator implements Operator {
 			StringJoiner cmdSubCmd = new StringJoiner("");
 			int bqIndex = 0;
 			for (int j = 0; j < argsArray[i].length(); j++) {
-				if (removeIndices.contains(j) || j == bqIndices[bqIndex]) {
-					//removed quotes
+				if (removeIndices.contains(j)) {
+					//remove other quotes
 					continue;
 				}
-
-				if  (j > bqIndices[bqIndex] && j < bqIndices[bqIndex + 1]) {
-					//command sub characters
-					cmdSubCmd.add(argsArray[i].substring(j, j + 1));
-					continue;
+				if (bqIndex < bqIndices.length) {
+					if (j == bqIndices[bqIndex]) {
+						//removed first back quotes
+						continue;
+					}
+	
+					if  (j > bqIndices[bqIndex] && j < bqIndices[bqIndex + 1]) {
+						//command sub characters
+						cmdSubCmd.add(argsArray[i].substring(j, j + 1));
+						continue;
+					}
+					
+					if (j == bqIndices[bqIndex + 1]) {
+						//end of command sub
+						cmdSubResult.add(performCmdSub(cmdSubCmd.toString()));
+						cmdSubCmd = new StringJoiner("");
+						bqIndex += 2;
+						continue;
+					}
 				}
-				
-				if (j == bqIndices[bqIndex + 1]) {
-					//end of command sub
-					cmdSubResult.add(performCmdSub(cmdSubCmd.toString()));
-					cmdSubCmd = new StringJoiner("");
-					bqIndex += 2;
-					continue;
-				}
-				
 				//other characters
 				cmdSubResult.add(argsArray[i].substring(j, j + 1));
 			}
 			results.add(cmdSubResult.toString());
 		}
-		return results.toArray(new String[results.size()]);		
+		return results.toArray(new String[results.size()]);
 	}
 	
 	/**
@@ -106,14 +111,10 @@ public class CmdSubOperator implements Operator {
 	 *             	If an exception happens while processing the content in the
 	 *             	back quotes.
 	 */
-	private String performCmdSub(String cmd) throws ShellException {
+	private String performCmdSub(String cmd) throws AbstractApplicationException, ShellException {
 		ByteArrayOutputStream bqOutputStream = new ByteArrayOutputStream();
 		ShellImpl newShell = new ShellImpl();
-		try {
-			newShell.parseAndEvaluate(cmd, bqOutputStream);
-		} catch (AbstractApplicationException e) {
-			throw new ShellException(e.getMessage());
-		}
+		newShell.parseAndEvaluate(cmd, bqOutputStream);
 
 		byte[] byteArray = bqOutputStream.toByteArray();
 		return new String(byteArray).replace("\n", " ").replace("\r", " ").trim();
