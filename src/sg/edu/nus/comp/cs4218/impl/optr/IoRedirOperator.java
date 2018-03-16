@@ -37,6 +37,9 @@ public class IoRedirOperator implements Operator {
 
 	@Override
 	public String[] evaluate(String... args) throws AbstractApplicationException, ShellException {
+		if(args == null) {
+			return args;
+		}
 		Vector<String> trimmedArgs = new Vector<String>();
 		boolean hasStream = false;
 		for (int i = 0; i < args.length; i++) {

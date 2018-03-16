@@ -1,212 +1,233 @@
-//package sg.edu.nus.comp.cs4218.impl.optr;
-//
-//import static org.junit.Assert.*;
-//
-//import java.io.BufferedReader;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileReader;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.io.OutputStream;
-//import java.util.Vector;
-////
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import sg.edu.nus.comp.cs4218.Environment;
-//import sg.edu.nus.comp.cs4218.exception.ShellException;
-//import sg.edu.nus.comp.cs4218.impl.ShellImpl;
-//import sg.edu.nus.comp.cs4218.impl.optr.IoRedirOperator;
-//
-//public class IoRedirOperatorTest {
-//
-//	public static final String EXP_SYNTAX = "shell: Invalid syntax encountered.";
-//
-//	IoRedirOperator ioRedirCommand;
-//	Vector<String> cmdVector;
-//	int actual;
-//	
-//	@Before
-//	public void setup() {
-//		ioRedirCommand = new IoRedirOperator();
-//		cmdVector = new Vector<String>();
-//		actual = 0;
-//		String fileDir = "test_system" + File.separator + "cmd_test_system";
-//		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
-//	}
-//	
-//	@Test
-//	public void testExtractInputRedirOutputArgs() {
-//		try {
-//			actual = ioRedirCommand.extractInputRedir(">", cmdVector, 1);
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		}
-//		assertEquals(1, actual);
-//	}
-//	
-//	@Test
-//	public void testExtractInputRedirInvalidArgs() {
-//		String message = "";
-//		try {
-//			actual = ioRedirCommand.extractInputRedir("empty", cmdVector, 1);
-//		} catch (ShellException e) {
-//			message = e.getMessage();
-//		}
-//		assertEquals(EXP_SYNTAX, message);
-//	}
-//	
-//	@Test
-//	public void testExtractInputRedirValidArgs() {
-//		try {
-//			actual = ioRedirCommand.extractInputRedir("cat < abc.txt def.txt", cmdVector, 4);
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		}
-//		assertEquals(4, actual);
-//	}
-//	
-//	@Test
-//	public void testExtractOutputRedirEmptyArgs() {
-//		try {
-//			actual = ioRedirCommand.extractOutputRedir("", cmdVector, 0);
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		}
-//		assertEquals(0, actual);	
-//	}
-//	
-//	@Test
-//	public void testExtractOutputRedirInvalidArgs() {
-//		String message = "";
-//		try {
-//			actual = ioRedirCommand.extractOutputRedir("output", cmdVector, 0);
-//		} catch (ShellException e) {
-//			message = e.getMessage();
-//		}
-//		assertEquals(EXP_SYNTAX, message);	
-//	}
-//	
-//	@Test
-//	public void testExtractOutputRedirOutputArgs() {
-//		try {
-//			actual = ioRedirCommand.extractOutputRedir("echo \"HELLO\" > output.txt", cmdVector, 13);
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		}
-//		assertEquals(13, actual);	
-//	}
-//	
-//	@Test
-//	public void testOpenInputRedirValidFile() {
-//		String expected = "On the other hand, we denounce with righteous indignation and dislike men"
-//				+ " who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire,"
-//				+ " that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs"
-//				+ " to those who fail in their duty through weakness of will, which is the same as saying through"
-//				+ " shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour,"
-//				+ " when our power of choice is untrammelled and when nothing prevents our being able to do what we like best,"
-//				+ " every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims"
-//				+ " of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and "
-//				+ "annoyances accepted. The wise man therefore always holds in these matters to this principle of selection:"
-//				+ " he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains";
-//		
-//		InputStream fInputStream = null;
-//		try {
-//			fInputStream = (FileInputStream) ioRedirCommand.openInputRedir("text.txt");
-//		} catch (ShellException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assertEquals(expected, getStringFromInputStream(fInputStream));	
-//	}
-//	
-//	@Test
-//	public void testOpenInputRedirInvalidFile() {
-//		String message = "";
-//		String filename = "file-not-found.txt";
-//		String expected = "shell: File not found";
-//		try {
-//			ioRedirCommand.openInputRedir(filename);
-//		} catch (ShellException e) {
-//			message = e.getMessage();
-//		}
-//		assertEquals(expected, message);	
-//	}
-//	
-//	@Test
-//	public void testOpenOutputRedirValidFile() {
-//		String filename = "newtext.txt";
-//		try {			
-//			OutputStream outputStream = ioRedirCommand.openOutputRedir(filename);
-//			ShellImpl.closeOutputStream(outputStream);
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		boolean isFileExist = false;
-//		if (new File(Environment.currentDirectory + File.separator + filename).exists())
-//		{
-//			isFileExist = true;
-//		}
-//		
-//		assertTrue(isFileExist);
-//		
-//		deleteFile(filename);
-//	}
-//	
-//
-//	
-//	public void deleteFile(String filename) {
-//		File file = new File(Environment.currentDirectory + File.separator + filename);
-//		file.delete();
-//	}
-//	
-//	public String getFileContents(String filename) throws IOException {
-//		
-//	    File file = new File(Environment.currentDirectory + File.separator + filename);
-//
-//	    BufferedReader buffReader = new BufferedReader(new FileReader(file));
-//	    StringBuffer fileContents = new StringBuffer();
-//	    String line = buffReader.readLine();
-//	    while (line != null) {
-//	        fileContents.append(line);
-//	        line = buffReader.readLine();
-//	    }
-//
-//	    buffReader.close();
-//
-//	    return fileContents.toString();
-//	}
-//	
-//	// convert InputStream to String
-//	private static String getStringFromInputStream(InputStream inputStream) {
-//
-//		BufferedReader buffReader = null;
-//		StringBuilder stringBuilder = new StringBuilder();
-//
-//		String line;
-//		try {
-//
-//			buffReader = new BufferedReader(new InputStreamReader(inputStream));
-//			while ((line = buffReader.readLine()) != null) {
-//				stringBuilder.append(line);
-//			}
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (buffReader != null) {
-//				try {
-//					buffReader.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//
-//		return stringBuilder.toString();
-//
-//	}
-//}
+package sg.edu.nus.comp.cs4218.impl.optr;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import sg.edu.nus.comp.cs4218.Environment;
+import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
+import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellStub;
+
+public class IoRedirOperatorTest {
+
+	private static final String OUTPUT_TXT = "output.txt";
+	private static final String FILE_TXT = "file.txt";
+	private static final String ASD = "asd";
+	private IoRedirOperator ioRedirOp;
+	private String[] input, output, expected;
+	private InputStream inputStream;
+	private OutputStream outputStream;
+	private String currentDir;
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
+	@Before
+	public void setUp() throws Exception {
+		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
+				+ "ioRedir_test_system";
+		ioRedirOp = new IoRedirOperator(new ShellStub());
+		input = output = expected = new String[0];
+		inputStream = null;
+		outputStream = null;
+		currentDir = Environment.currentDirectory + File.separator;
+	}
+
+	@Test
+	public void testNoIO() throws ShellException, AbstractApplicationException {
+		expected = new String[] { ASD };
+		input = new String[] { ASD };
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertArrayEquals(expected, output);
+		assertTrue(inputStream == null);
+		assertTrue(outputStream == null);
+	}
+
+	@Test
+	public void testInputInvalidFile() throws ShellException, AbstractApplicationException {
+		expected = new String[] {};
+		input = new String[] { "<", ASD };
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: asd: No such file or directory");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testOneInput() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] {};
+		input = new String[] { "<", FILE_TXT };
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertArrayEquals(expected, output);
+		assertTrue(inputStream != null);
+		assertTrue(outputStream == null);
+		inputStream.close();
+	}
+
+	@Test
+	public void testMultipleInputs() throws ShellException, AbstractApplicationException {
+		expected = new String[] {};
+		input = new String[] { "<", FILE_TXT, "<", FILE_TXT };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 input can be specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testInputWithoutArg() throws ShellException, AbstractApplicationException {
+		expected = new String[] {};
+		input = new String[] { "<" };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: no input file specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testOutputFileNoExists() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] {};
+		input = new String[] { ">", ASD };
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertArrayEquals(expected, output);
+		assertTrue(inputStream == null);
+		assertTrue(outputStream != null);
+		assertTrue(Files.exists(Paths.get(currentDir + ASD)));
+
+		outputStream.close();
+		Files.delete(Paths.get(currentDir + ASD));
+	}
+
+	@Test
+	public void testOutputFileExists() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] {};
+		input = new String[] { ">", OUTPUT_TXT };
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertArrayEquals(expected, output);
+		assertTrue(inputStream == null);
+		assertTrue(outputStream != null);
+		assertTrue(Files.exists(Paths.get(currentDir + OUTPUT_TXT)));
+
+		outputStream.close();
+	}
+
+	@Test
+	public void testMultipleOutputs() throws ShellException, AbstractApplicationException {
+		expected = new String[] {};
+		input = new String[] { ">", FILE_TXT, ">", FILE_TXT };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 output can be specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testOutputWithoutArg() throws ShellException, AbstractApplicationException {
+		expected = new String[] {};
+		input = new String[] { ">" };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: no output file specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testOneInputAndOneOutput() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] { "hi" };
+		input = new String[] { "hi", "<", FILE_TXT, ">", ASD };
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertArrayEquals(expected, output);
+		assertTrue(inputStream != null);
+		assertTrue(outputStream != null);
+		assertTrue(Files.exists(Paths.get(currentDir + ASD)));
+
+		outputStream.close();
+		inputStream.close();
+		Files.delete(Paths.get(currentDir + ASD));
+	}
+
+	@Test
+	public void testMultipleInputAndOneOutput() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] { "hi" };
+		input = new String[] { "hi", "<", FILE_TXT, ">", ASD, "<", OUTPUT_TXT };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 input can be specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testOneInputAndMultipleOutput() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] { "hi" };
+		input = new String[] { "hi", "<", FILE_TXT, ">", ASD, ">", OUTPUT_TXT };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 output can be specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+
+	@Test
+	public void testMultipleInputAndMultipleOutput() throws ShellException, AbstractApplicationException, IOException {
+		expected = new String[] { "hi" };
+		input = new String[] { "hi", "<", FILE_TXT, ">", ASD, "<", OUTPUT_TXT, ">", "def" };
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 input can be specified");
+
+		output = ioRedirOp.evaluate(input);
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+	}
+}
