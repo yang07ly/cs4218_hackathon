@@ -13,7 +13,7 @@ import org.junit.rules.ExpectedException;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImplStub;
+import sg.edu.nus.comp.cs4218.impl.ShellStub;
 import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
 
 public class GlobOperatorTest {
@@ -50,7 +50,7 @@ public class GlobOperatorTest {
 	@Before
 	public void setUp() throws Exception {
 		Environment.currentDirectory = TEST_DIR;
-		globOptr = new GlobOperator(new ShellImplStub());
+		globOptr = new GlobOperator(new ShellStub());
 		input = output = expected = new String[0];
 	}
 

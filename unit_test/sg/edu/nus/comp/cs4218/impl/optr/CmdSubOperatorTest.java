@@ -1,198 +1,151 @@
-//package sg.edu.nus.comp.cs4218.impl.optr;
-//
-//import static org.junit.Assert.*;
-//
-//import java.io.ByteArrayOutputStream;
-//import java.io.File;
-//import java.io.InputStream;
-//import java.util.Arrays;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import sg.edu.nus.comp.cs4218.Environment;
-//import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
-//import sg.edu.nus.comp.cs4218.exception.ShellException;
-//import sg.edu.nus.comp.cs4218.impl.cmd.CallCommand;
-//import sg.edu.nus.comp.cs4218.impl.optr.CmdSubOperator;
-//
-//public class CmdSubOperatorTest {
-//	
-//	CallCommand callCommand;
-//
-//	CmdSubOperator cmdSubCommand;
-//	
-//	String[] expected,actual;
-//
-//	@Before
-//	public void setup() {
-//		callCommand = new CallCommand();
-//		String fileDir = "test_system" + File.separator + "cmd_test_system";
-//		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + fileDir;
-//	}
-//	
-//	@Test 
-//	public void testInvalidAppName() {
-//		String expected = "shell: xyz: Invalid app.";
-//		String actual = "";
-//		callCommand = new CallCommand("echo `xyz cats`");
-//		try {
-//			callCommand.parse();
-//			cmdSubCommand = new CmdSubOperator(callCommand.argsArray);
-//			cmdSubCommand.evaluate(System.in, System.out);
-//		} catch (ShellException e) {
-//			actual = e.getMessage();
-//		} catch (AbstractApplicationException e) {
-//			actual = e.getMessage();
-//		}
-//		assertEquals(expected, actual);
-//		
-//	}
-//	
-//	@Test 
-//	public void testInvalidBQFront() {
-//		try {
-//			callCommand.parse();
-//			cmdSubCommand = new CmdSubOperator("``echo cats`");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[1];
-//		expected[0] = "echo cats`";
-//		assertEquals(1, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//
-//	}
-//	
-//	@Test 
-//	public void testInvalidBQBack() {
-//		try {
-//			callCommand.parse();
-//			cmdSubCommand = new CmdSubOperator("`echo cats``");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[1];
-//		expected[0] = "cats`";
-//		assertEquals(1, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//	
-//	}
-//	
-//	@Test 
-//	public void testBQinBQ() {
-//		try {
-//			cmdSubCommand = new CmdSubOperator("`echo ` echo cats ``");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[1];
-//		expected[0] = " echo cats ``";
-//		assertEquals(1, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//	
-//	}
-//		
-//	@Test 
-//	public void testCommandSubWithSemicolon() {
-//
-//		try {
-//			cmdSubCommand = new CmdSubOperator("`echo cats; echo dogs`");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		} 
-//
-//		expected = new String[2];
-//		expected[0] = "cats";
-//		expected[1] = "dogs";
-//
-//		assertEquals(2, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//		
-//	}
-//	
-//	@Test 
-//	public void testCommandSubWithPipe() {
-//
-//		try {
-//			cmdSubCommand = new CmdSubOperator("`cat text.txt | sed s/pains/paining/`");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		assertEquals(173, actual.length);
-//		assertEquals("paining", actual[172]);
-//		assertEquals("paining", actual[168]);
-//		
-//	}
-//	
-//	@Test 
-//	public void testCommandSubWithPipes() {
-//		InputStream inputBuffer = null;
-//		ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-//		try {
-//			cmdSubCommand = new CmdSubOperator("`cat text.txt | sed s/pains/pain/ | sed s/pleasures/pleasuring/`");
-//			cmdSubCommand.evaluate(inputBuffer, outputBuffer);
-//			actual = cmdSubCommand.getArgsArray();
-//			
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		assertEquals(173, actual.length);
-//		assertEquals("pain", actual[172]);
-//		assertEquals("pain", actual[168]);
-//		assertEquals("pleasuring,", actual[163]);
-//		assertEquals("pleasuring", actual[158]);
-//		assertEquals("pleasuring", actual[134]);
-//
-//	}
-//	
-//	@Test 
-//	public void testCommandSubWithSemicolons() {
-//
-//		try {
-//			cmdSubCommand = new CmdSubOperator("`echo first; echo second; echo third`");
-//			cmdSubCommand.evaluate(System.in, System.out);
-//			actual = cmdSubCommand.getArgsArray();
-//		} catch (ShellException e) {
-//			e.printStackTrace();
-//		} catch (AbstractApplicationException e) {
-//			e.printStackTrace();
-//		}
-//		expected = new String[3];
-//		expected[0] = "first";
-//		expected[1] = "second";
-//		expected[2] = "third";
-//
-//		assertEquals(3, actual.length);
-//		assertTrue(Arrays.equals(expected, actual));
-//
-//	}
-//	
-//
-//
-//	
-//}
+package sg.edu.nus.comp.cs4218.impl.optr;
+
+import static org.junit.Assert.*;
+
+import java.io.OutputStream;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import sg.edu.nus.comp.cs4218.Shell;
+import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
+import sg.edu.nus.comp.cs4218.exception.LsException;
+import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellStub;
+import sg.edu.nus.comp.cs4218.impl.optr.CmdSubOperator;
+
+public class CmdSubOperatorTest {
+	private static final String CMD_STR = "command";
+	private static final String CMDSUB_STR = "`" + CMD_STR + "`";
+	
+	private ShellStub spyShell;
+	private CmdSubOperator cmdSubOptr;
+	private String[] input, output, expected;
+	
+	@Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+	@Before
+	public void setup() {
+		input = output = expected = new String[0];
+		spyShell = Mockito.spy(new ShellStub());
+		cmdSubOptr = new CmdSubOperator(spyShell);
+	}
+	
+	@Test
+	public void testNoCmdSub() throws AbstractApplicationException, ShellException {
+		expected = new String[] {CMD_STR};
+		input = new String[] {CMD_STR};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testNoCmdSubWithSQ() throws AbstractApplicationException, ShellException {
+		expected = new String[] {CMD_STR};
+		input = new String[] {"'" + CMD_STR + "'"};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testNoCmdSubWithDQ() throws AbstractApplicationException, ShellException {
+		expected = new String[] {CMD_STR};
+		input = new String[] {"\"" + CMD_STR + "\""};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testCmdSub() throws AbstractApplicationException, ShellException {
+		expected = new String[] {ShellStub.EVA_RESULT};
+		input = new String[] {CMDSUB_STR};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testCmdSubWithDQ() throws AbstractApplicationException, ShellException {
+		expected = new String[] {ShellStub.EVA_RESULT};
+		input = new String[] {"\"" + CMDSUB_STR + "\""};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testCmdSubWithChars() throws AbstractApplicationException, ShellException {
+		expected = new String[] {"out" + ShellStub.EVA_RESULT + "side"};
+		input = new String[] {"out" + CMDSUB_STR + "side"};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testMutipleCmdSub() throws AbstractApplicationException, ShellException {
+		expected = new String[] {ShellStub.EVA_RESULT + ShellStub.EVA_RESULT};
+		input = new String[] {CMDSUB_STR + CMDSUB_STR};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testMutipleCmdSubElement() throws AbstractApplicationException, ShellException {
+		expected = new String[] {ShellStub.EVA_RESULT, ShellStub.EVA_RESULT, ShellStub.EVA_RESULT};
+		input = new String[] {CMDSUB_STR, CMDSUB_STR, CMDSUB_STR};
+		output = cmdSubOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testCmdSubAppReturnMultipleLines() throws AbstractApplicationException, ShellException {
+		input = new String[] {"result line 1. result line 2."};  
+        Shell mockShell = Mockito.mock(Shell.class);
+        Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
+        Mockito.doAnswer(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				OutputStream output = (OutputStream) invocation.getArguments()[1];
+				output.write("result line 1.\n result line 2.".getBytes());
+				return null;
+			}
+		}).when(mockShell).parseAndEvaluate(Mockito.anyString(), Mockito.any(OutputStream.class));
+        
+        cmdSubOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidCmdSubQuoteNotClosed() throws AbstractApplicationException, ShellException {
+		input = new String[] {"`" + CMD_STR};
+		Mockito.doThrow(ShellException.class).when(spyShell).removeQuotes(Mockito.anyString());
+		
+		thrown.expect(ShellException.class);    
+        output = cmdSubOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidCmdSubCmd() throws AbstractApplicationException, ShellException {
+		input = new String[] {CMDSUB_STR};       
+        Shell mockShell = Mockito.mock(Shell.class);
+        Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
+        Mockito.doThrow(ShellException.class).when(mockShell).parseAndEvaluate(Mockito.anyString(), Mockito.any(OutputStream.class));
+
+        thrown.expect(ShellException.class);
+        cmdSubOptr.evaluate(input);
+	}
+	
+	@Test
+	public void testInvalidCmdSubApp() throws AbstractApplicationException, ShellException {
+		input = new String[] {CMDSUB_STR};  
+        Shell mockShell = Mockito.mock(Shell.class);
+        Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
+        Mockito.doThrow(LsException.class).when(mockShell).parseAndEvaluate(Mockito.anyString(), Mockito.any(OutputStream.class));
+        
+        thrown.expect(LsException.class);
+        cmdSubOptr.evaluate(input);
+	}
+}
