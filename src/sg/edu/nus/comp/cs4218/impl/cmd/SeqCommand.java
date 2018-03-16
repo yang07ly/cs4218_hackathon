@@ -66,6 +66,14 @@ public class SeqCommand implements Command {
 					throw new ShellException("IO Exception");
 				}
 			}
+			
+			if (i < argsArray.length - 1) {
+				try {
+					stdout.write("\n".getBytes());
+				} catch (IOException e1) {
+					throw new ShellException("IO Exception");
+				}
+			}
 		}
 	}
 
