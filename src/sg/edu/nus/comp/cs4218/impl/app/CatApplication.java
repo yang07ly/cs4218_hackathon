@@ -44,53 +44,83 @@ public class CatApplication implements Application {
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CatException {
-		if (args == null || (args.length == 1 && args[0].equals("-"))) {
-			if (stdin == null || stdout == null) {
-				throw new CatException("Null Pointer Exception");
-			}
-			try {
-				int intCount;
-				while ((intCount = stdin.read()) != -1) {
-					stdout.write(intCount);
-				}
-			} catch (Exception exIO) {
-				throw new CatException("Exception Caught");
-			}
+		if (args == null || args.length == 0) {
+			catInputStream(stdin, stdout);
 		} else {
-			int numOfFiles = args.length;
-			if (numOfFiles > 0) {
-				Path filePath, currentDir = Paths.get(Environment.currentDirectory);
-				for (int i = 0; i < numOfFiles; i++) {
-					if(args[i].equals("-")) {
+			catFiles(args, stdin, stdout);
+		}
+	}
+
+	/**
+	 * Concatenates input from multiple files and/or inputstream
+	 * 
+	 * @param args
+	 *            string array of files
+	 * @param stdin
+	 *            inputstream to concatenate
+	 * @param stdout
+	 *            outputstream to write output to
+	 * @throws CatException
+	 */
+	private void catFiles(String[] args, InputStream stdin, OutputStream stdout) throws CatException {
+		boolean hasInputStream = false;
+		int numOfFiles = args.length;
+		if (numOfFiles > 0) {
+			Path filePath, currentDir = Paths.get(Environment.currentDirectory);
+			for (int i = 0; i < numOfFiles; i++) {
+				try {
+					if (i > 0) {
+						stdout.write("\n".getBytes());
+					}
+					if (args[i].equals("-")) {
+						if (!hasInputStream) {
+							catInputStream(stdin, stdout);
+							hasInputStream = true;
+						}
 						continue;
 					}
+					filePath = currentDir.resolve(args[i]);
+					checkIfFileIsReadable(filePath, args[i]);
+					stdout.write(Files.readAllBytes(filePath));
+				} catch (CatException catE) {
+					if (numOfFiles == 1) {
+						throw catE;
+					}
 					try {
-						filePath = currentDir.resolve(args[i]);
-						checkIfFileIsReadable(filePath, args[i]);
-						if (i > 0) {
-							stdout.write("\n".getBytes());
-						}
-						stdout.write(Files.readAllBytes(filePath));
-					} catch(CatException catE) {
-						if(numOfFiles == 1) {
-							throw catE;
-						}
-						try {
-							if (i > 0) {
-								stdout.write("\n".getBytes());
-							}
-							String message = catE.getMessage();
-							stdout.write(message.getBytes());
-						} catch (IOException e) {
-							throw new CatException("Could not write to output stream");
-						}
+						String message = catE.getMessage();
+						stdout.write(message.getBytes());
 					} catch (IOException e) {
 						throw new CatException("Could not write to output stream");
-                    } catch (InvalidPathException pathE) {
-                        throw new CatException(args[i] + ": invalid path");
-                    }
+					}
+				} catch (IOException e) {
+					throw new CatException("Could not write to output stream");
+				} catch (InvalidPathException pathE) {
+					throw new CatException(args[i] + ": invalid path");
 				}
 			}
+		}
+	}
+
+	/**
+	 * Concatenates input inputstream
+	 * 
+	 * @param stdin
+	 *            inputstream to concatenate
+	 * @param stdout
+	 *            outputstream to write output to
+	 * @throws CatException
+	 */
+	private void catInputStream(InputStream stdin, OutputStream stdout) throws CatException {
+		if (stdin == null || stdout == null) {
+			throw new CatException("Null Pointer Exception");
+		}
+		try {
+			int intCount;
+			while ((intCount = stdin.read()) != -1) {
+				stdout.write(intCount);
+			}
+		} catch (Exception exIO) {
+			throw new CatException("Exception Caught");
 		}
 	}
 
