@@ -21,7 +21,8 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
  * in specified path by some (possibly empty) sequences of non-slash characters.
  */
 public class GlobOperator implements Operator {
-	final private ShellImpl shell;
+	private static final String REGEX_WILDCARD = ".*?";
+	private final ShellImpl shell;
 	
 	public GlobOperator(ShellImpl shellImpl) {
 		shell = shellImpl;
@@ -60,7 +61,7 @@ public class GlobOperator implements Operator {
 			StringJoiner regexArg = new StringJoiner("");
 			for (int j = 0; j < fileNames[i].length(); j++) {
 				if (wildCardIndices.contains(j)) {
-					regexArg.add(".*?");
+					regexArg.add(REGEX_WILDCARD);
 				} else {
 					regexArg.add(fileNames[i].substring(j, j+1));
 				}
@@ -136,7 +137,7 @@ public class GlobOperator implements Operator {
 		}
 		
 		if (dirList.isEmpty() ) {
-			return new String[] {fileName.replace(".*?", "*")};
+			return new String[] {fileName.replace(REGEX_WILDCARD, "*")};
 		} else {
 			return dirList.toArray(new String[dirList.size()]);
 		}
@@ -174,7 +175,7 @@ public class GlobOperator implements Operator {
 				continue;
 			}
 			
-			if (nextDir.contains(".*?")) {
+			if (nextDir.contains(REGEX_WILDCARD)) {
 				appendMatchedPath(newList, dirList.get(i), nextDir);
 			} else {
 				appendPath(newList, dirList.get(i), nextDir);
@@ -197,8 +198,7 @@ public class GlobOperator implements Operator {
 	 * 			  String of file or folder in the parent directory.
 	 */
 	private void appendMatchedPath(Vector<String> paths, String parent, String wildCardName) {
-		//String regex = wildCardName.replace("*",".*?");
-		String regex = wildCardName;
+		String regex = wildCardName.replace("*", "\\*").replace(".\\*?", REGEX_WILDCARD);
 		String[] filesInDir;
 		try {
 			filesInDir = FileUtil.getFolderContent(parent);
