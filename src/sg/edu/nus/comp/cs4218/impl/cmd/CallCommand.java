@@ -56,12 +56,6 @@ public class CallCommand implements Command {
 		InputStream inputStream;
 		OutputStream outputStream;
 		
-		//perform globbing
-		argsArray = shell.performGlob(argsArray);
-		
-		//perform command substitution
-		argsArray = shell.performCmdSub(argsArray);
-		
 		//extract IO Redirection
 		inputStream = shell.getInputStream(argsArray);
 		if (inputStream == null) {// empty
@@ -72,6 +66,12 @@ public class CallCommand implements Command {
 			outputStream = stdout;
 		}
 		argsArray = shell.removeIOStreamFromArgs(argsArray);
+		
+		//perform globbing
+		argsArray = shell.performGlob(argsArray);
+		
+		//perform command substitution
+		argsArray = shell.performCmdSub(argsArray);
 		
 		shell.runApp(app, argsArray, inputStream, outputStream);
 		StreamUtil.closeInputStream(inputStream);
