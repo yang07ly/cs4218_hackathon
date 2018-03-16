@@ -9,9 +9,9 @@ import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.Operator;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
 
@@ -22,10 +22,10 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
  */
 public class GlobOperator implements Operator {
 	private static final String REGEX_WILDCARD = ".*?";
-	private final ShellImpl shell;
+	private final Shell shell;
 	
-	public GlobOperator(ShellImpl shellImpl) {
-		shell = shellImpl;
+	public GlobOperator(Shell shell) {
+		this.shell = shell;
 	}
 	
 	/**
@@ -57,11 +57,13 @@ public class GlobOperator implements Operator {
 				continue;
 			}
 
-			//replace * with regex wildcard .*?
+			//replace * with regex wildcard .*? and * with \*
 			StringJoiner regexArg = new StringJoiner("");
 			for (int j = 0; j < fileNames[i].length(); j++) {
 				if (wildCardIndices.contains(j)) {
 					regexArg.add(REGEX_WILDCARD);
+				} else if (fileNames[i].charAt(j) == '*') {
+					regexArg.add("\\*");
 				} else {
 					regexArg.add(fileNames[i].substring(j, j+1));
 				}

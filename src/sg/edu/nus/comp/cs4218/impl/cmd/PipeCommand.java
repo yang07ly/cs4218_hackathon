@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Command;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
@@ -24,12 +24,12 @@ import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 public class PipeCommand implements Command{
 	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
 	
-	private final ShellImpl shell;
+	private final Shell shell;
 	private final String cmdline;
 	private String[] argsArray;
 
-	public PipeCommand(ShellImpl shellImpl, String cmdline) {
-		shell = shellImpl;
+	public PipeCommand(Shell shell, String cmdline) {
+		this.shell = shell;
 		this.cmdline = cmdline.trim();
 		argsArray = new String[0];
 	}

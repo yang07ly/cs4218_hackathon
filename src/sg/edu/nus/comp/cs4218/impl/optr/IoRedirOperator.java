@@ -15,9 +15,9 @@ import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.Operator;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 /**
@@ -29,9 +29,9 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  **/
 
 public class IoRedirOperator implements Operator {
-	ShellImpl shell;
+	private final Shell shell;
 
-	public IoRedirOperator(ShellImpl shell) {
+	public IoRedirOperator(Shell shell) {
 		this.shell = shell;
 	}
 

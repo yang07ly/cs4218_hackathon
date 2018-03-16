@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Command;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 /**
  * A Sequence Command is a semicolon operator consisting of commands
@@ -22,13 +22,13 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 public class SeqCommand implements Command {
 	private static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
 
-	private final ShellImpl shell;
+	private final Shell shell;
 	private final String cmdline;
 
 	private String[] argsArray;
 
-	public SeqCommand(ShellImpl shellImpl, String cmdline) {
-		shell = shellImpl;
+	public SeqCommand(Shell shell, String cmdline) {
+		this.shell = shell;
 		this.cmdline = cmdline.trim();
 	}
 

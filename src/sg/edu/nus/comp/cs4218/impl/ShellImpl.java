@@ -4,6 +4,7 @@ import java.io.*;
 
 import sg.edu.nus.comp.cs4218.Application;
 import sg.edu.nus.comp.cs4218.Environment;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.app.CatApplication;
@@ -35,7 +36,7 @@ import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
  * </p>
  */
 
-public class ShellImpl {
+public class ShellImpl implements Shell {
 	
 	CmdSubOperator cmdSubOptr;
 	GlobOperator globOptr;
@@ -47,6 +48,12 @@ public class ShellImpl {
 		globOptr = new GlobOperator(this);
 		ioRedirOptr = new IoRedirOperator(this);
 		quoteOptr = new QuoteOperator();
+	}
+	
+
+	@Override
+	public Shell newInstance() {
+		return new ShellImpl();
 	}
 	
 	/**
@@ -71,6 +78,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 *             If an unsupported or invalid application command is detected.
 	 */
+	@Override
 	public void runApp(String app, String[] argsArray,
 			InputStream inputStream, OutputStream outputStream)
 			throws AbstractApplicationException, ShellException {
@@ -118,7 +126,8 @@ public class ShellImpl {
 	 *             application(s).
 	 * @throws ShellException
 	 *             If an unsupported or invalid command is detected.
-	 */	
+	 */
+	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
 		SeqCommand seqCmd = new SeqCommand(this, cmdline);
@@ -140,6 +149,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 *            	If the quotes are not closed.
 	 */
+	@Override
 	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException {
 		return quoteOptr.getIndices(source, character);
 	}
@@ -156,6 +166,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 *            	If the quotes are not closed.
 	 */
+	@Override
 	public String[] removeQuotes(String... source) throws AbstractApplicationException, ShellException {
 		return quoteOptr.evaluate(source);
 	}
@@ -174,6 +185,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 *            If the specified path is null.
 	 */
+	@Override
 	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException {
 		return globOptr.evaluate(args);
 	}
@@ -200,6 +212,7 @@ public class ShellImpl {
 	 *             	If an exception happens while processing the content in the
 	 *             	back quotes.
 	 */
+	@Override
 	public String[] performCmdSub(String... args) throws AbstractApplicationException, ShellException {
 		return cmdSubOptr.evaluate(args);
 	}
@@ -212,6 +225,7 @@ public class ShellImpl {
 	 * @throws AbstractApplicationException
 	 * @throws ShellException
 	 */
+	@Override
 	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException {
 		return ioRedirOptr.evaluate(args);
 	}
@@ -224,6 +238,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 * 			if more than 1 input stream is specified
 	 */
+	@Override
 	public InputStream getInputStream(String... args) throws ShellException {
 		return ioRedirOptr.getInputStream(args);
 	}
@@ -236,6 +251,7 @@ public class ShellImpl {
 	 * @throws ShellException
 	 * 			if more than 1 output stream is specified
 	 */
+	@Override
 	public OutputStream getOutputStream(String... args) throws ShellException {
 		return ioRedirOptr.getOutputStream(args);
 	}

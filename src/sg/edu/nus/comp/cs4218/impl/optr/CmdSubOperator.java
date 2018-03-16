@@ -7,18 +7,18 @@ import java.util.StringJoiner;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Operator;
+import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
-import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 
 /**
  * A Command Substitution is a call-command surrounded by backquotes (`) if the backquotes are not surrounded by 
  * single quotes (if any).
  **/
 public class CmdSubOperator implements Operator {
-	final private ShellImpl shell;
+	private final Shell shell;
 	
-	public CmdSubOperator(ShellImpl shell) {
+	public CmdSubOperator(Shell shell) {
 		this.shell = shell;
 	}
 	
@@ -92,7 +92,7 @@ public class CmdSubOperator implements Operator {
 			}
 			results.add(cmdSubResult.toString());
 		}
-		return results.toArray(new String[results.size()]);
+		return results.toArray(new String[results.size()]);		
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class CmdSubOperator implements Operator {
 	 */
 	private String performCmdSub(String cmd) throws AbstractApplicationException, ShellException {
 		ByteArrayOutputStream bqOutputStream = new ByteArrayOutputStream();
-		ShellImpl newShell = new ShellImpl();
+		Shell newShell = shell.newInstance();
 		newShell.parseAndEvaluate(cmd, bqOutputStream);
 
 		byte[] byteArray = bqOutputStream.toByteArray();
