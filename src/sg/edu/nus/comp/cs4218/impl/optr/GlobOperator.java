@@ -62,8 +62,6 @@ public class GlobOperator implements Operator {
 			for (int j = 0; j < fileNames[i].length(); j++) {
 				if (wildCardIndices.contains(j)) {
 					regexArg.add(REGEX_WILDCARD);
-				} else if (fileNames[i].charAt(j) == '*') {
-					regexArg.add("\\*");
 				} else {
 					regexArg.add(fileNames[i].substring(j, j+1));
 				}
