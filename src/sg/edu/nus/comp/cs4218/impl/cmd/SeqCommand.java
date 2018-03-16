@@ -96,9 +96,6 @@ public class SeqCommand implements Command {
 			cmdArgs.add(callCmd);
 			startIndex = spaceIndices[i] + 1;
 		}
-		if (startIndex >= cmdline.length()) {
-			throw new ShellException(EXP_INVALID_SEQ);
-		}
 		if (startIndex < cmdline.length()) {
 			String callCmd = cmdline.substring(startIndex, cmdline.length());
 			if (callCmd.matches("\\s*")) {
