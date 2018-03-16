@@ -18,8 +18,8 @@ import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 public class CmdSubOperator implements Operator {
 	final private ShellImpl shell;
 	
-	public CmdSubOperator(ShellImpl shellImpl) {
-		shell = shellImpl;
+	public CmdSubOperator(ShellImpl shell) {
+		this.shell = shell;
 	}
 	
 	/**
@@ -70,18 +70,20 @@ public class CmdSubOperator implements Operator {
 
 				if  (j > bqIndices[bqIndex] && j < bqIndices[bqIndex + 1]) {
 					//command sub characters
-					cmdSubCmd.add(argsArray[0].substring(j, j + 1));
+					cmdSubCmd.add(argsArray[i].substring(j, j + 1));
 					continue;
 				}
 				
 				if (j == bqIndices[bqIndex + 1]) {
 					//end of command sub
 					cmdSubResult.add(performCmdSub(cmdSubCmd.toString()));
+					cmdSubCmd = new StringJoiner("");
+					bqIndex += 2;
 					continue;
 				}
 				
 				//other characters
-				cmdSubResult.add(argsArray[0].substring(j, j + 1));
+				cmdSubResult.add(argsArray[i].substring(j, j + 1));
 			}
 			results.add(cmdSubResult.toString());
 		}
@@ -106,9 +108,9 @@ public class CmdSubOperator implements Operator {
 	 */
 	private String performCmdSub(String cmd) throws ShellException {
 		ByteArrayOutputStream bqOutputStream = new ByteArrayOutputStream();
-		ShellImpl shell = new ShellImpl();
+		ShellImpl newShell = new ShellImpl();
 		try {
-			shell.parseAndEvaluate(cmd, bqOutputStream);
+			newShell.parseAndEvaluate(cmd, bqOutputStream);
 		} catch (AbstractApplicationException e) {
 			throw new ShellException(e.getMessage());
 		}
