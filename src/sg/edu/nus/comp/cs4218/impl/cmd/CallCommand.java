@@ -86,15 +86,15 @@ public class CallCommand implements Command {
 	 *             If an exception happens while parsing the sub-command where
 	 *             the quotes are not closed properly.
 	 */
-	public void parse() throws ShellException {
+	public void parse() throws AbstractApplicationException, ShellException {
 		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, ' ');
 		if (spaceIndices.length == 0) {
-			app = cmdline;
+			app = (shell.removeQuotes(cmdline))[0];
 			return;
 		}
 		
 		Arrays.sort(spaceIndices);
-		app = cmdline.substring(0, spaceIndices[0]);
+		app = (shell.removeQuotes(cmdline.substring(0, spaceIndices[0])))[0];
 		
 		Vector<String> cmdArgs = new Vector<String>();
 		int startIndex = spaceIndices[0] + 1;
