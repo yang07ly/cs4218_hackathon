@@ -45,12 +45,10 @@ public class QuoteOperator implements Operator {
 		if (source == null) {
 			throw new ShellException("Null Pointer Exception");
 		}
-		
 		init();
 		
 		Vector<Integer> indices = new Vector<Integer>();
-		char character;
-		
+		char character;		
 		for (int i = 0; i < source.length(); i++) {
 			character = source.charAt(i);
 			switch (character) {
@@ -88,11 +86,9 @@ public class QuoteOperator implements Operator {
 				break;
 			}
 		}
-
 		if (hasFoundDQ || hasFoundSQ || hasFoundBQ) {
 			throw new ShellException("Quotes not closed");
 		}
-
 		return indices.toArray(new Integer[indices.size()]);
 	}
 	
