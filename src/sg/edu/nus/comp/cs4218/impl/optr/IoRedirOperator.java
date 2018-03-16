@@ -84,16 +84,19 @@ public class IoRedirOperator implements Operator {
 						if (hasStream) {
 							throw new ShellException("only 1 input can be specified");
 						}
-						if (!arg.isEmpty()) {
+						arg = "";
+						hasStream = true;
+						continue;
+					}else if(args[i].charAt(j) == '>') {
+						if(hasStream && inputFile == null) {
 							inputFile = arg;
 						}
 						arg = "";
-						hasStream = true;
 						continue;
 					}
 					arg += args[i].charAt(j);
 				}
-				if (hasStream && !arg.isEmpty()) {
+				if (hasStream && !arg.isEmpty() && inputFile == null) {
 					inputFile = arg;
 				}
 			}
@@ -134,10 +137,15 @@ public class IoRedirOperator implements Operator {
 						arg = "";
 						hasStream = true;
 						continue;
+					}else if(args[i].charAt(j) == '<') {
+						if(hasStream && outputFile == null) {
+							outputFile = arg;
+						}
+						arg = "";
 					}
 					arg += args[i].charAt(j);
 				}
-				if (hasStream && !arg.isEmpty()) {
+				if (hasStream && !arg.isEmpty() && outputFile == null) {
 					outputFile = arg;
 				}
 			}
