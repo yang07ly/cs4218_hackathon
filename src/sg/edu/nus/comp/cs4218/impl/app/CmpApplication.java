@@ -201,7 +201,11 @@ public class CmpApplication implements CmpInterface {
 	private String getChar(int readValueB) {
 		if (readValueB == -1) {
 			return "EOF";
-		} else {
+		} else if(readValueB == 10){
+			return "LF";
+		}else if(readValueB == 13){
+			return "CR";
+		}else {
 			String character = "";
 			character += (char) readValueB;
 			return character;
