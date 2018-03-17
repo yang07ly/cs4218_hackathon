@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,8 +37,6 @@ public class GlobOperatorTest {
 	private static final String ABS_FILE2 = TEST_DIR + File.separator + FILE2;
 	private static final String ABS_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
 	private static final String ABS_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
-	
-	private static final String UNEXPECTED_EXP = "Unexpected Exception: ";
 
 	private GlobOperator globOptr;
 	private String[] input, output, expected;
@@ -55,194 +52,138 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEmpty() {
+	public void testGlobEmpty() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_EMPTY};
 		input = new String[] {FILE_EMPTY};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobMutipleSpaces() {
+	public void testGlobMutipleSpaces() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_SPACES};
 		input = new String[] {FILE_SPACES};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobExistingFile() {
+	public void testGlobExistingFile() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE1};
 		input = new String[] {FILE1};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobNonExistingFile() {
+	public void testGlobNonExistingFile() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_NONEXISTENT};
 		input = new String[] {FILE_NONEXISTENT};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobEverythingRelative() {
+	public void testGlobEverythingRelative() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2};
 		input = new String[] {"*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobEverythingAbsolute() {
+	public void testGlobEverythingAbsolute() throws AbstractApplicationException, ShellException {
 		expected = new String[] {ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2};
 		input = new String[] {Environment.currentDirectory + File.separator + "*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
+		assertArrayEquals(expected, output);
+	}
+	
+	@Test
+	public void testGlobEverythingWithEmptyParent() throws AbstractApplicationException, ShellException {
+		expected = new String[] {ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2};
+		input = new String[] {Environment.currentDirectory + File.separator + File.separator + "*"};
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobAllFolders() {
+	public void testGlobAllFolders() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FOLDER1, FOLDER2};
 		input = new String[] {"*/"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobAtFront() {
+	public void testGlobAtFront() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2};
 		input = new String[] {"*.txt"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobAtEnd() {
+	public void testGlobAtEnd() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2};
 		input = new String[] {"f*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobAtMiddle() {
+	public void testGlobAtMiddle() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, };
 		input = new String[] {"f*.txt"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobParentDirectory() {
+	public void testGlobParentDirectory() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FOLDER1_FILE1, FOLDER2_FILE1};
 		input = new String[] {"*" + File.separator + FILE1};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobMultipleInSingleFolder() {
+	public void testGlobMultipleInSingleFolder() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE1, FOLDER1};
 		input = new String[] {"*1*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testGlobMultipleInMutipleFolder() {
+	public void testGlobMultipleInMutipleFolder() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2};
 		input = new String[] {"*" + File.separator + "file*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testGlobMutiplePath() {
+	public void testGlobMutiplePath() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2};
 		input = new String[] {FOLDER1 + File.separator + "*", FOLDER2 + File.separator + "*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testGlobExistingAndNonExistingFile() {
+	public void testGlobExistingAndNonExistingFile() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES, FILE1, FILE2, FILE_NONEXISTENT};
 		input = new String[] {"file*", FILE_NONEXISTENT};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testGlobRemoveQuote() {
+	public void testGlobRemoveQuote() throws AbstractApplicationException, ShellException {
 		expected = new String[] {FILE_W_SPACES};
 		input = new String[] {"\"file name with\"*"};
-		try {
-			output = globOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
