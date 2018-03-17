@@ -24,6 +24,9 @@ public final class StreamUtil {
 	 */
 	public static void closeInputStream(InputStream inputStream)
 			throws ShellException {
+		if (inputStream == null) {
+			return;
+		}
 		if (inputStream != System.in) {
 			try {
 				inputStream.close();
@@ -45,6 +48,9 @@ public final class StreamUtil {
 	 */
 	public static void closeOutputStream(OutputStream outputStream)
 			throws ShellException {
+		if (outputStream == null) {
+			return;
+		}
 		if (outputStream != System.out) {
 			try {
 				outputStream.close();
