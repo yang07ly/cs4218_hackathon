@@ -1,7 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -14,12 +13,13 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellStub;
-import sg.edu.nus.comp.cs4218.impl.optr.IoRedirOperator;
 
 public class PipeCommandTest {
+	private static final String CAT = " cat";
+	private static final String ECHO_ABC = "echo abc ";
 	private PipeCommand pipeCom;
-	private String[] input, output, expected;
-	private String currentDir, cmdLine;
+	private String[] expected;
+	private String cmdLine;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -28,9 +28,8 @@ public class PipeCommandTest {
 	public void setUp() throws Exception {
 		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
 				+ "ioRedir_test_system";
-		input = output = expected = new String[0];
+		expected = new String[0];
 		cmdLine = "";
-		currentDir = Environment.currentDirectory + File.separator;
 	}
 
 	@Test
@@ -48,7 +47,7 @@ public class PipeCommandTest {
 	public void testOnePipe() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc | cat";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc ", " cat" };
+		expected = new String[] { ECHO_ABC, CAT };
 
 		pipeCom.parse();
 
@@ -59,7 +58,7 @@ public class PipeCommandTest {
 	public void testMultiplePipe() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc | cat | cat";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc ", " cat ", " cat" };
+		expected = new String[] { ECHO_ABC, " cat ", CAT };
 
 		pipeCom.parse();
 
@@ -70,7 +69,7 @@ public class PipeCommandTest {
 	public void testPipeAtFront() throws ShellException, AbstractApplicationException {
 		cmdLine = "| echo abc";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc ", " cat ", " cat" };
+		expected = new String[] { ECHO_ABC, " cat ", CAT };
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
@@ -81,7 +80,7 @@ public class PipeCommandTest {
 	public void testPipeAtBack() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo |";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc ", " cat ", " cat" };
+		expected = new String[] { ECHO_ABC, " cat ", CAT };
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
@@ -92,7 +91,7 @@ public class PipeCommandTest {
 	public void testPipeWithinText() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc|cat";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc", "cat"};
+		expected = new String[] { "echo abc", "cat" };
 
 		pipeCom.parse();
 		assertArrayEquals(expected, pipeCom.argsArray);
@@ -102,10 +101,10 @@ public class PipeCommandTest {
 	public void testPipeWithinQuotes() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc \"|cat\"";
 		pipeCom = new PipeCommand(new ShellStub(), cmdLine);
-		expected = new String[] { "echo abc \"", "cat\""};
+		expected = new String[] { "echo abc \"", "cat\"" };
 
 		pipeCom.parse();
 		assertArrayEquals(expected, pipeCom.argsArray);
 	}
-	
+
 }
