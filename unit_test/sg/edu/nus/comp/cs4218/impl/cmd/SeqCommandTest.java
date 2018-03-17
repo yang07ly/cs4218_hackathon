@@ -1,98 +1,125 @@
-//package sg.edu.nus.comp.cs4218.impl.cmd;
-//
-//import static org.junit.Assert.*;
-//
-//import java.util.Vector;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//
-//import sg.edu.nus.comp.cs4218.exception.ShellException;
-//import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
-//
-//public class SeqCommandTest {
-//
-//	SeqCommand sequenceCommand;
-//
-//	Vector<String> expected,actual;
-//	String errorMsg;
-//	
-//	@Before
-//	public void setup() {
-//		sequenceCommand = new SeqCommand();
-//		expected = new Vector<String>();
-//		actual = new Vector<String>();
-//		errorMsg = "";
-//	}
-//	
-//	@Test
-//	public void testSeqCommandsWithNoArgs() {
-//		sequenceCommand = new SeqCommand("");
-//		try {
-//			sequenceCommand.parse();
-//		} catch (ShellException e) {
-//			 e.printStackTrace();
-//		}
-//				
-//		assertEquals(sequenceCommand.argsArray.size(), 0);
-//		assertEquals(sequenceCommand.argsArray, expected);
-//	}
-//	
-//	@Test
-//	public void testSeqTwoCommandsWithValidArgs() {
-//		sequenceCommand = new SeqCommand("echo a; echo b");
-//		try {
-//			sequenceCommand.parse();
-//		} catch (ShellException e) {
-//			 e.printStackTrace();
-//		}
-//		
-//		expected.add("echo a"); 
-//		expected.add(" echo b");
-//		assertEquals(sequenceCommand.argsArray.size(), 2);
-//		assertEquals(sequenceCommand.argsArray, expected);
-//	}
-//	
-//	@Test
-//	public void testSeqMultipleCommandsWithValidArgs() {
-//		sequenceCommand = new SeqCommand("echo a; echo b; echo c");
-//		try {
-//			sequenceCommand.parse();
-//		} catch (ShellException e) {
-//			 e.printStackTrace();
-//		}
-//		
-//		expected.add("echo a");
-//		expected.add(" echo b");
-//		expected.add(" echo c");
-//		assertEquals(sequenceCommand.argsArray.size(), 3);
-//		assertEquals(sequenceCommand.argsArray, expected);
-//	}
-//	
-//	@Test
-//	public void testSeqWithInvalidSeqFront() {
-//		String expected = "shell: " + SeqCommand.EXP_INVALID_SEQ;
-//		sequenceCommand = new SeqCommand("; echo a; echo b");
-//		try {
-//			sequenceCommand.parse();
-//		} catch (ShellException e) {
-//			 errorMsg = e.getMessage();
-//		}
-//		assertEquals(expected, errorMsg);
-//	
-//	}
-//	
-//	@Test
-//	public void testSeqWithInvalidSeqBack() {
-//		String expected = "shell: " + SeqCommand.EXP_INVALID_SEQ;
-//		sequenceCommand = new SeqCommand("echo a; echo b; echo c;");
-//		try {
-//			sequenceCommand.parse();
-//		} catch (ShellException e) {
-//			 errorMsg = e.getMessage();
-//		}
-//		
-//		assertEquals(expected, errorMsg);
-//	}
-//	
-//}
+package sg.edu.nus.comp.cs4218.impl.cmd;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.internal.util.reflection.Whitebox;
+
+import sg.edu.nus.comp.cs4218.Shell;
+import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
+import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.ShellStub;
+import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
+
+public class SeqCommandTest {
+	private final static String EMPTY = "";
+	private final static String SPACES = "    ";
+	private final static String TAB = "\t";
+	
+	private final static String ARGS_VAR = "argsArray";
+	private final static String CMD = "cmd";
+	
+	private final static char SEMICOLON = ';';
+	
+	private static final String EXP_INVALID_SEQ = "shell: Invalid semicolon operator/s";
+
+	private SeqCommand seqCmd;
+	private String cmdLine;
+	private String[] expectedArgs;
+
+	private Shell shell;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
+	@Before
+	public void setup() throws AbstractApplicationException, ShellException {
+		seqCmd = null;
+		cmdLine = "";
+		expectedArgs = new String[0];
+		shell = new ShellStub();
+	}
+
+	@Test
+	public void testParseEmpty() throws ShellException, AbstractApplicationException {
+		cmdLine = EMPTY;
+		expectedArgs = new String[] {EMPTY};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
+	public void testParseNoSeq() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD;
+		expectedArgs = new String[] {CMD};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
+	public void testParseOneSeq() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD + SEMICOLON + CMD;
+		expectedArgs = new String[] {CMD, CMD};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
+	public void testParseMultipleSeq() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD + SEMICOLON + CMD + SEMICOLON + CMD;
+		expectedArgs = new String[] {CMD, CMD, CMD};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
+	public void testParseSeqAtEnd() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD + SEMICOLON + CMD + SEMICOLON;
+		expectedArgs = new String[] {CMD, CMD};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
+	public void testInvalidParseSeqAtFront() throws ShellException, AbstractApplicationException {
+		cmdLine = SEMICOLON + CMD;
+		
+		thrown.expect(ShellException.class);
+		thrown.expectMessage(EXP_INVALID_SEQ);
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+	}
+	
+	@Test
+	public void testInvalidParseEmptyCmdBetweenSeq() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD + SEMICOLON + SPACES + SEMICOLON + CMD;
+		
+		thrown.expect(ShellException.class);
+		thrown.expectMessage(EXP_INVALID_SEQ);		
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+	}
+	
+	@Test
+	public void testParseReplaceTabInSeq() throws ShellException, AbstractApplicationException {
+		cmdLine = CMD + TAB + CMD + SEMICOLON + CMD + TAB + CMD;
+		expectedArgs = new String[] {CMD + SPACES + CMD, CMD + SPACES + CMD};
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+}
