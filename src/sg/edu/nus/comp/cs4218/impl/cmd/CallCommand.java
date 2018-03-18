@@ -24,8 +24,8 @@ public class CallCommand implements Command {
 	private final Shell shell;
 	private final String cmdline;
 	
-	public String app;
-	public String[] argsArray;
+	private String app;
+	private String[] argsArray;
 
 	public CallCommand(Shell shell, String cmdline) {
 		this.shell = shell;

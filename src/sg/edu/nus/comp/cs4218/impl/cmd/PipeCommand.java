@@ -26,7 +26,7 @@ public class PipeCommand implements Command{
 	
 	private final Shell shell;
 	private final String cmdline;
-	public String[] argsArray;
+	private String[] argsArray;
 
 	public PipeCommand(Shell shell, String cmdline) {
 		this.shell = shell;

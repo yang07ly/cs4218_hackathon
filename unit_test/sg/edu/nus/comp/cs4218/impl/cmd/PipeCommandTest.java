@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
@@ -40,7 +41,7 @@ public class PipeCommandTest {
 
 		pipeCom.parse();
 
-		assertArrayEquals(expected, pipeCom.argsArray);
+		assertArrayEquals(expected, (String[]) Whitebox.getInternalState(pipeCom, "argsArray"));
 	}
 
 	@Test
@@ -51,7 +52,7 @@ public class PipeCommandTest {
 
 		pipeCom.parse();
 
-		assertArrayEquals(expected, pipeCom.argsArray);
+		assertArrayEquals(expected, (String[]) Whitebox.getInternalState(pipeCom, "argsArray"));
 	}
 
 	@Test
@@ -62,7 +63,7 @@ public class PipeCommandTest {
 
 		pipeCom.parse();
 
-		assertArrayEquals(expected, pipeCom.argsArray);
+		assertArrayEquals(expected, (String[]) Whitebox.getInternalState(pipeCom, "argsArray"));
 	}
 
 	@Test
@@ -94,7 +95,7 @@ public class PipeCommandTest {
 		expected = new String[] { "echo abc", "cat" };
 
 		pipeCom.parse();
-		assertArrayEquals(expected, pipeCom.argsArray);
+		assertArrayEquals(expected, (String[]) Whitebox.getInternalState(pipeCom, "argsArray"));
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class PipeCommandTest {
 		expected = new String[] { "echo abc \"", "cat\"" };
 
 		pipeCom.parse();
-		assertArrayEquals(expected, pipeCom.argsArray);
+		assertArrayEquals(expected, (String[]) Whitebox.getInternalState(pipeCom, "argsArray"));
 	}
 
 }

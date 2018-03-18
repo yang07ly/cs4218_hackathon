@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
@@ -28,7 +29,7 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
@@ -37,7 +38,7 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
@@ -46,7 +47,7 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
@@ -55,7 +56,7 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
@@ -64,7 +65,7 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
@@ -73,72 +74,62 @@ public class CallCommandTest {
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
-		assertEquals(expected, callCommand.app);
+		assertEquals(expected, (String) Whitebox.getInternalState(callCommand, "app"));
 	}
 
 	@Test
 	public void testParseArgs() throws ShellException, AbstractApplicationException {
-		int expectedNumArgs = 2;
 		cmdLine = "echo abc def";
 		String[] expectedArgs = { ABC, DEF };
 
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
 
-		assertEquals(expectedNumArgs, callCommand.argsArray.length);
-		assertArrayEquals(expectedArgs, callCommand.argsArray);
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(callCommand, "argsArray"));
 	}
 
 	@Test
 	public void testParseArgsWithMultipleSpace() throws ShellException, AbstractApplicationException {
-		int expectedNumArgs = 2;
 		cmdLine = "echo  abc     def";
 		String[] expectedArgs = { ABC, DEF };
 
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
 
-		assertEquals(expectedNumArgs, callCommand.argsArray.length);
-		assertArrayEquals(expectedArgs, callCommand.argsArray);
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(callCommand, "argsArray"));
 	}
 
 	@Test
 	public void testParseArgsWithOneTab() throws ShellException, AbstractApplicationException {
-		int expectedNumArgs = 2;
 		cmdLine = "echo\tabc\tdef";
 		String[] expectedArgs = { ABC, DEF };
 
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
 
-		assertEquals(expectedNumArgs, callCommand.argsArray.length);
-		assertArrayEquals(expectedArgs, callCommand.argsArray);
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(callCommand, "argsArray"));
 	}
 
 	@Test
 	public void testParseArgsWithMultipleTabs() throws ShellException, AbstractApplicationException {
-		int expectedNumArgs = 2;
 		cmdLine = "echo\t\tabc\t\t\tdef";
 		String[] expectedArgs = { ABC, DEF };
 
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
 
-		assertEquals(expectedNumArgs, callCommand.argsArray.length);
-		assertArrayEquals(expectedArgs, callCommand.argsArray);
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(callCommand, "argsArray"));
 	}
 
 	@Test
 	public void testParseArgsWithMultipleTabsSpace() throws ShellException, AbstractApplicationException {
-		int expectedNumArgs = 2;
 		cmdLine = "echo\t    \tabc   \t\t\t     def";
 		String[] expectedArgs = { ABC, DEF };
 
 		CallCommand callCommand = new CallCommand(new ShellImpl(), cmdLine);
 		callCommand.parse();
 
-		assertEquals(expectedNumArgs, callCommand.argsArray.length);
-		assertArrayEquals(expectedArgs, callCommand.argsArray);
+		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(callCommand, "argsArray"));
 	}
 
 }
