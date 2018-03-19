@@ -7,453 +7,344 @@ import java.io.File;
 import java.io.OutputStream;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.LsException;
 
 public class LsApplicationTest {
-	
-	public static final String STRING_COLON = ":";
-	public static final String FOLDER1 = "folder1";
-	public static final String FOLDER1_1 = "folder1_1";
-	public static final String FOLDER2 = "folder2";
-	public static final String FOLDER1AND2 = "folder1  folder2";
-	public static final String FILE1 = "file1.txt";
-	public static final String FOLDER1_CONTENT = "file1_in_folder1.txt  file2_in_folder1.txt  folder1_1";
-	public static final String FOLDER2_CONTENT = "file1_in_folder2.txt  file2_in_folder2.txt";
-	
-	LsApplication lsApp;
-	String expected, result;
-	OutputStream stdout;
 
+	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "ls_test_system";
+
+	private static final String STR_COLON = ":";
+	private static final String STR_SEP = "  ";
+
+	private static final String FOLDER1 = "folder1";
+	private static final String FOLDER1_1 = "folder1_1";
+	private static final String FOLDER2 = "folder2";
+	private static final String FOLDER_WITH_SPACE = "folder name with space";
+	
+	private static final String ABS_FOLDER1 = TEST_DIR  + File.separator + FOLDER1;
+	private static final String ABS_FOLDER2 = TEST_DIR  + File.separator + FOLDER2;
+	private static final String ABS_FOLDER1_1 = ABS_FOLDER1 + File.separator + FOLDER1_1;
+	
+	private static final String REL_FOLDER1_1 =  FOLDER1 + File.separator + FOLDER1_1;
+	
+	private static final String HEAD_FOLDER1 = FOLDER1 + STR_COLON;
+	private static final String HEAD_FOLDER2 = FOLDER2 + STR_COLON;
+	private static final String HEAD_FOLDER1_1 = FOLDER1 + File.separator + FOLDER1_1 + STR_COLON;
+	private static final String HEAD_ABS_FOLDER1 = ABS_FOLDER1 + STR_COLON;
+	private static final String HEAD_ABS_FOLDER2 = ABS_FOLDER2 + STR_COLON;
+	private static final String HEAD_ABS_FOLDER11 = ABS_FOLDER1_1 + STR_COLON;
+
+	private static final String FILE1 = "file1.txt";
+	private static final String FILE2 = "file2.txt";
+	private static final String FOLDER1_FILE1 = "file1_in_folder1.txt";
+	private static final String FOLDER2_FILE1 = "file1_in_folder2.txt";
+	private static final String FOLDER2_FILE2 = "file2_in_folder2.txt";
+	private static final String FOLDER1_1_FILE2 = "file2_in_folder1_1.txt";
+	private static final String FILE_WITH_SPACE = "file name with space.txt";
+	private static final String FILE_HIDDEN = ".hiddenFile1.txt";
+	private static final String FILE_NON_EXISTENT = "nonExistentFile";
+	
+	private static final String REL_FOLDER1_FILE1 = FOLDER1 + File.separator + FOLDER1_FILE1;
+	private static final String REL_FOLDER2_FILE1 = FOLDER2 + File.separator + FOLDER2_FILE1;
+	private static final String REL_FOLDER2_FILE2 = FOLDER2 + File.separator + FOLDER2_FILE2;
+	private static final String REL_F1_1_FILE2 = FOLDER1 + File.separator + FOLDER1_1 + File.separator + FOLDER1_1_FILE2;
+	
+	private static final String ABS_FILE1 = TEST_DIR  + File.separator + FILE1;
+	private static final String ABS_FOLDER1_FILE1 = TEST_DIR  + File.separator + REL_FOLDER1_FILE1;
+	private static final String ABS_F1_1_FILE2 = TEST_DIR  + File.separator + REL_F1_1_FILE2;
+
+	private static final String CUR_CONTENT = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  folder1  folder2";
+	private static final String FOLDER1_CONTENT = "file1_in_folder1.txt  file2_in_folder1.txt  folder1_1";
+	private static final String FOLDER2_CONTENT = "file1_in_folder2.txt  file2_in_folder2.txt";
+	private static final String FOLDER1_1_CONTENT = "file1_in_folder1_1.txt  file2_in_folder1_1.txt";
+	private static final String FOLDER_WS_CONTENT = "file1_in_folder_spaces.txt  file2_in_folder_spaces.txt";
+
+	private LsApplication lsApp;
+	private String expected, result;
+	private OutputStream stdout;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
 	@Before
-	public void setup() {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "ls_test_system";
+	public void setup() throws LsException {
+		Environment.currentDirectory = TEST_DIR;
 		lsApp = new LsApplication();
 		stdout = new ByteArrayOutputStream();
 	}
 
 	@Test
-	public void testListCurrentFolder() {
-		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  " + FOLDER1AND2;
-		try {
-			result = lsApp.listFolderContent(false, false);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testListCurrentFolder() throws LsException {
+		expected = CUR_CONTENT;
+		result = lsApp.listFolderContent(false, false);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListFile() {
-		expected = "file1.txt";
-		try {
-			result = lsApp.listFolderContent(false, false, FILE1);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testListFile() throws LsException {
+		expected = FILE1;
+		result = lsApp.listFolderContent(false, false, FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListRelativeFolderContent() {
+	public void testListRelativeFolderContent() throws LsException {
 		expected = FOLDER1_CONTENT;
-		try {
-			result = lsApp.listFolderContent(false, false, FOLDER1);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+		result = lsApp.listFolderContent(false, false, FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListAbsoluteFolderContent() {
-		expected = "file1_in_folder1_1.txt  file2_in_folder1_1.txt";
-		try {
-			result = lsApp.listFolderContent(false, false, Environment.currentDirectory + "/folder1/folder1_1");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testListAbsoluteFolderContent() throws LsException {
+		expected = FOLDER1_1_CONTENT;
+		result = lsApp.listFolderContent(false, false, ABS_FOLDER1_1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDisplayNameContainQuote() {
-		expected = "'file name with space.txt'";
-		try {
-			result = lsApp.listFolderContent(false, false, "file name with space.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testDisplayNameContainQuote() throws LsException {
+		expected = "'" + FILE_WITH_SPACE + "'";
+		result = lsApp.listFolderContent(false, false, FILE_WITH_SPACE);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testNoHiddenFilesInCurrentFolder() {
-		try {
-			result = lsApp.listFolderContent(false, false);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertFalse(result.contains(".hiddenFile1.txt"));
+	public void testNoHiddenFilesInCurrentFolder() throws LsException {
+		result = lsApp.listFolderContent(false, false);
+		assertFalse(result.contains(FILE_HIDDEN));
 	}
 
 	@Test
-	public void testNoHiddenFilesInOtherFolder() {
-		try {
-			result = lsApp.listFolderContent(false, false, FOLDER1);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertFalse(result.contains(".hiddenFile2.txt"));
+	public void testNoHiddenFilesInOtherFolder() throws LsException {
+		result = lsApp.listFolderContent(false, false, FOLDER1);
+		assertFalse(result.contains(FILE_HIDDEN));
 	}
 
 	@Test
-	public void testListMutipleFiles() {
-		expected = "file1.txt  file2.txt";
-		try {
-			result = lsApp.listFolderContent(false, false, FILE1, "file2.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testListMutipleFiles() throws LsException {
+		expected = FILE1 + STR_SEP + FILE2;
+		result = lsApp.listFolderContent(false, false, FILE1, FILE2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListMultipleFoldersContent() {
-		expected = FOLDER1 + STRING_COLON + "\n" + 
+	public void testListMultipleFoldersContent() throws LsException {
+		expected = HEAD_FOLDER1 + "\n" + 
 				FOLDER1_CONTENT + "\n" + "\n" + 
-				FOLDER2 + STRING_COLON + "\n" + 
+				HEAD_FOLDER2 + "\n" + 
 				FOLDER2_CONTENT;
-		try {
-			result = lsApp.listFolderContent(false, false, FOLDER1, FOLDER2);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+		result = lsApp.listFolderContent(false, false, FOLDER1, FOLDER2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListMutipleFilesAndFolders() {
-		expected = Environment.currentDirectory + File.separator + FILE1 + "  file2.txt\n\n" + 
-				Environment.currentDirectory + File.separator + FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + "\n" + 
-				FOLDER2 + STRING_COLON + "\n" + 
-				FOLDER2_CONTENT;
-		try {
-			result = lsApp.listFolderContent(false, false, Environment.currentDirectory + "/file1.txt", "file2.txt",
-					Environment.currentDirectory + "/folder1", FOLDER2);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testListMutipleFilesAndFolders() throws LsException {
+		expected = ABS_FILE1 + STR_SEP + FILE2 + "\n" + "\n" + 
+				HEAD_ABS_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + 
+				HEAD_FOLDER2 + "\n" + FOLDER2_CONTENT;
+		result = lsApp.listFolderContent(false, false, ABS_FILE1, FILE2, ABS_FOLDER1, FOLDER2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListCurrentFolder() {
+	public void testDirectoryListCurrentFolder() throws LsException {
 		expected = ".";
-		try {
-			result = lsApp.listFolderContent(true, false);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+		result = lsApp.listFolderContent(true, false);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListRelativeFile() {
-		expected = FOLDER2 + File.separator + "file1_in_folder2.txt";
-		try {
-			result = lsApp.listFolderContent(true, false, FOLDER2 + "/file1_in_folder2.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testDirectoryListRelativeFile() throws LsException {
+		expected = REL_FOLDER2_FILE1;
+		result = lsApp.listFolderContent(true, false, REL_FOLDER2_FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListAbsoluteFolder() {
-		expected = Environment.currentDirectory + File.separator + FOLDER2;
-		try {
-			result = lsApp.listFolderContent(true, false, Environment.currentDirectory + File.separator + FOLDER2);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testDirectoryListAbsoluteFolder() throws LsException {
+		expected = ABS_FOLDER2;
+		result = lsApp.listFolderContent(true, false, ABS_FOLDER2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListFilesAndFolders() {
-		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + "file1_in_folder1.txt  " +
-				Environment.currentDirectory + File.separator + FOLDER2 + "  "  +
-				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt";
-		try {
-			result = lsApp.listFolderContent(true, false, Environment.currentDirectory + File.separator + FOLDER2, 
-					FOLDER2 + "/file2_in_folder2.txt", FOLDER1, 
-					Environment.currentDirectory + "/folder1/file1_in_folder1.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testDirectoryListFilesAndFolders() throws LsException {
+		expected = ABS_FOLDER1_FILE1 + STR_SEP + ABS_FOLDER2 + STR_SEP + FOLDER1 + STR_SEP + REL_FOLDER2_FILE2;
+		result = lsApp.listFolderContent(true, false, ABS_FOLDER2, REL_FOLDER2_FILE2, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRecursiveListCurrentFolder() {
-		expected = ".:\n" + 
-				"'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "
-				+ "folder1  folder2\n\n" + 
-				"'." + File.separator + "folder name with space':\n" + 
-				"file1_in_folder_spaces.txt  file2_in_folder_spaces.txt\n\n" + 
+	public void testRecursiveListCurrentFolder() throws LsException {
+		expected = ".:" + "\n" + 
+				CUR_CONTENT + "\n" + "\n" + 
+				"'." + File.separator + FOLDER_WITH_SPACE + "':\n" + 
+				FOLDER_WS_CONTENT + "\n" + "\n" + 
 				"." + File.separator + FOLDER1 + ":\n" + 
 				FOLDER1_CONTENT + "\n" + "\n" + 
-				"." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n\n" + 
-				"." + File.separator + FOLDER2 + STRING_COLON + "\n" + 
+				"." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + ":\n" + 
+				FOLDER1_1_CONTENT + "\n" + "\n" + 
+				"." + File.separator + FOLDER2 + ":\n" + 
 				FOLDER2_CONTENT;
-		try {
-			result = lsApp.listFolderContent(false, true);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+		result = lsApp.listFolderContent(false, true);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRecursiveListAbsoluteFolder() {
-		expected =  Environment.currentDirectory + File.separator + FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + "\n" + 
-				Environment.currentDirectory + File.separator + FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt";
-		try {
-			result = lsApp.listFolderContent(false, true, Environment.currentDirectory + "/folder1");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testRecursiveListAbsoluteFolder() throws LsException {
+		expected =  HEAD_ABS_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + 
+				HEAD_ABS_FOLDER11 + "\n" + FOLDER1_1_CONTENT;
+		result = lsApp.listFolderContent(false, true, ABS_FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRecursiveListMultipleFolders() {
-		expected =  FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + "\n" + 
-				FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt\n\n" +
-				FOLDER2 + STRING_COLON + "\n" + 
-				FOLDER2_CONTENT;
-		try {
-			result = lsApp.listFolderContent(false, true, FOLDER2, FOLDER1);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testRecursiveListMultipleFolders() throws LsException {
+		expected =  HEAD_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + 
+				HEAD_FOLDER1_1 + "\n" + FOLDER1_1_CONTENT + "\n" + "\n" +
+				HEAD_FOLDER2 + "\n" + FOLDER2_CONTENT;
+		result = lsApp.listFolderContent(false, true, FOLDER2, FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRecursiveListFilesAndFolders() {
-		expected =  Environment.currentDirectory + File.separator + FOLDER1 + File.separator + "file1_in_folder1.txt  " + 
-				FOLDER2 + File.separator + "file1_in_folder2.txt\n\n" + 
-				Environment.currentDirectory + File.separator + FOLDER2 + STRING_COLON + "\n" + 
-				"file1_in_folder2.txt  file2_in_folder2.txt\n\n" +
-				FOLDER1 + STRING_COLON + "\n" + 
-				FOLDER1_CONTENT + "\n" + "\n" + 
-				FOLDER1 + File.separator + FOLDER1_1 + STRING_COLON + "\n" + 
-				"file1_in_folder1_1.txt  file2_in_folder1_1.txt"; 
-		try {
-			result = lsApp.listFolderContent(false, true, Environment.currentDirectory + File.separator + FOLDER2, 
-					FOLDER2 + "/file1_in_folder2.txt", FOLDER1, 
-					Environment.currentDirectory + "/folder1/file1_in_folder1.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testRecursiveListFilesAndFolders() throws LsException {
+		expected =  ABS_FOLDER1_FILE1 + STR_SEP + REL_FOLDER2_FILE1 + "\n" + "\n" + 
+				HEAD_ABS_FOLDER2 + "\n" + FOLDER2_CONTENT + "\n" + "\n" +
+				HEAD_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + 
+				HEAD_FOLDER1_1 + "\n" + FOLDER1_1_CONTENT; 
+		result = lsApp.listFolderContent(false, true, ABS_FOLDER2, REL_FOLDER2_FILE1, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testDirectoryAndRecursiveListFilesAndFolders() {
-		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + "file1_in_folder1.txt  " +
-				Environment.currentDirectory + File.separator + FOLDER2 + "  "  +
-				FOLDER1 + "  folder2" + File.separator  + "file2_in_folder2.txt";
-		try {
-			result = lsApp.listFolderContent(true, true, Environment.currentDirectory + File.separator + FOLDER2, 
-					FOLDER2 + "/file2_in_folder2.txt", FOLDER1, 
-					Environment.currentDirectory + "/folder1/file1_in_folder1.txt");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testDirectoryAndRecursiveListFilesAndFolders() throws LsException {
+		expected = ABS_FOLDER1_FILE1 + STR_SEP + ABS_FOLDER2 + STR_SEP + FOLDER1 + STR_SEP + REL_FOLDER2_FILE2;
+		result = lsApp.listFolderContent(true, true, ABS_FOLDER2, REL_FOLDER2_FILE2, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testInvalidFile() {
-		expected = "ls: cannot access 'nonExistentFile': No such file or directory";
-		try {
-			result = lsApp.listFolderContent(true, true, "nonExistentFile");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testInvalidFile() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: cannot access 'nonExistentFile': No such file or directory");
+		lsApp.listFolderContent(true, true, FILE_NON_EXISTENT);
+	}
+
+	@Test
+	public void testInvalidFileWithValidFiles() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: cannot access 'nonExistentFile': No such file or directory");
+		lsApp.listFolderContent(true, true, FILE1, FILE_NON_EXISTENT, FOLDER1);
+	}
+
+	@Test
+	public void testInvalidEmptyFile() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: cannot access '': No such file or directory");
+		lsApp.listFolderContent(true, true, "");
+	}
+
+	@Test
+	public void testInvalidSpacesAsFileName() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: cannot access '   ': No such file or directory");
+		lsApp.listFolderContent(true, true, "   ");
+	}
+
+	@Test
+	public void testOptionCombiSingleDash() throws LsException {
+		expected = ABS_FOLDER1;
+		String[] strArr = {"-dR", ABS_FOLDER1};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testInvalidFileWithValidFiles() {
-		expected = "ls: cannot access 'nonExistentFile': No such file or directory";
-		try {
-			result = lsApp.listFolderContent(true, true, FILE1, "nonExistentFile", FOLDER1);
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testOptionCombiDoubleDashNoSpace() throws LsException {
+		expected = ABS_F1_1_FILE2 + STR_SEP + FOLDER2;
+		String[] strArr = {"-d-R", ABS_F1_1_FILE2, FOLDER2};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testEmptyFile() {
-		expected = "ls: cannot access '': No such file or directory";
-		try {
-			result = lsApp.listFolderContent(true, true, "");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testOptionCombiDoubleDashWithSpace() throws LsException {
+		expected = REL_FOLDER1_1;
+		String[] strArr = {"-d", "-R", REL_FOLDER1_1};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testSpacesAsFileName() {
-		expected = "ls: cannot access '   ': No such file or directory";
-		try {
-			result = lsApp.listFolderContent(true, true, "   ");
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testOptionCombiDiffSeq() throws LsException {
+		expected = REL_F1_1_FILE2;
+		String[] strArr = {"-R-d", REL_F1_1_FILE2};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testOptionCombiSingleDash() {
-		expected = Environment.currentDirectory + File.separator + FOLDER1;
-		try {
-			String[] strArr = {"-dR", Environment.currentDirectory + "/folder1"};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testOptionPositionAtEnd() throws LsException {
+		expected = FOLDER1 + STR_SEP + FOLDER2;
+		String[] strArr = {FOLDER1, FOLDER2, "-d"};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testOptionCombiDoubleDashNoSpace() {
-		expected = Environment.currentDirectory + File.separator + FOLDER1 + File.separator + FOLDER1_1 + 
-				File.separator + "file2_in_folder1_1.txt  " + FOLDER2;
-		try {
-			String[] strArr = {"-d-R", Environment.currentDirectory + "/folder1/folder1_1/file2_in_folder1_1.txt", FOLDER2};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testOptionPositionAtCenter() throws LsException {
+		expected = FOLDER1 + STR_SEP + FOLDER2;
+		String[] strArr = {FOLDER1, "-R", FOLDER2, "-d"};
+		
+		lsApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testOptionCombiDoubleDashWithSpace() {
-		expected = FOLDER1 + File.separator + FOLDER1_1;
-		try {
-			String[] strArr = {"-d", "-R", FOLDER1 + "/folder1_1"};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
+	public void testNullArgs() throws LsException {
+		expected = CUR_CONTENT;
+		lsApp.run(null, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
-	
+
 	@Test
-	public void testOptionCombiDiffSeq() {
-		expected = FOLDER1 + File.separator + FOLDER1_1 + File.separator + "file2_in_folder1_1.txt";
-		try {
-			String[] strArr = {"-R-d", FOLDER1 + "/folder1_1/file2_in_folder1_1.txt"};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidOption() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: invalid option -- 'f'");
+		String[] strArr = {"-f", FOLDER1};
+		lsApp.run(strArr, null, stdout);
 	}
-	
+
 	@Test
-	public void testOptionPositionAtEnd() {
-		expected = FOLDER1AND2;
-		try {
-			String[] strArr = {FOLDER1, FOLDER2, "-d"};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidOptionCombi() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: invalid option -- '-'");
+		String[] strArr = {"-d-R-", FOLDER1};
+		lsApp.run(strArr, null, stdout);
 	}
-	
+
 	@Test
-	public void testOptionPositionAtCenter() {
-		expected = FOLDER1AND2;
-		try {
-			String[] strArr = {FOLDER1, "-R", FOLDER2, "-d"};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
-	}
-	
-	@Test
-	public void testNullArgs() {
-		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  "+ FOLDER1AND2;
-		try {
-			lsApp.run(null, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
-	}
-	
-	@Test
-	public void testInvalidOption() {
-		expected = "ls: invalid option -- 'f'";
-		try {
-			String[] strArr = {"-f", FOLDER1};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
-	}
-	
-	@Test
-	public void testInvalidOptionCombi() {
-		expected = "ls: invalid option -- '-'";
-		try {
-			String[] strArr = {"-d-R-", FOLDER1};
-			lsApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
-	}
-	
-	@Test
-	public void testInvalidNullOutputStream() {
-		expected = "ls: Null Pointer Exception";
-		try {
-			lsApp.run(null, null, null);
-			result = stdout.toString();
-		} catch (LsException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullOutputStream() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: Null Pointer Exception");
+		lsApp.run(null, null, null);
 	}
 }
