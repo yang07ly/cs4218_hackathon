@@ -22,6 +22,7 @@ public class SedApplicationTest {
 	private static final String STRING_STREAM = "stream";
 	private static final String STRING_COMMAND = "s/test/replaced/";
 	
+	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "sed_test_system";
 	private static final String TESTFILE1 = "sedTestFile1.txt";
 	private static final String TESTFILE2 = "sedTestFile2.txt";
 	private static final String TESTFILE1_HEADER = "This is Sed Test File 1.\n";
@@ -29,17 +30,17 @@ public class SedApplicationTest {
 	
 	private static final String EXP_NULL_POINTER = "sed: Null Pointer Exception";
 	
-	SedApplication sedApp;
-	String expected, result;
-	OutputStream stdout;
-	InputStream stdin;
+	private SedApplication sedApp;
+	private String expected, result;
+	private OutputStream stdout;
+	private InputStream stdin;
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 		
 	@Before
-	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "sed_test_system";
+	public void setUp() {
+		Environment.currentDirectory = TEST_DIR;
 		sedApp = new SedApplication();
 		stdin = new ByteArrayInputStream("Text from Inputstream\nstream of texts in stream".getBytes());
 		stdout = new ByteArrayOutputStream();
