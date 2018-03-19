@@ -101,7 +101,7 @@ public class LsApplication implements LsInterface {
 			if (!files.isEmpty() && !folders.isEmpty()) {
 				outputStr += "\n";
 			}
-			if (files.isEmpty() && !isRecursive && folderName.length <= 1 && folders.size() == 1) {
+			if (files.isEmpty() && !isRecursive && folders.size() == 1) {
 				outputStr += printFilesInFolder(folders.get(0), isRecursive);
 			} else {
 				outputStr += printFolders(folders, isRecursive);

@@ -332,6 +332,14 @@ public class LsApplicationTest {
 		String[] strArr = {"-f", FOLDER1};
 		lsApp.run(strArr, null, stdout);
 	}
+	
+	@Test
+	public void testInvalidOptionDash() throws LsException {
+		thrown.expect(LsException.class);
+		thrown.expectMessage("ls: invalid option -- '-'");
+		String[] strArr = {"--", FOLDER1};
+		lsApp.run(strArr, null, stdout);
+	}
 
 	@Test
 	public void testInvalidOptionCombi() throws LsException {
