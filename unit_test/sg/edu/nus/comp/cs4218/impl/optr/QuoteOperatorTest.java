@@ -44,467 +44,323 @@ public class QuoteOperatorTest {
 	}
 
 	@Test
-	public void testRemoveSQClosed() {
+	public void testRemoveSQClosed() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"message within single quotes"};
 		input = new String[] {"'message within single quotes'"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveSQMultiple() {
+	public void testRemoveSQMultiple() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"SQ message 1, SQ message 2"};
 		input = new String[] {"'SQ message 1', 'SQ message 2'"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveSQWithinWord() {
+	public void testRemoveSQWithinWord() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"SQ out in in out SQ"};
 		input = new String[] {"SQ out i'n i'n out SQ"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveDQClosed() {
+	public void testRemoveDQClosed() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"message within double quotes"};
 		input = new String[] {"\"message within double quotes\""};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveDQMultiple() {
+	public void testRemoveDQMultiple() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"DQ message 1, DQ message 2"};
 		input = new String[] {"\"DQ message 1\", \"DQ message 2\""};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveDQWithinWord() {
+	public void testRemoveDQWithinWord() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"DQ out in in out DQ"};
 		input = new String[] {"DQ out i\"n i\"n out DQ"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveBQClosed() {
+	public void testRemoveBQClosed() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"message within back quotes"};
 		input = new String[] {"`message within back quotes`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveBQMultiple() {
+	public void testRemoveBQMultiple() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"BQ message 1, BQ message 2"};
 		input = new String[] {"`BQ message 1`, `BQ message 2`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveBQWithinWord() {
+	public void testRemoveBQWithinWord() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"BQ out in in out BQ"};
 		input = new String[] {"BQ out i`n i`n out BQ"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveMultipleQuotes() {
+	public void testRemoveMultipleQuotes() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"SQ DQ BQ"};
 		input = new String[] {"'SQ' \"DQ\" `BQ`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveDQWithinSQ() {
+	public void testRemoveDQWithinSQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"\"DQ within SQ\""};
 		input = new String[] {"'\"DQ within SQ\"'"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveBQWithinSQ() {
+	public void testRemoveBQWithinSQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"`BQ within SQ`"};
 		input = new String[] {"'`BQ within SQ`'"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveSQWithinDQ() {
+	public void testRemoveSQWithinDQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"'SQ within DQ'"};
 		input = new String[] {"\"'SQ within DQ'\""};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 
 	@Test
-	public void testRemoveBQWithinDQ() {
+	public void testRemoveBQWithinDQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"BQ within DQ"};
 		input = new String[] {"\"`BQ within DQ`\""};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveSQWithinBQ() {
+	public void testRemoveSQWithinBQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"SQ 'within' BQ"};
 		input = new String[] {"`SQ 'within' BQ`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveDQWithinBQ() {
+	public void testRemoveDQWithinBQ() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"DQ \"within\" BQ"};
 		input = new String[] {"`DQ \"within\" BQ`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
-	public void testRemoveMultiplElements() {
+	public void testRemoveMultiplElements() throws AbstractApplicationException, ShellException {
 		expected = new String[] {"SQ", "DQ", "BQ"};
 		input = new String[] {"'SQ'", "\"DQ\"", "`BQ`"};
-		try {
-			output = quoteOptr.evaluate(input);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
 	public void testInvalidRemoveSQUnclosed() throws AbstractApplicationException, ShellException {
-		input = new String[] {"'Unclosed SQ"};
-		
+		input = new String[] {"'Unclosed SQ"};	
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NOT_CLOSED_EXP);
-        
+        thrown.expectMessage(NOT_CLOSED_EXP);     
 		quoteOptr.evaluate(input);
 	}
 	
 	@Test
 	public void testInvalidDQRemoveUnclosed() throws AbstractApplicationException, ShellException {
 		input = new String[] {"\"Unclosed DQ"};
-		
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NOT_CLOSED_EXP);
-        
+        thrown.expectMessage(NOT_CLOSED_EXP);   
 		quoteOptr.evaluate(input);
 	}
 	
 	@Test
 	public void testInvalidRemoveBQUnclosed() throws AbstractApplicationException, ShellException {
 		input = new String[] {"`Unclosed BQ"};
-		
 		thrown.expect(ShellException.class);
         thrown.expectMessage(NOT_CLOSED_EXP);
-        
 		quoteOptr.evaluate(input);
 	}
 	
 	@Test
 	public void testInvalidRemoveNullInput() throws AbstractApplicationException, ShellException {
 		input = new String[] {null};
-		
 		thrown.expect(ShellException.class);
         thrown.expectMessage(NULL_PTR_EXP);
-        
 		quoteOptr.evaluate(input);
 	}
 	
 	@Test
-	public void testGetCharIndicesNoQuotes() {
+	public void testGetCharIndicesNoQuotes() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {4, 10};
 		inputStr = "cmd1; cmd2; cmd3";
 		sepChar = ';';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesSQClosed() {
+	public void testGetCharIndicesSQClosed() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {11, 16};
 		inputStr = "'cmd1;cmd2';cmd3;cmd4";
 		sepChar = ';';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesSQMultiple() {
+	public void testGetCharIndicesSQMultiple() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {5};
 		inputStr = "cmd1 ; 'cmd2 ; cmd3''cmd4 ; cmd5'";
 		sepChar = ';';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesSQWithinWord() {
+	public void testGetCharIndicesSQWithinWord() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {4, 18};
 		inputStr = "cmd1; cmd'2 ;cmd'3; cmd4";
 		sepChar = ';';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesDQClosed() {
+	public void testGetCharIndicesDQClosed() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {11, 16};
 		inputStr = "\"cmd1|cmd2\"|cmd3|cmd4";
 		sepChar = '|';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesDQMultiple() {
+	public void testGetCharIndicesDQMultiple() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {5};
 		inputStr = "cmd1 | \"cmd2 | cmd3\"\"cmd4 | cmd5\"";
 		sepChar = '|';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesDQWithinWord() {
+	public void testGetCharIndicesDQWithinWord() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {4, 18};
 		inputStr = "cmd1| cmd\"2| cmd\"3| cmd4";
 		sepChar = '|';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesBQClosed() {
+	public void testGetCharIndicesBQClosed() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {11, 16};
 		inputStr = "`cmd1 arg1` arg2 arg3";
 		sepChar = ' ';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesBQMultiple() {
+	public void testGetCharIndicesBQMultiple() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {4};
 		inputStr = "cmd1 `cmd2 arg2``cmd3 arg3`";
 		sepChar = ' ';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesBQWithinWord() {
+	public void testGetCharIndicesBQWithinWord() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {4, 20};
 		inputStr = "cmd1 arg`cmd2 arg2`1 arg2";
 		sepChar = ' ';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesMultipleQuotes() {
+	public void testGetCharIndicesMultipleQuotes() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {5, 11};
 		inputStr = "'S Q' \"D Q\" `B Q`";
 		sepChar = ' ';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesDQWithinSQ() {
+	public void testGetCharIndicesDQWithinSQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 22, 25};
 		inputStr = "\"DQ\" '\"DQ within SQ\"' \"DQ\"";
 		sepChar = '"';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesBQWithinSQ() {
+	public void testGetCharIndicesBQWithinSQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 22, 25};
 		inputStr = "`BQ` '`BQ within SQ`' `BQ`";
 		sepChar = '`';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesSQWithinDQ() {
+	public void testGetCharIndicesSQWithinDQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 22, 25};
 		inputStr = "'SQ' \"'SQ within DQ'\" 'SQ'";
 		sepChar = '\'';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 
 	@Test
-	public void testGetCharIndicesBQWithinDQ() {
+	public void testGetCharIndicesBQWithinDQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 6, 19, 22, 25};
 		inputStr = "`BQ` \"`BQ within DQ`\" `BQ`";
 		sepChar = '`';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesSQWithinBQ() {
+	public void testGetCharIndicesSQWithinBQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 22, 25};
 		inputStr = "'SQ' `'SQ within BQ'` 'SQ'";
 		sepChar = '\'';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
 	@Test
-	public void testGetCharIndicesDQWithinBQ() {
+	public void testGetCharIndicesDQWithinBQ() throws AbstractApplicationException, ShellException {
 		expectedInt = new Integer[] {0, 3, 22, 25};
 		inputStr = "\"DQ\" `\"DQ within BQ\"` \"DQ\"";
 		sepChar = '"';
-		try {
-			outputInt = quoteOptr.getIndices(inputStr, sepChar);
-		} catch (Exception e) {
-			Assert.fail(UNEXPECTED_EXP + e.getMessage());
-		}
+		outputInt = quoteOptr.getIndices(inputStr, sepChar);
 		assertArrayEquals(expectedInt, outputInt);
 	}
 	
@@ -512,10 +368,8 @@ public class QuoteOperatorTest {
 	public void testInvalidGetCharIndicesSQUnclosed() throws AbstractApplicationException, ShellException {
 		inputStr = "'cmd1; cmd2; cmd3; cmd4";
 		sepChar = ';';
-		
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NOT_CLOSED_EXP);
-        
+        thrown.expectMessage(NOT_CLOSED_EXP); 
 		quoteOptr.getIndices(inputStr, sepChar);
 	}
 	
@@ -523,32 +377,26 @@ public class QuoteOperatorTest {
 	public void testInvalidDQGetCharIndicesUnclosed() throws AbstractApplicationException, ShellException {
 		inputStr = "\"cmd1 | cmd2 | cmd3 | cmd4";
 		sepChar = '|';
-		
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NOT_CLOSED_EXP);
-        
+        thrown.expectMessage(NOT_CLOSED_EXP);   
         quoteOptr.getIndices(inputStr, sepChar);
 	}
 	
 	@Test
 	public void testInvalidGetCharIndicesBQUnclosed() throws AbstractApplicationException, ShellException {
 		inputStr = "`cmd1 arg1 arg3 arg4";
-		sepChar = ' ';
-		
+		sepChar = ' ';	
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NOT_CLOSED_EXP);
-        
+        thrown.expectMessage(NOT_CLOSED_EXP);    
         quoteOptr.getIndices(inputStr, sepChar);
 	}
 	
 	@Test
 	public void testInvalidGetCharIndicesNullInput() throws AbstractApplicationException, ShellException {
 		inputStr = null;
-		sepChar = ' ';
-		
+		sepChar = ' ';	
 		thrown.expect(ShellException.class);
-        thrown.expectMessage(NULL_PTR_EXP);
-        
+        thrown.expectMessage(NULL_PTR_EXP);    
         quoteOptr.getIndices(inputStr, sepChar);
 	}
 }
