@@ -295,7 +295,7 @@ public class SedApplication implements SedInterface {
 
 		int matchIndex;
 		if (nthStr.isEmpty()) {
-			matchIndex = -1;
+			matchIndex = 1;
 		} else {
 			if (!nthStr.matches("[0-9]*")) {
 				throw new SedException("char " + beginIndex + ": unknown options to '" + option.charAt(0) + "'");
@@ -341,16 +341,12 @@ public class SedApplication implements SedInterface {
 		}
 
 		if (replacementIndex < 0) {
-			return line.replaceAll(pattern, replacement) + "\n";
+			throw new SedException("command may not be negative");
 		}
-
+		
 		Matcher matcher = Pattern.compile(pattern).matcher(line);
 		for(int i = 0; i < replacementIndex; i++) {
 			matcher.find();
-		}
-
-		if (matcher.hitEnd()) {
-			return line + "\n";
 		}
 
 		int matchedIndex;

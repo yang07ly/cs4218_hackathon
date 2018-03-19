@@ -9,7 +9,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.SedException;
@@ -31,6 +33,9 @@ public class SedApplicationTest {
 	String expected, result;
 	OutputStream stdout;
 	InputStream stdin;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 		
 	@Before
 	public void setUp() throws Exception {
@@ -41,41 +46,33 @@ public class SedApplicationTest {
 	}
 
 	@Test
-	public void testReplaceAllRelativeFile() {
+	public void testReplaceRelativeFile() throws SedException {
 		expected = TESTFILE1_HEADER + 
 				"1. replaced\n" + 
-				"2. replaced replaced\n" + 
-				"3. replaced replaced replaced\n" + 
-				"4. replaced replaced replaced replaced\n" + 
-				"5. replacedesreplacedest\n" + 
-				"6. replacedesreplacedesreplacedest\n";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+				"2. replaced test\n" + 
+				"3. replaced test test\n" + 
+				"4. replaced test test test\n" + 
+				"5. replacedestestest\n" + 
+				"6. replacedestestestestest\n";
+		result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, TESTFILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testReplaceAllAbsoluteFile() {
+	public void testReplaceAbsoluteFile() throws SedException {
 		expected = TESTFILE2_HEADER + 
-				"1. replacedesreplacedesreplacedest\n" + 
-				"2. replacedesreplacedest\n" + 
-				"3. replaced replaced replaced replaced\n" + 
-				"4. replaced replaced replaced\n" + 
-				"5. replaced replaced\n" + 
+				"1. replacedestestestestest\n" + 
+				"2. replacedestestest\n" + 
+				"3. replaced test test test\n" + 
+				"4. replaced test test\n" + 
+				"5. replaced test\n" + 
 				"6. replaced\n";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, Environment.currentDirectory + File.separator + TESTFILE2);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, Environment.currentDirectory + File.separator + TESTFILE2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testReplaceThirdOccuranceInFile() {
+	public void testReplaceThirdOccuranceInFile() throws SedException {
 		expected = TESTFILE2_HEADER + 
 				"1. testestestesreplacedest\n" + 
 				"2. testestestest\n" + 
@@ -83,16 +80,12 @@ public class SedApplicationTest {
 				"4. test test replaced\n" + 
 				"5. test test\n" + 
 				"6. test\n";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 3, TESTFILE2);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 3, TESTFILE2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRegexMatchAddLeadBracketInFile() {
+	public void testRegexMatchAddLeadBracketInFile() throws SedException {
 		expected = "> This is Sed Test File 1.\n" + 
 				"> 1. test\n" + 
 				"> 2. test test\n" + 
@@ -100,16 +93,12 @@ public class SedApplicationTest {
 				"> 4. test test test test\n" + 
 				"> 5. testestestest\n" + 
 				"> 6. testestestestestest\n";
-		try {
-			result = sedApp.replaceSubstringInFile("^", "> ", -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInFile("^", "> ", 1, TESTFILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRegexMatchRemoveLeadNumInFile() {
+	public void testRegexMatchRemoveLeadNumInFile() throws SedException {
 		expected = TESTFILE2_HEADER + 
 				"testestestestestest\n" + 
 				"testestestest\n" + 
@@ -117,16 +106,12 @@ public class SedApplicationTest {
 				"test test test\n" + 
 				"test test\n" + 
 				"test\n";
-		try {
-			result = sedApp.replaceSubstringInFile("[0-9].\\s+", "", -1, TESTFILE2);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInFile("[0-9].\\s+", "", 1, TESTFILE2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testNoRegexMatchInFile() {
+	public void testNoRegexMatchInFile() throws SedException {
 		expected = TESTFILE1_HEADER + 
 				"1. test\n" + 
 				"2. test test\n" + 
@@ -134,420 +119,287 @@ public class SedApplicationTest {
 				"4. test test test test\n" + 
 				"5. testestestest\n" + 
 				"6. testestestestestest\n";
-		try {
-			result = sedApp.replaceSubstringInFile("NoMatched", STRING_REPLACE, -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInFile("NoMatched", STRING_REPLACE, 1, TESTFILE1);
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testInvalidNullPatternInFile() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInFile(null, STRING_REPLACE, -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullPatternInFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInFile(null, STRING_REPLACE, 1, TESTFILE1);
 	}
 	
 	@Test
-	public void testInvalidEmptyPatternInFile() {
-		expected = "sed: regular expression cannot be empty";
-		try {
-			result = sedApp.replaceSubstringInFile("", STRING_REPLACE, -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidEmptyPatternInFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: regular expression cannot be empty");	
+		sedApp.replaceSubstringInFile("", STRING_REPLACE, 1, TESTFILE1);
 	}
 	
 	@Test
-	public void testInvalidNullReplacementInFile() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, null, -1, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullReplacementInFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInFile(STRING_TEST, null, 1, TESTFILE1);
 	}
 	
 	@Test
-	public void testInvalidReplaceIndexZeroInFile() {
-		expected = "sed: command may not be zero";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 0, TESTFILE1);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndexZeroInFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: command may not be zero");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 0, TESTFILE1);
 	}
 	
 	@Test
-	public void testInvalidNullFile() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, null);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndexNegativeInFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: command may not be negative");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, TESTFILE1);
 	}
 	
 	@Test
-	public void testInvalidNonExistentFile() {
-		expected = "sed: can't read nonExistentFile: No such file or directory";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, "nonExistentFile");
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, null);
 	}
 	
 	@Test
-	public void testInvalidEmptyFileName() {
-		expected = "sed: can't read : No such file or directory";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, "");
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNonExistentFile() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: can't read nonExistentFile: No such file or directory");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, "nonExistentFile");
 	}
 	
 	@Test
-	public void testInvalidSpacesFileName() {
-		expected = "sed: can't read    : No such file or directory";
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, "   ");
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidEmptyFileName() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: can't read : No such file or directory");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, "");
 	}
 	
 	@Test
-	public void testInvalidFolderReplace() {
-		expected = "sed: read error on folder1: Is a directory";
-		
-		try {
-			result = sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, -1, "folder1");
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidSpacesFileName() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: can't read    : No such file or directory");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, "   ");
+	}
+	
+	@Test
+	public void testInvalidFolderReplace() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: read error on folder1: Is a directory");	
+		sedApp.replaceSubstringInFile(STRING_TEST, STRING_REPLACE, 1, "folder1");
 	}
 
 	@Test
-	public void testReplaceFromInputStream() {
-		expected = "Text from Inputreplaced\nreplaced of texts in replaced\n";
-		try {
-			result = sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+	public void testReplaceFromInputStream() throws SedException {
+		expected = "Text from Inputreplaced\nreplaced of texts in stream\n";
+		result = sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, 1, stdin);
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testReplaceSecondOccuranceInStream() {
+	public void testReplaceSecondOccuranceInStream() throws SedException {
 		expected = "Text from Inputstream\nstream of texts in replaced\n";
-		try {
-			result = sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, 2, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, 2, stdin);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRegexMatchAddLeadBracketInStream() {
+	public void testRegexMatchAddLeadBracketInStream() throws SedException {
 		expected = "> Text from Inputstream\n> stream of texts in stream\n";
-		try {
-			result = sedApp.replaceSubstringInStdin("^", "> ", -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInStdin("^", "> ", 1, stdin);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRegexMatchRemoveTextInStream() {
-		expected = "Text from Input\nof texts in\n";
-		try {
-			result = sedApp.replaceSubstringInStdin("\\s*stream\\s*", "", -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+	public void testRegexMatchRemoveTextInStream() throws SedException {
+		expected = "Text from Input\nof texts in stream\n";
+		result = sedApp.replaceSubstringInStdin("\\s*stream\\s*", "", 1, stdin);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testNoRegexMatchInStream() {
+	public void testNoRegexMatchInStream() throws SedException {
 		expected = "Text from Inputstream\nstream of texts in stream\n";
-		try {
-			result = sedApp.replaceSubstringInStdin("noMatched", STRING_REPLACE, -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		result = sedApp.replaceSubstringInStdin("noMatched", STRING_REPLACE, 1, stdin);
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testInvalidNullPatternInStream() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInStdin(null, STRING_REPLACE, -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullPatternInStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInStdin(null, STRING_REPLACE, 1, stdin);
 	}
 	
 	@Test
-	public void testInvalidEmptyPatternInStream() {
-		expected = "sed: regular expression cannot be empty";
-		try {
-			result = sedApp.replaceSubstringInStdin("", STRING_REPLACE, -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidEmptyPatternInStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: regular expression cannot be empty");	
+		sedApp.replaceSubstringInStdin("", STRING_REPLACE, 1, stdin);
 	}
 	
 	@Test
-	public void testInvalidNullReplacementInStream() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInStdin(STRING_STREAM, null, -1, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullReplacementInStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInStdin(STRING_STREAM, null, 1, stdin);
 	}
 	
 	@Test
-	public void testInvalidReplaceIndexZeroInStream() {
-		expected = "sed: command may not be zero";
-		try {
-			result = sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, 0, stdin);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndexZeroInStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: command may not be zero");	
+		sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, 0, stdin);
 	}
 	
 	@Test
-	public void testInvalidNullStream() {
-		expected = EXP_NULL_POINTER;
-		try {
-			result = sedApp.replaceSubstringInStdin(null, STRING_REPLACE, -1, null);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndexNegativeInStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: command may not be negative");	
+		sedApp.replaceSubstringInStdin(STRING_STREAM, STRING_REPLACE, -1, stdin);
 	}
 	
 	@Test
-	public void testOtherSeparatingCharNumeric() {
+	public void testInvalidNullStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		sedApp.replaceSubstringInStdin(null, STRING_REPLACE, 1, null);
+	}
+	
+	@Test
+	public void testOtherSeparatingCharNumeric() throws SedException {
 		expected = TESTFILE1_HEADER + 
 				"1. replaced\n" + 
-				"2. replaced replaced\n" + 
-				"3. replaced replaced replaced\n" + 
-				"4. replaced replaced replaced replaced\n" + 
-				"5. replacedesreplacedest\n" + 
-				"6. replacedesreplacedesreplacedest";
-		try {
-			String[] strArr = {"s1test1replaced1", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+				"2. replaced test\n" + 
+				"3. replaced test test\n" + 
+				"4. replaced test test test\n" + 
+				"5. replacedestestest\n" + 
+				"6. replacedestestestestest";
+		String[] strArr = {"s1test1replaced1", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testOtherSeparatingCharAlpha() {
-		expected = "Text from Inputreplaced\nreplaced of texts in replaced";
-		try {
-			String[] strArr = {"szstreamzreplacedz"};
-			sedApp.run(strArr, stdin, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+	public void testOtherSeparatingCharAlpha() throws SedException {
+		expected = "Text from Inputreplaced\nreplaced of texts in stream";
+		String[] strArr = {"szstreamzreplacedz"};
+		sedApp.run(strArr, stdin, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testMultipleFiles() {
+	public void testMultipleFiles() throws SedException {
 		expected = TESTFILE1_HEADER + 
 				"1. replaced\n" + 
-				"2. replaced replaced\n" + 
-				"3. replaced replaced replaced\n" + 
-				"4. replaced replaced replaced replaced\n" + 
-				"5. replacedesreplacedest\n" + 
-				"6. replacedesreplacedesreplacedest\n" + 
+				"2. replaced test\n" + 
+				"3. replaced test test\n" + 
+				"4. replaced test test test\n" + 
+				"5. replacedestestest\n" + 
+				"6. replacedestestestestest\n" + 
 				TESTFILE2_HEADER + 
-				"1. replacedesreplacedesreplacedest\n" + 
-				"2. replacedesreplacedest\n" + 
-				"3. replaced replaced replaced replaced\n" + 
-				"4. replaced replaced replaced\n" + 
-				"5. replaced replaced\n" + 
+				"1. replacedestestestestest\n" + 
+				"2. replacedestestest\n" + 
+				"3. replaced test test test\n" + 
+				"4. replaced test test\n" + 
+				"5. replaced test\n" + 
 				"6. replaced";
-		try {
-			String[] strArr = {STRING_COMMAND, TESTFILE1, TESTFILE2};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
+		String[] strArr = {STRING_COMMAND, TESTFILE1, TESTFILE2};
+		sedApp.run(strArr, null, stdout);
+		result = stdout.toString();
 		assertEquals(expected, result);
 	}
 	
 	@Test
-	public void testInvalidNonExistentFileInValidFiles() {
-		expected = "sed: can't read nonExistentFile: No such file or directory";
-		try {
-			String[] strArr = {STRING_COMMAND, TESTFILE1, "nonExistentFile"};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNonExistentFileInValidFiles() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: can't read nonExistentFile: No such file or directory");	
+		String[] strArr = {STRING_COMMAND, TESTFILE1, "nonExistentFile"};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidEmptyArguments() {
-		expected = "sed: REPLACEMENT is not specified";
-		try {
-			String[] strArr = {};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidEmptyArguments() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: REPLACEMENT is not specified");	
+		String[] strArr = {};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidCommand() {
-		expected = "sed: char 1: unknown command: 'i'";
-		try {
-			String[] strArr = {"i", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidCommand() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 1: unknown command: 'i'");	
+		String[] strArr = {"i", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidMissingSeparatingChar() {
-		expected = "sed: char 1: unterminated: 's'";
-		try {
-			String[] strArr = {"s", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidMissingSeparatingChar() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 1: unterminated: 's'");	
+		String[] strArr = {"s", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidUnterminatedCommand() {
-		expected = "sed: char 3: unterminated: 's'";
-		try {
-			String[] strArr = {"s/s", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidUnterminatedCommand() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 3: unterminated: 's'");	
+		String[] strArr = {"s/s", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidEmptyRegExp() {
-		expected = "sed: char 0: no previous regular expression";
-		try {
-			String[] strArr = {"s//replaced/", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidEmptyRegExp() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 0: no previous regular expression");	
+		String[] strArr = {"s//replaced/", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidReplaceIndexChar() {
-		expected = "sed: char 15: unknown options to 's'";
-		try {
-			String[] strArr = {"s/test/replaced/???", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndexChar() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 15: unknown options to 's'");	
+		String[] strArr = {"s/test/replaced/???", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidReplaceIndex() {
-		expected = "sed: char 15: number option to 's' command may not be zero";
-		try {
-			String[] strArr = {"s/test/replaced/0", TESTFILE1};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidReplaceIndex() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 15: number option to 's' command may not be zero");	
+		String[] strArr = {"s/test/replaced/0", TESTFILE1};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidCommandPosition() {
-		expected = "sed: char 10: unknown options to 's'";
-		try {
-			String[] strArr = {TESTFILE1, STRING_COMMAND};
-			sedApp.run(strArr, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidCommandPosition() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: char 10: unknown options to 's'");	
+		String[] strArr = {TESTFILE1, STRING_COMMAND};
+		sedApp.run(strArr, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidNullArgs() {
-		expected = "sed: REPLACEMENT is not specified";
-		try {
-			sedApp.run(null, null, stdout);
-			result = stdout.toString();
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullArgs() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage("sed: REPLACEMENT is not specified");	
+		sedApp.run(null, null, stdout);
 	}
 	
 	@Test
-	public void testInvalidNullOutputStream() {
-		expected = EXP_NULL_POINTER;
-		try {
-			String[] strArr = {STRING_COMMAND, TESTFILE1};
-			sedApp.run(strArr, null, null);
-		} catch (SedException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidNullOutputStream() throws SedException {
+		thrown.expect(SedException.class);
+		thrown.expectMessage(EXP_NULL_POINTER);	
+		String[] strArr = {STRING_COMMAND, TESTFILE1};
+		sedApp.run(strArr, null, null);
 	}
 }
