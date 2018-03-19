@@ -7,44 +7,49 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.MkdirException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
 
 public class MkdirApplicationTest {
-	public static final String DIR_FOLDER1 = "folder1";
-	public static final String DIR_FOLDER2 = "folder2";
-	public static final String DIR_FOLDER3 = "folder3";
-	public static final String DIR_EXISTING = "existingFolder";
-	public static final String DIR_NONEXISTENT = "nonExistent";
-	public static final String FILE_EXISTING = "existingFile.txt";
 	
-	MkdirApplication mkdirApp;
-	String expected, result;
-	Path dirPath;
+	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "mkdir_test_system";
 	
-	private void delete(File file) throws IOException {	 
-		for (File childFile : file.listFiles()) {
-			if (childFile.isDirectory()) {
-				delete(childFile);
-			}
-			if (!childFile.delete()) {
-				throw new IOException();
-			}
-		}
-	}
+	private static final String DIR_FOLDER1 = "folder1";
+	private static final String DIR_FOLDER2 = "folder2";
+	private static final String DIR_FOLDER3 = "folder3";
+	
+	private static final String DIR_FOLDER1_1 = DIR_FOLDER1 +  File.separator + "folder1_1";
+	private static final String DIR_FOLDER1_1_1 = DIR_FOLDER1_1 +  File.separator + "folder1_1_1";
+	
+	private static final String ABS_DIR_FOLDER1 = TEST_DIR + File.separator + DIR_FOLDER1;
+	
+	private static final String DIR_EXISTING = "existingFolder";
+	private static final String DIR_NONEXISTENT = "nonExistent";
+	private static final String FILE_EXISTING = "existingFile.txt";
+	
+	private MkdirApplication mkdirApp;
+	private Path dirPath;
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Before
 	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "mkdir_test_system";
+		Environment.currentDirectory = TEST_DIR;
 		mkdirApp = new MkdirApplication();
 		
-		Path folderPath = Paths.get(Environment.currentDirectory).resolve("existingFolder");
-		Path filePath = Paths.get(Environment.currentDirectory).resolve("existingFile.txt");
+		Path folderPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING);
+		Path filePath = Paths.get(Environment.currentDirectory).resolve(FILE_EXISTING);
 		Files.createDirectories(folderPath);
 		Files.createFile(filePath);
 	}
@@ -56,49 +61,33 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testRelativeMkDir() {
-		try {
-			mkdirApp.createFolder(DIR_FOLDER1);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+	public void testRelativeMkDir() throws MkdirException {
+		mkdirApp.createFolder(DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
 		assertTrue(Files.isDirectory(dirPath));
 	}
 	
 	@Test
-	public void testAbsoluteMkDir() {
-		try {
-			mkdirApp.createFolder(Environment.currentDirectory + File.separator + DIR_FOLDER1);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+	public void testAbsoluteMkDir() throws MkdirException {
+		mkdirApp.createFolder(ABS_DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
 		assertTrue(Files.isDirectory(dirPath));
 	}
 	
 	@Test
-	public void testMkDirInDir() {
-		try {
-			mkdirApp.createFolder(DIR_EXISTING + File.separator + DIR_FOLDER1);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+	public void testMkDirInDir() throws MkdirException {
+		mkdirApp.createFolder(DIR_EXISTING + File.separator + DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING + File.separator + DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
 		assertTrue(Files.isDirectory(dirPath));
 	}
 	
 	@Test
-	public void testMkMutipleDirs() {
+	public void testMkMutipleDirs() throws MkdirException {
 		String[] folderNames = {DIR_FOLDER1, DIR_FOLDER2, DIR_FOLDER3};
-		try {
-			mkdirApp.createFolder(folderNames);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+		mkdirApp.createFolder(folderNames);
 		for (int i = 0; i < folderNames.length; i++) {
 			dirPath = Paths.get(Environment.currentDirectory).resolve(folderNames[i]);
 			assertTrue(Files.exists(dirPath));
@@ -107,14 +96,9 @@ public class MkdirApplicationTest {
 	}
 	
 	@Test
-	public void testMkMutipleDirsInSeq() {
-		String[] folderNames = {DIR_FOLDER1, DIR_FOLDER1 + File.separator + DIR_FOLDER2, 
-								DIR_FOLDER1 + File.separator + DIR_FOLDER2 + File.separator + DIR_FOLDER3};
-		try {
-			mkdirApp.createFolder(folderNames);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+	public void testMkMutipleDirsInSeq() throws MkdirException {
+		String[] folderNames = {DIR_FOLDER1, DIR_FOLDER1_1, DIR_FOLDER1_1_1};
+		mkdirApp.createFolder(folderNames);
 		for (int i = 0; i < folderNames.length; i++) {
 			dirPath = Paths.get(Environment.currentDirectory).resolve(folderNames[i]);
 			assertTrue(Files.exists(dirPath));
@@ -123,96 +107,87 @@ public class MkdirApplicationTest {
 	}
 	
 	@Test
-	public void testInvalidMkDirNullName() {
-		expected = "mkdir: missing operand";	
-		try {
-			mkdirApp.createFolder();
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testMkDirOfExistingDirWithDiffCaseInUnix() throws MkdirException {
+		Assume.assumeTrue(OSValidator.isUnix());
+		mkdirApp.createFolder(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
+		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
+		assertTrue(Files.exists(dirPath));
+		assertTrue(Files.isDirectory(dirPath));
 	}
 	
 	@Test
-	public void testInvalidMkDirEmptyName() {
-		expected = "mkdir: cannot create directory ‘’: No such file or directory";		
-		try {
-			mkdirApp.createFolder("");
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidMkDirOfExistingDirWithDiffCaseInWindows() throws MkdirException {
+		Assume.assumeTrue(OSValidator.isWindows());
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘" + DIR_EXISTING.toUpperCase(Locale.ENGLISH) + "’: File exists");
+		mkdirApp.createFolder(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
 	}
 	
 	@Test
-	public void testInvalidMkDirOnlySpacesName() {
-		try {
-			mkdirApp.createFolder("   ");
-			
-			dirPath = Paths.get(Environment.currentDirectory).resolve("   ");
-			assertTrue(Files.exists(dirPath));
-			assertTrue(Files.isDirectory(dirPath));
-		} catch (MkdirException e) {
-			result = e.getMessage();
-			assertEquals("mkdir: cannot create directory ‘   ’: No such file or directory", result);
-		}
+	public void testMkDirOnlySpacesNameInUnix() throws MkdirException {
+		Assume.assumeTrue(OSValidator.isUnix());
+		mkdirApp.createFolder("   ");
+		dirPath = Paths.get(Environment.currentDirectory).resolve("   ");
+		assertTrue(Files.exists(dirPath));
+		assertTrue(Files.isDirectory(dirPath));
 	}
 	
 	@Test
-	public void testInvalidMkDirOfExistingDir() {
-		expected = "mkdir: cannot create directory ‘existingFolder’: File exists";		
-		try {
-			mkdirApp.createFolder(DIR_EXISTING);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidMkDirOnlySpacesNameInWindows() throws MkdirException {
+		Assume.assumeTrue(OSValidator.isWindows());
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘   ’: No such file or directory");
+		mkdirApp.createFolder("   ");
 	}
 	
 	@Test
-	public void testInvalidMkDirOfExistingFile() {
-		expected = "mkdir: cannot create directory ‘existingFile.txt’: File exists";		
-		try {
-			mkdirApp.createFolder(FILE_EXISTING);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+	public void testInvalidMkDirNullName() throws MkdirException {
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: missing operand");
+		mkdirApp.createFolder();
 	}
 	
 	@Test
-	public void testInvalidMkDirInNonExistDir() {
+	public void testInvalidMkDirEmptyName() throws MkdirException {
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘’: No such file or directory");
+		mkdirApp.createFolder("");
+	}
+	
+	@Test
+	public void testInvalidMkDirOfExistingDir() throws MkdirException {
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘existingFolder’: File exists");
+		mkdirApp.createFolder(DIR_EXISTING);
+	}
+	
+	@Test
+	public void testInvalidMkDirOfExistingFile() throws MkdirException {
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘existingFile.txt’: File exists");
+		mkdirApp.createFolder(FILE_EXISTING);
+	}
+	
+	@Test
+	public void testInvalidMkDirInNonExistDir() throws MkdirException {
 		String newPath = DIR_NONEXISTENT + File.separator + DIR_FOLDER1;
-		expected = "mkdir: cannot create directory ‘" + newPath + "’: No such file or directory";
-		try {
-			mkdirApp.createFolder(newPath);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘" + newPath + "’: No such file or directory");
+		mkdirApp.createFolder(newPath);
 	}
 	
 	@Test
-	public void testInvalidMkDirWithValidDir() {
+	public void testInvalidMkDirWithValidDir() throws MkdirException {
 		String newPath = DIR_NONEXISTENT + File.separator + DIR_FOLDER2;
-		expected = "mkdir: cannot create directory ‘" + newPath + "’: No such file or directory";		
-		try {
-			mkdirApp.createFolder(DIR_FOLDER1, newPath, DIR_FOLDER3);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: cannot create directory ‘" + newPath + "’: No such file or directory");
+		mkdirApp.createFolder(DIR_FOLDER1, newPath, DIR_FOLDER3);
 	}
 	
 	@Test
-	public void testMkDirRun() {
-		String[] folderNames = {DIR_FOLDER1, DIR_FOLDER1 + File.separator + DIR_FOLDER2, 
-								DIR_FOLDER1 + File.separator + DIR_FOLDER2 + File.separator + DIR_FOLDER3};
-		try {
-			mkdirApp.run(folderNames, null, null);
-		} catch (MkdirException e) {
-			result = e.getMessage();
-		}
+	public void testMkDirRun() throws MkdirException {
+		String[] folderNames = {DIR_FOLDER1, DIR_FOLDER1_1, DIR_FOLDER1_1_1};
+		mkdirApp.run(folderNames, null, null);
 		for (int i = 0; i < folderNames.length; i++) {
 			dirPath = Paths.get(Environment.currentDirectory).resolve(folderNames[i]);
 			assertTrue(Files.exists(dirPath));
@@ -221,13 +196,20 @@ public class MkdirApplicationTest {
 	}
 	
 	@Test
-	public void testMkDirNullArgs() {
-		expected = "mkdir: missing operand";
-		try {
-			mkdirApp.run(null, null, null);
-		} catch (MkdirException e) {
-			result = e.getMessage();
+	public void testMkDirNullArgs() throws MkdirException {
+		thrown.expect(MkdirException.class);
+		thrown.expectMessage("mkdir: missing operand");
+		mkdirApp.run(null, null, null);
+	}
+	
+	private void delete(File file) throws IOException {	 
+		for (File childFile : file.listFiles()) {
+			if (childFile.isDirectory()) {
+				delete(childFile);
+			}
+			if (!childFile.delete()) {
+				throw new IOException();
+			}
 		}
-		assertEquals(expected, result);
 	}
 }
