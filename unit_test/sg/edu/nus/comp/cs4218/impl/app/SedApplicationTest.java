@@ -17,17 +17,17 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.SedException;
 
 public class SedApplicationTest {
-	public static final String STRING_TEST = "test";
-	public static final String STRING_REPLACE = "replaced";
-	public static final String STRING_STREAM = "stream";
-	public static final String STRING_COMMAND = "s/test/replaced/";
+	private static final String STRING_TEST = "test";
+	private static final String STRING_REPLACE = "replaced";
+	private static final String STRING_STREAM = "stream";
+	private static final String STRING_COMMAND = "s/test/replaced/";
 	
-	public static final String TESTFILE1 = "sedTestFile1.txt";
-	public static final String TESTFILE2 = "sedTestFile2.txt";
-	public static final String TESTFILE1_HEADER = "This is Sed Test File 1.\n";
-	public static final String TESTFILE2_HEADER = "This is Sed Test File 2.\n";
+	private static final String TESTFILE1 = "sedTestFile1.txt";
+	private static final String TESTFILE2 = "sedTestFile2.txt";
+	private static final String TESTFILE1_HEADER = "This is Sed Test File 1.\n";
+	private static final String TESTFILE2_HEADER = "This is Sed Test File 2.\n";
 	
-	public static final String EXP_NULL_POINTER = "sed: Null Pointer Exception";
+	private static final String EXP_NULL_POINTER = "sed: Null Pointer Exception";
 	
 	SedApplication sedApp;
 	String expected, result;
