@@ -29,7 +29,7 @@ public class SeqCommand implements Command {
 
 	public SeqCommand(Shell shell, String cmdline) {
 		this.shell = shell;
-		this.cmdline = cmdline.replace("\t", "    ").trim();
+		this.cmdline = cmdline.trim();
 	}
 
 	/**

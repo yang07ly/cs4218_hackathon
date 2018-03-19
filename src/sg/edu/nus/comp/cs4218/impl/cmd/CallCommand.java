@@ -29,7 +29,7 @@ public class CallCommand implements Command {
 
 	public CallCommand(Shell shell, String cmdline) {
 		this.shell = shell;
-		this.cmdline = cmdline.trim();
+		this.cmdline = cmdline.replace("\t", "    ").trim();
 		
 		app = "";
 		argsArray = new String[0];

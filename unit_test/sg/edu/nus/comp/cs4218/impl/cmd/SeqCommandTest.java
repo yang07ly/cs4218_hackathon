@@ -17,7 +17,6 @@ import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 public class SeqCommandTest {
 	private final static String EMPTY = "";
 	private final static String SPACES = "    ";
-	private final static String TAB = "\t";
 	
 	private final static String ARGS_VAR = "argsArray";
 	private final static String CMD = "cmd";
@@ -111,15 +110,5 @@ public class SeqCommandTest {
 		thrown.expectMessage(EXP_INVALID_SEQ);		
 		seqCmd = new SeqCommand(shell, cmdLine);
 		seqCmd.parse();
-	}
-	
-	@Test
-	public void testParseReplaceTabInSeq() throws ShellException, AbstractApplicationException {
-		cmdLine = CMD + TAB + CMD + SEMICOLON + CMD + TAB + CMD;
-		expectedArgs = new String[] {CMD + SPACES + CMD, CMD + SPACES + CMD};
-
-		seqCmd = new SeqCommand(shell, cmdLine);
-		seqCmd.parse();
-		assertArrayEquals(expectedArgs, (String[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
 	}
 }
