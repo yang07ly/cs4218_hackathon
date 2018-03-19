@@ -2,7 +2,6 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import static org.junit.Assert.assertArrayEquals;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
 public class QuoteOperatorTest {
 	private static final String NOT_CLOSED_EXP = "shell: Quotes not closed";
 	private static final String NULL_PTR_EXP = "shell: Null Pointer Exception";
-	private static final String UNEXPECTED_EXP = "Unexpected Exception: ";
 	
 	private QuoteOperator quoteOptr;
 	private String[] input, output, expected;
