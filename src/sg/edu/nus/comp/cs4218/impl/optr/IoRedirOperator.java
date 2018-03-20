@@ -58,8 +58,12 @@ public class IoRedirOperator implements Operator {
 				}
 				arg += args[i].charAt(j);
 			}
-			if (!hasStream && !arg.isEmpty()) {
-				trimmedArgs.add(arg);
+			if(!arg.isEmpty()) {
+				if(hasStream) {
+					hasStream = false;
+				}else {
+					trimmedArgs.add(arg);
+				}
 			}
 		}
 		return trimmedArgs.toArray(new String[trimmedArgs.size()]);
