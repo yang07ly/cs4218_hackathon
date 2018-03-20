@@ -155,11 +155,12 @@ public class ShellImpl implements Shell {
 	}
 	
 	/**
-	 * Returns the the list of string with quotes removed.
+	 * Returns the the list of string with double and single quotes removed.
+	 * Back quotes are not removed.
 	 * 
 	 * @param cmdArgs
 	 * 			  	String Array containing the string to have its 
-	 * 				quotes removed.
+	 * 				double and single quotes removed.
 	 * @return String Array
 	 * 			  	list of string with its quotes removed.
 	 * 

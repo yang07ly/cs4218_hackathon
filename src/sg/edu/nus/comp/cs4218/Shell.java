@@ -42,8 +42,10 @@ public interface Shell {
 	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException;
 	
 	/**
-	 * Returns the the list of string with quotes removed.
-	 * @param cmdArgs	String Array containing the string to have its quotes removed.
+	 * Returns the the list of string with double and single quotes removed.
+	 * Back quotes are not removed.
+	 * @param cmdArgs	String Array containing the string to have its double and 
+	 * 					single quotes removed.
 	 */
 	public String[] removeQuotes(String... source) throws AbstractApplicationException, ShellException;
 	
@@ -52,7 +54,6 @@ public interface Shell {
 	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
 	 * specified path by some (possibly empty) sequences of non-slash characters.
 	 * If no such path exist, the specified path is return without changes.
-	 * 
 	 * @param args		Array of String specifying the of the file paths.
 	 */
 	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException;
