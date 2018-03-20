@@ -54,19 +54,11 @@ public class SeqCommand implements Command {
 		}
 
 		for (int i = 0; i < argsArray.length; i++) {
-			try {
-				String args = argsArray[i];
-				PipeCommand pipeCmd = new PipeCommand(shell, args);
-				pipeCmd.parse();
-				pipeCmd.evaluate(stdin, stdout);
-			} catch (AbstractApplicationException | ShellException e) {
-				try {
-					stdout.write((e.getMessage()).getBytes());
-				} catch (IOException e1) {
-					throw new ShellException("IO Exception");
-				}
-			}
-			
+			String args = argsArray[i];
+			PipeCommand pipeCmd = new PipeCommand(shell, args);
+			pipeCmd.parse();
+			pipeCmd.evaluate(stdin, stdout);
+
 			if (i < argsArray.length - 1) {
 				try {
 					stdout.write("\n".getBytes());
