@@ -70,8 +70,12 @@ public class GlobOperator implements Operator {
 			//get globbed paths
 			String[] removedQuote = shell.removeQuotes(regexArg.toString());
 			String[] paths = evaluate(removedQuote[0]);
-			for (int j = 0; j < paths.length; j++) {
-				newArgs.add(paths[j]);
+			if (paths.length == 0) {
+				newArgs.add(fileNames[i]);
+			} else {
+				for (int j = 0; j < paths.length; j++) {
+					newArgs.add(paths[j]);
+				}
 			}
 		}
 				
@@ -85,7 +89,7 @@ public class GlobOperator implements Operator {
 	 * If no such path exist, the specified path is return without changes.
 	 * 
 	 * @param fileName
-	 * 			  String of the file path.
+	 * 			  String of the file path regex.
 	 * @return String Array
 	 * 			  paths that matches the wildcard fileName.
 	 * 
@@ -136,11 +140,7 @@ public class GlobOperator implements Operator {
 			removeFilesFromList(dirList);
 		}
 		
-		if (dirList.isEmpty() ) {
-			return new String[] {fileName.replace(REGEX_WILDCARD, "*")};
-		} else {
-			return dirList.toArray(new String[dirList.size()]);
-		}
+		return dirList.toArray(new String[dirList.size()]);
 	}
 	
 	/**
