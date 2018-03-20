@@ -51,8 +51,8 @@ public class QuoteOperatorTest {
 
 	@Test
 	public void testRemoveSQMultiple() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"SQ message 1, SQ message 2"};
-		input = new String[] {"'SQ message 1', 'SQ message 2'"};
+		expected = new String[] {"SQ message 1", "SQ message 2"};
+		input = new String[] {"'SQ message 1'", "'SQ message 2'"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
@@ -75,8 +75,8 @@ public class QuoteOperatorTest {
 
 	@Test
 	public void testRemoveDQMultiple() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"DQ message 1, DQ message 2"};
-		input = new String[] {"\"DQ message 1\", \"DQ message 2\""};
+		expected = new String[] {"DQ message 1", "DQ message 2"};
+		input = new String[] {"\"DQ message 1\"", "\"DQ message 2\""};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
@@ -91,7 +91,7 @@ public class QuoteOperatorTest {
 	
 	@Test
 	public void testRemoveBQClosed() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"message within back quotes"};
+		expected = new String[] {"`message within back quotes`"};
 		input = new String[] {"`message within back quotes`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -99,15 +99,15 @@ public class QuoteOperatorTest {
 
 	@Test
 	public void testRemoveBQMultiple() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"BQ message 1, BQ message 2"};
-		input = new String[] {"`BQ message 1`, `BQ message 2`"};
+		expected = new String[] {"`BQ message 1`", "`BQ message 2`"};
+		input = new String[] {"`BQ message 1`", "`BQ message 2`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
 	}
 	
 	@Test
 	public void testRemoveBQWithinWord() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"BQ out in in out BQ"};
+		expected = new String[] {"BQ out i`n i`n out BQ"};
 		input = new String[] {"BQ out i`n i`n out BQ"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -115,7 +115,7 @@ public class QuoteOperatorTest {
 
 	@Test
 	public void testRemoveMultipleQuotes() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"SQ DQ BQ"};
+		expected = new String[] {"SQ DQ `BQ`"};
 		input = new String[] {"'SQ' \"DQ\" `BQ`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -147,7 +147,7 @@ public class QuoteOperatorTest {
 
 	@Test
 	public void testRemoveBQWithinDQ() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"BQ within DQ"};
+		expected = new String[] {"`BQ within DQ`"};
 		input = new String[] {"\"`BQ within DQ`\""};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -155,7 +155,7 @@ public class QuoteOperatorTest {
 	
 	@Test
 	public void testRemoveSQWithinBQ() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"SQ 'within' BQ"};
+		expected = new String[] {"`SQ 'within' BQ`"};
 		input = new String[] {"`SQ 'within' BQ`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -163,7 +163,7 @@ public class QuoteOperatorTest {
 	
 	@Test
 	public void testRemoveDQWithinBQ() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"DQ \"within\" BQ"};
+		expected = new String[] {"`DQ \"within\" BQ`"};
 		input = new String[] {"`DQ \"within\" BQ`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
@@ -171,7 +171,7 @@ public class QuoteOperatorTest {
 	
 	@Test
 	public void testRemoveMultiplElements() throws AbstractApplicationException, ShellException {
-		expected = new String[] {"SQ", "DQ", "BQ"};
+		expected = new String[] {"SQ", "DQ", "`BQ`"};
 		input = new String[] {"'SQ'", "\"DQ\"", "`BQ`"};
 		output = quoteOptr.evaluate(input);
 		assertArrayEquals(expected, output);
