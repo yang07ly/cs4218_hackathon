@@ -30,9 +30,11 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 public class IoRedirOperator implements Operator {
 	private final Shell shell;
+	private final CmdSubOperator comSub;
 
 	public IoRedirOperator(Shell shell) {
 		this.shell = shell;
+		comSub = new CmdSubOperator(shell);
 	}
 
 	@Override
@@ -77,6 +79,7 @@ public class IoRedirOperator implements Operator {
 	 * @return the input stream
 	 * @throws ShellException
 	 *             if more than 1 input stream is specified
+	 * @throws AbstractApplicationException 
 	 */
 	public InputStream getInputStream(String... args) throws ShellException {
 		try {
@@ -113,9 +116,12 @@ public class IoRedirOperator implements Operator {
 				}
 				return null;
 			}
+			inputFile = comSub.evaluate(inputFile)[0];
 			return new FileInputStream(FileUtil.getFileFromPath(inputFile));
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
+		} catch (AbstractApplicationException e) {
+			throw new ShellException("invalid file specified");
 		}
 	}
 
@@ -162,11 +168,14 @@ public class IoRedirOperator implements Operator {
 				}
 				return null;
 			}
+			outputFile = comSub.evaluate(outputFile)[0];
 			Path path = Paths.get(Environment.currentDirectory).resolve(outputFile);
 			return new FileOutputStream(new File(path.toString()));
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
 		} catch (InvalidPathException pathE) {
+			throw new ShellException("invalid file specified");
+		} catch (AbstractApplicationException e) {
 			throw new ShellException("invalid file specified");
 		}
 	}
