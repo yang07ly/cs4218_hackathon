@@ -27,9 +27,11 @@ public class GlobOperatorTest {
 	private static final String FILE_NONEXISTENT = "nonExistentFile*";
 	private static final String FOLDER1 = "folder1";
 	private static final String FOLDER2 = "folder2";
+	private static final String FOLDER_W_SPACES = "folder name with spaces";
 	
 	private static final String FOLDER1_FILE1 = FOLDER1 + File.separator + FILE1;
 	private static final String FOLDER1_FILE2 = FOLDER1 + File.separator + FILE2;
+	private static final String FOLDER1_FOLDER_WS = FOLDER1 + File.separator + FOLDER_W_SPACES;
 	private static final String FOLDER2_FILE1 = FOLDER2 + File.separator + FILE1;
 	private static final String FOLDER2_FILE2 = FOLDER2 + File.separator + FILE2;
 	private static final String ABS_FILE_W_SPACES = TEST_DIR + File.separator + FILE_W_SPACES;
@@ -165,7 +167,7 @@ public class GlobOperatorTest {
 	
 	@Test
 	public void testGlobMutiplePath() throws AbstractApplicationException, ShellException {
-		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2};
+		expected = new String[] {FOLDER1_FILE1, FOLDER1_FILE2, FOLDER1_FOLDER_WS, FOLDER2_FILE1, FOLDER2_FILE2};
 		input = new String[] {FOLDER1 + File.separator + "*", FOLDER2 + File.separator + "*"};
 		output = globOptr.evaluate(input);
 		assertArrayEquals(expected, output);
