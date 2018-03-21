@@ -22,13 +22,13 @@ public class CmpApplication implements CmpInterface {
 		} else {
 			boolean flags[] = new boolean[3];
 			Vector<String> files = new Vector<String>();
-			getArguments(args, flags, files);
+			CmpExtension.getArguments(args, flags, files);
 			if (files.size() != 2) {
 				throw new CmpException("requires 2 files to be specified");
 			}
 			try {
 				String output = "";
-				if (hasInputFromStream(files)) {
+				if (CmpExtension.hasInputFromStream(files)) {
 					if (files.size() == 2) {
 						output = cmpFileAndStdin(files.get(0), stdin, flags[0], flags[1], flags[2]);
 					}
@@ -38,70 +38,6 @@ public class CmpApplication implements CmpInterface {
 				stdout.write(output.getBytes());
 			} catch (IOException e) {
 				throw new CmpException("");
-			}
-		}
-	}
-
-	/**
-	 * checks if taking from input stream
-	 * 
-	 * @param files
-	 * @return true if user specifies '-' as a file
-	 */
-	private boolean hasInputFromStream(Vector<String> files) {
-		boolean hasStream = false;
-		for (int i = 0; i < files.size(); i++) {
-			hasStream = hasStream || files.get(i).equals("-");
-		}
-		return hasStream;
-	}
-
-	/**
-	 * parses user command and extracts arguments
-	 * 
-	 * @param args
-	 *            String array of user-written arguments
-	 * @param flags
-	 *            boolean array that will store the parsed flags
-	 * @param files
-	 *            vector of string that will store the parsed files
-	 * @throws CmpException
-	 */
-	private static void getArguments(String[] args, boolean[] flags, Vector<String> files) throws CmpException {
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].isEmpty()) {
-				throw new CmpException("'" + args[i] + "': No such file or directory");
-			}
-			if (args[i].equals("-")) {
-				files.add(args[i]);
-			} else if (args[i].charAt(0) == ('-')) {
-				char prevChar = '-';
-				for (int j = 1; j < args[i].length(); j++) {
-					switch (args[i].charAt(j)) {
-					case 'c':
-						prevChar = 'c';
-						flags[0] = true;
-						break;
-					case 's':
-						prevChar = 's';
-						flags[1] = true;
-						break;
-					case 'l':
-						prevChar = 'l';
-						flags[2] = true;
-						break;
-					case '-':
-						if ((prevChar == '-') || (j == args[i].length() - 1)) {
-							throw new CmpException("Invalid flags");
-						}
-						prevChar = '-';
-						break;
-					default:
-						throw new CmpException("Invalid flags");
-					}
-				}
-			} else {
-				files.add(args[i]);
 			}
 		}
 	}
@@ -145,18 +81,18 @@ public class CmpApplication implements CmpInterface {
 	 *            The buffered reader to the second file
 	 * @return
 	 * @throws IOException
+	 * @throws CmpException
 	 */
 	private String cmpFiles(String fileNameA, String fileNameB, Boolean isPrintCharDiff, Boolean isPrintSimplify,
-			Boolean isPrintOctalDiff, BufferedReader readerA, BufferedReader readerB) throws IOException {
-		int readValueA = 0, readValueB = 0, byteNumber = 1, lineNumber = 1, numLinesInMsg = 0;
+			Boolean isPrintOctalDiff, BufferedReader readerA, BufferedReader readerB) throws IOException, CmpException {
+		int readValueA = readerA.read(), readValueB = readerB.read(), byteNumber = 1, lineNumber = 1, numLinesInMsg = 0;
 		String msgWithoutL = fileNameA + " " + fileNameB + " differ: ", msg = "";
-		readValueA = readerA.read();
-		readValueB = readerB.read();
 		while ((readValueA != -1) || (readValueB != -1)) {
+			CmpExtension.checkBinaryFiles(fileNameA, fileNameB, readValueA, readValueB);
 			if ((readValueB == -1) && isPrintOctalDiff && !isPrintSimplify) {
 				msg += "cmp: EOF on " + fileNameB;
 				break;
-			}else if ((readValueA == -1) && isPrintOctalDiff && !isPrintSimplify) {
+			} else if ((readValueA == -1) && isPrintOctalDiff && !isPrintSimplify) {
 				msg += "cmp: EOF on " + fileNameA;
 				break;
 			}
@@ -194,35 +130,6 @@ public class CmpApplication implements CmpInterface {
 		return msg;
 	}
 
-	/**
-	 * @param readValueB
-	 * @return
-	 */
-	private String getChar(int readValueB) {
-		if (readValueB == -1) {
-			return "EOF";
-		} else if(readValueB == 10){
-			return "LF";
-		}else if(readValueB == 13){
-			return "CR";
-		}else {
-			String character = "";
-			character += (char) readValueB;
-			return character;
-		}
-	}
-
-	/**
-	 * gets the octalString from an integer
-	 * 
-	 * @param readValueA
-	 *            Integer to convert to octal
-	 * @return String of octal value
-	 */
-	private String getOctalString(int readValueA) {
-		return Integer.toOctalString(readValueA);
-	}
-
 	@Override
 	public String cmpFileAndStdin(String fileName, InputStream stdin, Boolean isPrintCharDiff, Boolean isPrintSimplify,
 			Boolean isPrintOctalDiff) throws CmpException, IOException {
@@ -237,5 +144,37 @@ public class CmpApplication implements CmpInterface {
 		} catch (IOException e) {
 			throw new CmpException(e.getMessage());
 		}
+	}
+
+	/**
+	 * converts int to character using ascii conversion
+	 * 
+	 * @param readValueB
+	 *            the int value to convert
+	 * @return the converted character
+	 */
+	public String getChar(int readValueB) {
+		if (readValueB == -1) {
+			return "EOF";
+		} else if (readValueB == 10) {
+			return "LF";
+		} else if (readValueB == 13) {
+			return "CR";
+		} else {
+			String character = "";
+			character += (char) readValueB;
+			return character;
+		}
+	}
+
+	/**
+	 * gets the octalString from an integer
+	 * 
+	 * @param readValueA
+	 *            Integer to convert to octal
+	 * @return String of octal value
+	 */
+	public String getOctalString(int readValueA) {
+		return Integer.toOctalString(readValueA);
 	}
 }

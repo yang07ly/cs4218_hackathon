@@ -79,6 +79,8 @@ public class DiffApplication implements DiffInterface {
 		try {
 			byte[] byteArrayA = FileUtil.readAllBytes(fileNameA);
 			byte[] byteArrayB = FileUtil.readAllBytes(fileNameB);
+			DiffExtension.checkIfBinaryFile(fileNameA, byteArrayA);
+			DiffExtension.checkIfBinaryFile(fileNameB, byteArrayB);
 			byte[] newLine = System.getProperty("line.separator").getBytes();
 			ByteArrayOutputStream outputStreamA = new ByteArrayOutputStream();
 			ByteArrayOutputStream outputStreamB = new ByteArrayOutputStream();
