@@ -216,10 +216,11 @@ public class ShellImpl implements Shell {
 	 * @return	the input stream
 	 * @throws ShellException
 	 * 			if more than 1 input stream is specified
+	 * @throws AbstractApplicationException 
 	 */
 	@Override
-	public InputStream getInputStream(String... args) throws ShellException {
-		return ioRedirOptr.getInputStream(args);
+	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
+		return ioRedirOptr.getInputStream(cmd);
 	}
 	
 	/**
@@ -229,10 +230,11 @@ public class ShellImpl implements Shell {
 	 * @return	the output stream
 	 * @throws ShellException
 	 * 			if more than 1 output stream is specified
+	 * @throws AbstractApplicationException 
 	 */
 	@Override
-	public OutputStream getOutputStream(String... args) throws ShellException {
-		return ioRedirOptr.getOutputStream(args);
+	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
+		return ioRedirOptr.getOutputStream(cmd);
 	}
 
 	/**

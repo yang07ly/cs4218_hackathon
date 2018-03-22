@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -26,6 +27,8 @@ public class CallCommand implements Command {
 	
 	private String app;
 	private String[] argsArray;
+	private InputStream inputStream;
+	private OutputStream outputStream;
 
 	public CallCommand(Shell shell, CommandString cmdline) {
 		this.shell = shell;
@@ -33,6 +36,8 @@ public class CallCommand implements Command {
 		
 		app = "";
 		argsArray = new String[0];
+		inputStream = null;
+		outputStream = null;
 	}
 
 	/**
@@ -53,13 +58,13 @@ public class CallCommand implements Command {
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-//		if (inputStream == null) { // empty
-//			inputStream = stdin;
-//		}
-//		if (outputStream == null) { // empty
-//			outputStream = stdout;
-//		}		
-		shell.runApp(app, argsArray, stdin, stdout);
+		if (inputStream == null) { // empty
+			inputStream = stdin;
+		}
+		if (outputStream == null) { // empty
+			outputStream = stdout;
+		}		
+		shell.runApp(app, argsArray, inputStream, outputStream);
 		StreamUtil.closeInputStream(stdin);
 		StreamUtil.closeOutputStream(stdout);
 	}
@@ -74,8 +79,8 @@ public class CallCommand implements Command {
 	 */
 	public void parse() throws AbstractApplicationException, ShellException {
 		//remove IO args from cmdline. Cmdsub and glob have to be done within IORedir.
-		//inputStream = shell.extractInputStream(cmdline);
-		//outputStream = shell.extractOutputStream(cmdline);
+		inputStream = shell.getInputStream(cmdline);
+		outputStream = shell.getOutputStream(cmdline);
 		shell.performCmdSub(cmdline);
 		shell.performGlob(cmdline);
 		extractArgs();

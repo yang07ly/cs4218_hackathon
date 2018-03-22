@@ -73,12 +73,14 @@ public interface Shell {
 	/**
 	 * Scans the arguments and sets the input stream
 	 * @param args		String array of the individual arguments.
+	 * @throws AbstractApplicationException 
 	 */
-	public InputStream getInputStream(String... args) throws ShellException;
+	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException;
 	
 	/**
 	 * Scans the arguments and sets the output stream
 	 * @param args		String array of the individual arguments.
+	 * @throws AbstractApplicationException 
 	 */
-	public OutputStream getOutputStream(String... args) throws ShellException;
+	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException;
 }

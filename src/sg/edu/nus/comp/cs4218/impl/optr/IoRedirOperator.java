@@ -2,6 +2,7 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.Operator;
@@ -38,154 +38,123 @@ public class IoRedirOperator implements Operator {
 		comSub = new CmdSubOperator(shell);
 	}
 
-	public String[] evaluate(String... args) throws AbstractApplicationException, ShellException {
-//		if(args == null) {
-//			return args;
-//		}
-//		Vector<String> trimmedArgs = new Vector<String>();
-//		boolean hasStream = false;
-//		for (int i = 0; i < args.length; i++) {
-//			String arg = "";
-//			HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '<')));
-//			set.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '>')));
-//			for (int j = 0; j < args[i].length(); j++) {
-//				if (((args[i].charAt(j) == '<') || (args[i].charAt(j) == '>')) && set.contains(j)) {
-//					if (hasStream || arg.isEmpty()) {
-//						arg = "";
-//					} else {
-//						trimmedArgs.add(arg);
-//					}
-//					hasStream = true;
-//					continue;
-//				}
-//				arg += args[i].charAt(j);
-//			}
-//			if(!arg.isEmpty()) {
-//				if(hasStream) {
-//					hasStream = false;
-//				}else {
-//					trimmedArgs.add(arg);
-//				}
-//			}
-//		}
-//		return trimmedArgs.toArray(new String[trimmedArgs.size()]);
-		return null;
+	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
+		if(cmd == null) {
+			return null;
+		}
+		Integer[] indices = cmd.getIndicesOfCharNotEscaped('<');
+		if (indices.length > 1) {
+			throw new ShellException("only 1 inputstream can be specified");
+		}else if(indices.length == 0) {
+			return null;
+		}
+		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped(' ')));
+		set.addAll(Arrays.asList(cmd.getIndicesOfCharNotEscaped('\t')));
+		String command = cmd.toString(), arg = "";
+		int endIndex;
+		for (endIndex = indices[0] + 1; endIndex < command.length(); endIndex++) {
+			if (command.charAt(endIndex) != '\t' && command.charAt(endIndex) != ' ') {
+				break;
+			}
+		}
+		int startIndex = endIndex;
+		for (; endIndex < command.length(); endIndex++) {
+			if (((command.charAt(endIndex) == '>' || command.charAt(endIndex) == ' '
+					|| command.charAt(endIndex) == '\t')) && set.contains(endIndex)) {
+				break;
+			}
+			arg += command.charAt(endIndex);
+		}
+		if (arg.isEmpty()) {
+			throw new ShellException("no input file specified");
+		}
+
+		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
+		shell.performCmdSub(fileString);
+		shell.performGlob(fileString);
+		cmd.removeRange(indices[0], endIndex);
+		try {
+			String s = fileString.toString();
+			return new FileInputStream(FileUtil.getFileFromPath(fileString.toString()));
+		} catch (IOException e) {
+			throw new ShellException(e.getMessage());
+		}
 	}
 
-	/**
-	 * Scans the arguments and sets the input stream
-	 * 
-	 * @param args
-	 *            String array of the individual arguments.
-	 * @return the input stream
-	 * @throws ShellException
-	 *             if more than 1 input stream is specified
-	 * @throws AbstractApplicationException 
-	 */
-	public InputStream getInputStream(String... args) throws ShellException {
-//		try {
-//			String inputFile = null;
-//			boolean hasStream = false;
-//			for (int i = 0; i < args.length; i++) {
-//				String arg = "";
-//				HashSet<Integer> set = new HashSet<Integer>(
-//						Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '<')));
-//				for (int j = 0; j < args[i].length(); j++) {
-//					if ((args[i].charAt(j) == '<') && set.contains(j)) {
-//						if (hasStream) {
-//							throw new ShellException("only 1 input can be specified");
-//						}
-//						arg = "";
-//						hasStream = true;
-//						continue;
-//					}else if(args[i].charAt(j) == '>') {
-//						if(hasStream && inputFile == null) {
-//							inputFile = arg;
-//						}
-//						arg = "";
-//						continue;
-//					}
-//					arg += args[i].charAt(j);
-//				}
-//				if (hasStream && !arg.isEmpty() && inputFile == null) {
-//					inputFile = arg;
-//				}
-//			}
-//			if (inputFile == null) {
-//				if (hasStream) {
-//					throw new ShellException("no input file specified");
-//				}
-//				return null;
-//			}
-//			inputFile = comSub.evaluate(inputFile)[0];
-//			return new FileInputStream(FileUtil.getFileFromPath(inputFile));
-//		} catch (IOException e) {
-//			throw new ShellException(e.getMessage());
-//		} catch (AbstractApplicationException e) {
-//			throw new ShellException("invalid file specified");
-//		}
-		return null;
-	}
+	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
+		if(cmd == null) {
+			return null;
+		}
+		Integer[] indices = cmd.getIndicesOfCharNotEscaped('>');
+		if (indices.length > 1) {
+			throw new ShellException("only 1 outputstream can be specified");
+		}else if(indices.length == 0) {
+			return null;
+		}
+		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped(' ')));
+		set.addAll(Arrays.asList(cmd.getIndicesOfCharNotEscaped('\t')));
+		String command = cmd.toString(), arg = "";
+		int endIndex;
+		for (endIndex = indices[0] + 1; endIndex < command.length(); endIndex++) {
+			if (command.charAt(endIndex) != '\t' && command.charAt(endIndex) != ' ') {
+				break;
+			}
+		}
+		int startIndex = endIndex;
+		for (; endIndex < command.length(); endIndex++) {
+			if (((command.charAt(endIndex) == '<' || command.charAt(endIndex) == ' '
+					|| command.charAt(endIndex) == '\t')) && set.contains(endIndex)) {
+				break;
+			}
+			arg += command.charAt(endIndex);
+		}
+		if (arg.isEmpty()) {
+			throw new ShellException("no output file specified");
+		}
 
-	/**
-	 * Scans the arguments and sets the output stream
-	 * 
-	 * @param args
-	 *            String array of the individual arguments.
-	 * @return the output stream
-	 * @throws ShellException
-	 *             if more than 1 output stream is specified
-	 */
-	public OutputStream getOutputStream(String... args) throws ShellException {
-//		try {
-//			String outputFile = null;
-//			boolean hasStream = false;
-//			for (int i = 0; i < args.length; i++) {
-//				String arg = "";
-//				HashSet<Integer> set = new HashSet<Integer>(
-//						Arrays.asList(shell.getIndicesOfCharNotInQuotes(args[i], '>')));
-//				for (int j = 0; j < args[i].length(); j++) {
-//					if ((args[i].charAt(j) == '>') && set.contains(j)) {
-//						if (hasStream) {
-//							throw new ShellException("only 1 output can be specified");
-//						}
-//						arg = "";
-//						hasStream = true;
-//						continue;
-//					}else if(args[i].charAt(j) == '<') {
-//						if(hasStream && outputFile == null) {
-//							outputFile = arg;
-//						}
-//						arg = "";
-//					}
-//					arg += args[i].charAt(j);
-//				}
-//				if (hasStream && !arg.isEmpty() && outputFile == null) {
-//					outputFile = arg;
-//				}
-//			}
-//			if (outputFile == null) {
-//				if (hasStream) {
-//					throw new ShellException("no output file specified");
-//				}
-//				return null;
-//			}
-//			outputFile = comSub.evaluate(outputFile)[0];
-//			Path path = Paths.get(Environment.currentDirectory).resolve(outputFile);
-//			return new FileOutputStream(new File(path.toString()));
-//		} catch (IOException e) {
-//			throw new ShellException(e.getMessage());
-//		} catch (InvalidPathException pathE) {
-//			throw new ShellException("invalid file specified");
-//		} catch (AbstractApplicationException e) {
-//			throw new ShellException("invalid file specified");
-//		}
-		return null;
+		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
+		shell.performCmdSub(fileString);
+		shell.performGlob(fileString);
+		cmd.removeRange(indices[0], endIndex);
+
+		try {
+			Path path = Paths.get(Environment.currentDirectory).resolve(fileString.toString());
+			return new FileOutputStream(new File(path.toString()));
+		} catch (IOException e) {
+			throw new ShellException(e.getMessage());
+		} catch (InvalidPathException pathE) {
+			throw new ShellException("invalid file specified");
+		}
 	}
 
 	@Override
 	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
-		// TODO Auto-generated method stub
-		
+//		if (cmd == null) {
+//			return;
+//		}
+//		Vector<String> trimmedArgs = new Vector<String>();
+//		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped('<')));
+//		set.addAll(Arrays.asList(cmd.getIndicesOfCharNotEscaped('>')));
+//		String command = cmd.toString();
+//		boolean hasStream = false;
+//		String arg = "";
+//		int startIndex = 0, endIndex = 0;
+//		for (int i = 0; i < command.length(); i++) {
+//			if (command.charAt(i) == ' ' && hasStream) {
+//
+//			}
+//			if (((command.charAt(i) == '<') || (command.charAt(i) == '>')) && set.contains(i)) {
+//				if (hasStream) {
+//					endIndex = i + 1;
+//
+//				} else {
+//					startIndex = i;
+//					hasStream = true;
+//				}
+//				continue;
+//			}
+//			arg += command.charAt(i);
+//		}
 	}
+
 }
