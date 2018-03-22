@@ -271,6 +271,16 @@ public class CommandString {
 	}
 	
 	/**
+	 * Return the escape states of this CommandString.
+	 *
+	 * @return Boolean Array
+	 * 				The escape states of this CommandString.
+	 */
+	public Boolean[] toBoolArray() {
+		return hasEscaped.toArray(new Boolean[hasEscaped.size()]);
+	}
+	
+	/**
 	 * Returns the length of this CommandString. The length is equal to the number of Unicode 
 	 * code units in the string.
 	 *
