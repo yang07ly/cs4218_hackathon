@@ -20,6 +20,7 @@ import sg.edu.nus.comp.cs4218.impl.app.PasteApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SedApplication;
 import sg.edu.nus.comp.cs4218.impl.app.SplitApplication;
 import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.optr.CmdSubOperator;
 import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
 import sg.edu.nus.comp.cs4218.impl.optr.IoRedirOperator;
@@ -45,7 +46,7 @@ public class ShellImpl implements Shell {
 	
 	public ShellImpl() {
 		cmdSubOptr = new CmdSubOperator(this);
-		globOptr = new GlobOperator(this);
+		globOptr = new GlobOperator();
 		ioRedirOptr = new IoRedirOperator(this);
 		quoteOptr = new QuoteOperator();
 	}
@@ -130,81 +131,58 @@ public class ShellImpl implements Shell {
 	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		SeqCommand seqCmd = new SeqCommand(this, cmdline);
+		CommandString cmd = new CommandString(cmdline.replace("\t", "    "));
+		processQuotes(cmd);
+		
+		SeqCommand seqCmd = new SeqCommand(this, cmd);
 		seqCmd.parse();
 		seqCmd.evaluate(System.in, stdout);
 	}
 	
 	/**
-	 * Returns all indices of the specified character that is not within
-	 * any quotes.
+	 * Remove all unescaped double and single quotes and set all characters in
+	 * quotes to escaped characters. Back quotes are not removed.
 	 * 
-	 * @param source
-	 * 			  	String used to check for the specified character.
-	 * @param sepChar
-	 * 			  	Character to find in the string.
-	 * @return Integer Array
-	 * 			  	indices of the specfied character not within quotes.
+	 * @param cmd
+	 * 			  	CommandString containing the string to have its 
+	 * 				double and single quotes removed and set escaped 
+	 * 				characters.
 	 * 
 	 * @throws ShellException
-	 *            	If the quotes are not closed.
+	 *            	If the quotes are not closed or the input command is null.
 	 */
 	@Override
-	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException {
-		return quoteOptr.getIndices(source, character);
+	public void processQuotes(CommandString cmd) throws AbstractApplicationException, ShellException {
+		quoteOptr.evaluate(cmd);
 	}
 	
 	/**
-	 * Returns the the list of string with double and single quotes removed.
-	 * Back quotes are not removed.
+	 * Replace paths with wildcard with all the paths to existing files and 
+	 * directories such that these paths can be obtained by replacing all the 
+	 * unescaped asterisk symbols in specified path by some (possibly empty) 
+	 * sequences of non-slash characters. If no such path exist, paths with 
+	 * wildcard are not replaced.
 	 * 
-	 * @param cmdArgs
-	 * 			  	String Array containing the string to have its 
-	 * 				double and single quotes removed.
-	 * @return String Array
-	 * 			  	list of string with its quotes removed.
-	 * 
-	 * @throws ShellException
-	 *            	If the quotes are not closed.
-	 */
-	@Override
-	public String[] removeQuotes(String... source) throws AbstractApplicationException, ShellException {
-		return quoteOptr.evaluate(source);
-	}
-	
-	/**
-	 * Returns all the paths to existing files and directories such that these 
-	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
-	 * specified path by some (possibly empty) sequences of non-slash characters.
-	 * If no such path exist, the specified path is return without changes.
-	 * 
-	 * @param args
-	 * 			  Array of String specifying the of the file paths.
-	 * @return String Array
-	 * 			  paths that matches the wildcard fileNames.
+	 * @param cmd
+	 * 			  CommandString containing the paths with wildcard.
 	 * 
 	 * @throws ShellException
-	 *            If the specified path is null.
+	 *            If the input command is null.
 	 */
 	@Override
-	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException {
-		return globOptr.evaluate(args);
+	public void performGlob(CommandString cmd) throws AbstractApplicationException, ShellException {
+		globOptr.evaluate(cmd);
 	}
 	
 	/**
 	 * Searches for and processes the commands enclosed by back quotes for
-	 * command substitution. If no back quotes are found, the argsArray from the
-	 * input is returned with its quote removed. If back quotes are found, the 
-	 * back quotes and its enclosed commands substituted with the output from 
-	 * processing the commands enclosed in the back quotes with the back quotes
-	 * and any other quotes removed.
+	 * command substitution. The commands enclosed by back quotes will be
+	 * replaced by the command substitution results with newline replaced 
+	 * with a space. The replaced string are not escaped.
 	 * 
-	 * @param args
-	 *            	String array of the individual arguments.
-	 * 
-	 * @return String array 
-	 * 				List of string with the back quotes command processed and
-	 * 				quotes removed.
+	 * @param cmd
+	 * 			  	CommandString containing the commands enclosed by back 
+	 * 				quotes for command substitution.
 	 * 
 	 * @throws AbstractApplicationException
 	 *             	If an exception happens while processing the application in the
@@ -214,8 +192,8 @@ public class ShellImpl implements Shell {
 	 *             	back quotes.
 	 */
 	@Override
-	public String[] performCmdSub(String... args) throws AbstractApplicationException, ShellException {
-		return cmdSubOptr.evaluate(args);
+	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException {
+		cmdSubOptr.evaluate(cmd);
 	}
 	
 	/**

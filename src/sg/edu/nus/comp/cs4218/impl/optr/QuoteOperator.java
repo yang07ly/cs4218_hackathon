@@ -1,154 +1,127 @@
 package sg.edu.nus.comp.cs4218.impl.optr;
 
-import java.util.StringJoiner;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 /**
  * A quote operator provides quoting related functions such as getting indices
  * of character not within quotes or removing quotes.
  */
 public class QuoteOperator implements Operator {
-	
 	private boolean hasFoundSQ;
 	private boolean hasFoundDQ;
 	private boolean hasFoundBQ;
-
-	private StringJoiner singleArg;
+	private boolean isCharEscaped;
+	private Vector<Integer> removeIndices;
 
 	private void init() {
 		hasFoundSQ = false;
 		hasFoundDQ = false;
 		hasFoundBQ = false;
-
-		singleArg = new StringJoiner("");
+		isCharEscaped = false;
+		removeIndices = new Vector<Integer>();
 	}
 	
 	/**
-	 * Returns all indices of the specified character that is not within
-	 * any quotes.
+	 * Remove all unescaped double and single quotes and set all characters in
+	 * quotes to escaped characters. Back quotes are not removed.
 	 * 
-	 * @param source
-	 * 			  	String used to check for the specified character.
-	 * @param sepChar
-	 * 			  	Character to find in the string.
-	 * @return Integer Array
-	 * 			  	indices of the specfied character not within quotes.
+	 * @param cmd
+	 * 			  	CommandString containing the string to have its 
+	 * 				double and single quotes removed and set escaped 
+	 * 				characters.
 	 * 
 	 * @throws ShellException
-	 *            	If the quotes are not closed.
-	 */
-	public Integer[] getIndices(String source, char sepChar) throws ShellException {
-		if (source == null) {
+	 *            	If the quotes are not closed or the input command is null.
+	 */	
+	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
+		if (cmd == null) {
 			throw new ShellException("Null Pointer Exception");
 		}
+		
 		init();
 		
-		Vector<Integer> indices = new Vector<Integer>();
-		char character;		
-		for (int i = 0; i < source.length(); i++) {
-			character = source.charAt(i);
+		char character;
+		for (int i = 0; i < cmd.length(); i++) {
+			character = cmd.charAt(i);
 			switch (character) {
 			case '"':
-				if (hasFoundSQ || hasFoundBQ) {	
-				} else  {
-					if (sepChar == '"') {
-						indices.add(i);
-					}
-					hasFoundDQ = !hasFoundDQ;
-				}
+				processDQ(cmd, i);
 				break;
 			case '\'':
-				if (hasFoundDQ || hasFoundBQ) {
-				} else {
-					if (sepChar == '\'') {
-						indices.add(i);
-					}
-					hasFoundSQ = !hasFoundSQ;
-				}
+				processSQ(cmd, i);
 				break;
 			case '`':
-				if (hasFoundSQ) {
-				} else {
-					if (sepChar == '`') {
-						indices.add(i);
-					}
-					hasFoundBQ = !hasFoundBQ;
-				}
+				processBQ(cmd, i);
 				break;
 			default:
-				if (character == sepChar && !hasFoundDQ && !hasFoundSQ && !hasFoundBQ) {
-					indices.add(i);
-				}
+				cmd.setCharEscaped(i, isCharEscaped);
 				break;
 			}
 		}
 		if (hasFoundDQ || hasFoundSQ || hasFoundBQ) {
 			throw new ShellException("Quotes not closed");
 		}
-		return indices.toArray(new Integer[indices.size()]);
+		
+		for (int i = removeIndices.size() - 1; i >= 0 ; i--) {
+			cmd.removeCharAt(removeIndices.get(i));
+		}
 	}
 	
 	/**
-	 * Returns the the list of string with double and single quotes removed.
-	 * Back quotes are not removed.
+	 * Execute the process back quote when encountered.
 	 * 
-	 * @param cmdArgs
-	 * 			  	String Array containing the string to have its 
-	 * 				double and single quotes removed.
-	 * @return String Array
-	 * 			  	list of string with its quotes removed.
-	 * 
-	 * @throws ShellException
-	 *            	If the quotes are not closed.
-	 */
-	public String[] evaluate(String... cmdArgs) throws AbstractApplicationException, ShellException {
-		String[] newCmdArgs = new String[cmdArgs.length];
-		for (int i = 0; i < cmdArgs.length; i++) {
-			if (cmdArgs[i] == null) {
-				throw new ShellException("Null Pointer Exception");
-			}
-			
-			init();
-	
-			for (int j = 0; j < cmdArgs[i].length(); j++) {
-				switch (cmdArgs[i].charAt(j)) {
-				case '"':
-					if (hasFoundSQ || hasFoundBQ) {
-						singleArg.add("\"");
-					} else {
-						hasFoundDQ = !hasFoundDQ;
-					}
-					break;
-				case '\'':
-					if (hasFoundDQ || hasFoundBQ) {
-						singleArg.add("'");
-					} else {
-						hasFoundSQ = !hasFoundSQ;
-					}
-					break;
-				case '`':
-					if (hasFoundSQ) {
-					} else {
-						hasFoundBQ = !hasFoundBQ;
-					}
-					singleArg.add("`");
-					break;
-				default:
-					singleArg.add(cmdArgs[i].substring(j, j + 1));
-					break;
-				}
-			}
-	
-			if (hasFoundDQ || hasFoundSQ || hasFoundBQ) {
-				throw new ShellException("Quotes not closed");
-			}
-	
-			newCmdArgs[i] = singleArg.toString();
+	 * @param cmd
+	 * 			  	CommandString containing the string to have its 
+	 * 				double back escape state set.
+	 */	
+	private void processBQ(CommandString cmd, int index) {
+		if (hasFoundSQ) {
+			cmd.setCharEscaped(index, isCharEscaped);
+		} else {
+			cmd.setCharEscaped(index, false);
+			isCharEscaped = !isCharEscaped;
+			hasFoundBQ = !hasFoundBQ;
 		}
-		return newCmdArgs;
+	}
+	
+	/**
+	 * Execute the process single quote when encountered.
+	 * 
+	 * @param cmd
+	 * 			  	CommandString containing the string to have its 
+	 * 				single quotes remove or escape state set.
+	 */	
+	private void processSQ(CommandString cmd, int index) {
+		if (hasFoundDQ || hasFoundBQ) {
+			cmd.setCharEscaped(index, isCharEscaped);
+		} else {
+			removeIndices.add(index);
+			cmd.setCharEscaped(index, false);
+			isCharEscaped = !isCharEscaped;
+			hasFoundSQ = !hasFoundSQ;
+		}
+	}
+	
+	/**
+	 * Execute the process double quote when encountered.
+	 * 
+	 * @param cmd
+	 * 			  	CommandString containing the string to have its 
+	 * 				double quotes remove or escape state set.
+	 */	
+	private void processDQ(CommandString cmd, int index) {
+		if (hasFoundSQ || hasFoundBQ) {
+			cmd.setCharEscaped(index, isCharEscaped);
+		} else  {
+			removeIndices.add(index);
+			cmd.setCharEscaped(index, false);
+			isCharEscaped = !isCharEscaped;
+			hasFoundDQ = !hasFoundDQ;
+		}
 	}
 }

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 public interface Shell {
 	
@@ -33,41 +34,35 @@ public interface Shell {
 	 */	
 	public void parseAndEvaluate(String cmdline, OutputStream stdout) throws AbstractApplicationException, ShellException;
 	
-	/**
-	 * Returns all indices of the specified character that is not within
-	 * any quotes.
-	 * @param source	String used to check for the specified character.
-	 * @param sepChar	Character to find in the string.
-	 */
-	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException;
 	
 	/**
-	 * Returns the the list of string with double and single quotes removed.
-	 * Back quotes are not removed.
-	 * @param cmdArgs	String Array containing the string to have its double and 
-	 * 					single quotes removed.
+	 * Remove all unescaped double and single quotes and set all characters in
+	 * quotes to escaped characters. Back quotes are not removed.
+	 * @param cmd	CommandString containing the string to have its 
+	 * 				double and single quotes removed and set escaped 
+	 * 				characters.
 	 */
-	public String[] removeQuotes(String... source) throws AbstractApplicationException, ShellException;
+	public void processQuotes(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
 	/**
-	 * Returns all the paths to existing files and directories such that these 
-	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
-	 * specified path by some (possibly empty) sequences of non-slash characters.
-	 * If no such path exist, the specified path is return without changes.
-	 * @param args		Array of String specifying the of the file paths.
+	 * Replace paths with wildcard with all the paths to existing files and 
+	 * directories such that these paths can be obtained by replacing all the 
+	 * unescaped asterisk symbols in specified path by some (possibly empty) 
+	 * sequences of non-slash characters. If no such path exist, paths with 
+	 * wildcard are not replaced.
+	 * @param cmd	CommandString containing the paths with wildcard.
 	 */
-	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException;
+	public void performGlob(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
 	/**
 	 * Searches for and processes the commands enclosed by back quotes for
-	 * command substitution. If no back quotes are found, the argsArray from the
-	 * input is returned with its quote removed. If back quotes are found, the 
-	 * back quotes and its enclosed commands substituted with the output from 
-	 * processing the commands enclosed in the back quotes with the back quotes
-	 * and any other quotes removed.
-	 * @param args		String array of the individual arguments.
+	 * command substitution. The commands enclosed by back quotes will be
+	 * replaced by the command substitution results with newline replaced 
+	 * with a space. The replaced string are not escaped.
+	 * @param cmd	CommandString containing the commands enclosed by back 
+	 * 				quotes for command substitution.
 	 */
-	public String[] performCmdSub(String... args) throws AbstractApplicationException, ShellException;
+	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
 	/**
 	 * Removes any IO redirection operators and their arguments and returns back the string array

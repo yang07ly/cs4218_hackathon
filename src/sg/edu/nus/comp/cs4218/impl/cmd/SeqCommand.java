@@ -10,6 +10,7 @@ import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 /**
  * A Sequence Command is a semicolon operator consisting of commands
@@ -23,18 +24,19 @@ public class SeqCommand implements Command {
 	private static final String EXP_INVALID_SEQ = "Invalid semicolon operator/s";
 
 	private final Shell shell;
-	private final String cmdline;
+	private final CommandString cmdline;
 
-	private String[] argsArray;
+	private CommandString[] argsArray;
 
-	public SeqCommand(Shell shell, String cmdline) {
+	public SeqCommand(Shell shell, CommandString cmdline) {
 		this.shell = shell;
 		this.cmdline = cmdline.trim();
+		argsArray = new CommandString[0];
 	}
 
 	/**
-	 * Evaluates parts of the sequence-command separated by semicolon operator. The first part will be executed first followed by the subsequent commands
-	 * preceding it.
+	 * Evaluates the separated commands by semicolon sequentially. If an exception
+	 * occurs on a sub command, any sub commands after it will not be processed.
 	 * 
 	 * @param stdin
 	 *            InputStream to get data from.
@@ -54,8 +56,7 @@ public class SeqCommand implements Command {
 		}
 
 		for (int i = 0; i < argsArray.length; i++) {
-			String args = argsArray[i];
-			PipeCommand pipeCmd = new PipeCommand(shell, args);
+			PipeCommand pipeCmd = new PipeCommand(shell, argsArray[i]);
 			pipeCmd.parse();
 			pipeCmd.evaluate(stdin, stdout);
 
@@ -70,26 +71,24 @@ public class SeqCommand implements Command {
 	}
 
 	/**
-	 * Parses and splits the commands to the call command into its different
-	 * components by semicolon operator
+	 * Parses and splits the commands separated by unescaped semicolon.
 	 * 
 	 * @throws ShellException
-	 *             If an exception happens while parsing the sub-command, or if
-	 *             the input redirection file path is same as that of the output
-	 *             redirection file path.
+	 *             If the command starts with a semicolon or
+	 *             if there are no command between semicolons.
 	 */
 	public void parse() throws ShellException {
-		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, ';');
+		Integer[] spaceIndices = cmdline.getIndicesOfCharNotEscaped(';');
 		if (spaceIndices.length == 0) {
-			argsArray = new String[] {cmdline};
+			argsArray = new CommandString[] {cmdline};
 			return;
 		}
 
 		Arrays.sort(spaceIndices);
-		Vector<String> cmdArgs = new Vector<String>();
+		Vector<CommandString> cmdArgs = new Vector<CommandString>();
 		int startIndex = 0;
 		for (int i = 0; i < spaceIndices.length; i++) {
-			String callCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			CommandString callCmd = cmdline.subCmdString(startIndex, spaceIndices[i]);
 			if (callCmd.matches("\\s*")) {
 				throw new ShellException(EXP_INVALID_SEQ);
 			}
@@ -97,14 +96,14 @@ public class SeqCommand implements Command {
 			startIndex = spaceIndices[i] + 1;
 		}
 		if (startIndex < cmdline.length()) {
-			String callCmd = cmdline.substring(startIndex, cmdline.length());
+			CommandString callCmd = cmdline.subCmdString(startIndex, cmdline.length());
 			if (callCmd.matches("\\s*")) {
 				throw new ShellException(EXP_INVALID_SEQ);
 			}
 			cmdArgs.add(callCmd);
 		}
 
-		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
+		argsArray = cmdArgs.toArray(new CommandString[cmdArgs.size()]);
 	}
 
 	/**
@@ -112,6 +111,6 @@ public class SeqCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		// not used
+		//unused for now
 	}
 }

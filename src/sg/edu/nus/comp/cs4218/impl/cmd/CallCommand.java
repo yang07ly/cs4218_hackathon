@@ -2,13 +2,13 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
@@ -22,14 +22,14 @@ import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 public class CallCommand implements Command {
 	private final Shell shell;
-	private final String cmdline;
+	private final CommandString cmdline;
 	
 	private String app;
 	private String[] argsArray;
 
-	public CallCommand(Shell shell, String cmdline) {
+	public CallCommand(Shell shell, CommandString cmdline) {
 		this.shell = shell;
-		this.cmdline = cmdline.replace("\t", "    ").trim();
+		this.cmdline = cmdline.trim();
 		
 		app = "";
 		argsArray = new String[0];
@@ -53,29 +53,15 @@ public class CallCommand implements Command {
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		InputStream inputStream;
-		OutputStream outputStream;
-		
-		//extract IO Redirection
-		inputStream = shell.getInputStream(argsArray);
-		if (inputStream == null) {// empty
-			inputStream = stdin;
-		}
-		outputStream = shell.getOutputStream(argsArray);
-		if (outputStream == null) { // empty
-			outputStream = stdout;
-		}
-		argsArray = shell.removeIOStreamFromArgs(argsArray);
-		
-		//perform globbing
-		argsArray = shell.performGlob(argsArray);
-		
-		//perform command substitution
-		argsArray = shell.performCmdSub(argsArray);
-		
-		shell.runApp(app, argsArray, inputStream, outputStream);
-		StreamUtil.closeInputStream(inputStream);
-		StreamUtil.closeOutputStream(outputStream);
+//		if (inputStream == null) { // empty
+//			inputStream = stdin;
+//		}
+//		if (outputStream == null) { // empty
+//			outputStream = stdout;
+//		}		
+		shell.runApp(app, argsArray, stdin, stdout);
+		StreamUtil.closeInputStream(stdin);
+		StreamUtil.closeOutputStream(stdout);
 	}
 
 	/**
@@ -87,27 +73,40 @@ public class CallCommand implements Command {
 	 *             the quotes are not closed properly.
 	 */
 	public void parse() throws AbstractApplicationException, ShellException {
-		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, ' ');
-		if (spaceIndices.length == 0) {
-			app = (shell.removeQuotes(cmdline))[0];
+		//remove IO args from cmdline. Cmdsub and glob have to be done within IORedir.
+		//inputStream = shell.extractInputStream(cmdline);
+		//outputStream = shell.extractOutputStream(cmdline);
+		shell.performCmdSub(cmdline);
+		shell.performGlob(cmdline);
+		extractArgs();
+	}
+	
+	/**
+	 * Parses the sub-command's arguments to the call command and splits it into
+	 * its different components, namely the application name and the arguments
+	 * (if any) separated by an unescaped space. All operations that manipulates
+	 * the arguments, such as removing quotes, extracting IO redirection, command 
+	 * subtitution and globbing, are assumed to be processed.
+	 */
+	private void extractArgs() {
+		Integer[] sepIndices = cmdline.getIndicesOfCharNotEscaped(' ');
+		if (sepIndices.length == 0) {
+			app = cmdline.toString();
 			return;
 		}
-		
-		Arrays.sort(spaceIndices);
-		app = (shell.removeQuotes(cmdline.substring(0, spaceIndices[0])))[0];
+		app = cmdline.substring(0, sepIndices[0]);
 		
 		Vector<String> cmdArgs = new Vector<String>();
-		int startIndex = spaceIndices[0] + 1;
-		for (int i = 1; i < spaceIndices.length; i++) {
-			if (startIndex != spaceIndices[i]) {
-				cmdArgs.add(cmdline.substring(startIndex, spaceIndices[i]));
+		int startIndex = sepIndices[0] + 1;
+		for (int i = 1; i < sepIndices.length; i++) {
+			if (startIndex != sepIndices[i]) {
+				cmdArgs.add(cmdline.substring(startIndex, sepIndices[i]));
 			}
-			startIndex = spaceIndices[i] + 1;
+			startIndex = sepIndices[i] + 1;
 		}
 		if (startIndex < cmdline.length()) {
 			cmdArgs.add(cmdline.substring(startIndex, cmdline.length()));
 		}
-		
 		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}
 
@@ -116,6 +115,6 @@ public class CallCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		//not used
+		//unused for now
 	}
 }

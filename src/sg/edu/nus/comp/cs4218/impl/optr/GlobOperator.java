@@ -2,16 +2,14 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.StringJoiner;
 import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.Operator;
-import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
 
@@ -22,71 +20,106 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
  */
 public class GlobOperator implements Operator {
 	private static final String REGEX_WILDCARD = ".*?";
-	private final Shell shell;
-	
-	public GlobOperator(Shell shell) {
-		this.shell = shell;
-	}
 	
 	/**
-	 * Returns all the paths to existing files and directories such that these 
-	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
-	 * specified path by some (possibly empty) sequences of non-slash characters.
-	 * If no such path exist, the specified path is return without changes.
+	 * Replace paths with wildcard with all the paths to existing files and 
+	 * directories such that these paths can be obtained by replacing all the 
+	 * unescaped asterisk symbols in specified path by some (possibly empty) 
+	 * sequences of non-slash characters. If no such path exist, paths with 
+	 * wildcard are not replaced.
 	 * 
-	 * @param fileNames
-	 * 			  Array of String specifying the of the file paths.
-	 * @return String Array
-	 * 			  paths that matches the wildcard fileNames.
+	 * @param cmd
+	 * 			  CommandString containing the paths with wildcard.
 	 * 
 	 * @throws ShellException
-	 *            If the specified path is null.
+	 *            If the input command is null.
 	 */
-	public String[] evaluate(String... fileNames) throws AbstractApplicationException, ShellException {
-		Vector<String> newArgs = new Vector<String>();
+	@Override
+	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
+		if (cmd == null) {
+			throw new ShellException("Null Pointer Exception");
+		}
 		
-		for (int i = 0; i < fileNames.length; i++) {
-			if (fileNames[i] == null) {
-				throw new ShellException("Null Pointer Exception");
-			}
+		int wildCardIndex;
+		int iterIndex = 0;
+		while ((wildCardIndex = cmd.getFirstIndexOfCharNotEscaped(iterIndex, '*')) != -1) {
+			int beginIndex = getStartIndexOfGlobWord(cmd, wildCardIndex);
+			int endIndex = getEndIndexOfGlobWord(cmd, wildCardIndex) + 1;
 			
-			//get indices of * and do not glob arg if does not contain *
-			HashSet<Integer> wildCardIndices = new HashSet<Integer>(Arrays.asList(shell.getIndicesOfCharNotInQuotes(fileNames[i], '*')));
-			if (wildCardIndices.isEmpty()) {
-				newArgs.add(fileNames[i]);
-				continue;
-			}
-
 			//replace * with regex wildcard .*? and * with \*
 			StringJoiner regexArg = new StringJoiner("");
-			for (int j = 0; j < fileNames[i].length(); j++) {
-				if (wildCardIndices.contains(j)) {
+			for (int i = beginIndex; i < endIndex; i++) {
+				if (cmd.charAt(i) == '*' && !cmd.isCharEscaped(i)) {
 					regexArg.add(REGEX_WILDCARD);
 				} else {
-					regexArg.add(fileNames[i].substring(j, j+1));
+					regexArg.add(cmd.substring(i, i+1));
 				}
+			}
+
+			String[] globResult = evaluate(regexArg.toString());
+			if (globResult.length == 0) {
+				iterIndex = endIndex;
+				continue;
 			}
 			
-			//get globbed paths
-			String[] removedQuote = shell.removeQuotes(regexArg.toString());
-			String[] paths = evaluate(removedQuote[0]);
-			if (paths.length == 0) {
-				newArgs.add(fileNames[i]);
-			} else {
-				for (int j = 0; j < paths.length; j++) {
-					newArgs.add(paths[j]);
-				}
+			iterIndex = beginIndex;
+			cmd.removeRange(beginIndex, endIndex);
+			for (int i = 0; i < globResult.length; i++) {
+				cmd.insertStringAt(iterIndex, globResult[i] + " ");
+				cmd.setCharEscapedRange(iterIndex, iterIndex + globResult[i].length(), true);
+				iterIndex += globResult[i].length() + 1;
 			}
+			cmd.removeCharAt(iterIndex - 1);
 		}
-				
-		return newArgs.toArray(new String[newArgs.size()]);
 	}
 	
+	/**
+	 * Return the start index of the glob word associated the the index
+	 * of the wildcard.
+	 * 
+	 * @param cmd
+	 * 			  CommandString containing the paths with wildcard.
+	 * @param wildCardIndex
+	 * 			  Integer index of the wildcard character of interest
+	 * 			  in the CommandString.
+	 */
+	private int getStartIndexOfGlobWord(CommandString cmd, int wildCardIndex) {
+		int index = wildCardIndex;
+		while (index > 0) {
+			if (cmd.charAt(index) == ' ' && !cmd.isCharEscaped(index)) {
+				return index + 1;
+			}
+			index--;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Return the end index of the glob word associated the the index
+	 * of the wildcard.
+	 * 
+	 * @param cmd
+	 * 			  CommandString containing the paths with wildcard.
+	 * @param wildCardIndex
+	 * 			  Integer index of the wildcard character of interest
+	 * 			  in the CommandString.
+	 */
+	private int getEndIndexOfGlobWord(CommandString cmd, int wildCardIndex) {
+		int index = wildCardIndex;
+		while (index < cmd.length()) {
+			if (cmd.charAt(index) == ' ' && !cmd.isCharEscaped(index)) {
+				return index - 1;
+			}
+			index++;
+		}
+		return cmd.length() - 1;
+	}
+
 	/**
 	 * Returns all the paths to existing files and directories such that these 
 	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
 	 * specified path by some (possibly empty) sequences of non-slash characters.
-	 * If no such path exist, the specified path is return without changes.
+	 * If no such path exist, am empty paths is returned.
 	 * 
 	 * @param fileName
 	 * 			  String of the file path regex.
@@ -103,7 +136,7 @@ public class GlobOperator implements Operator {
 		if (fileName.isEmpty()) {
 			return new String[] {fileName};
 		}
-		
+
 		//get file separator
 		String separatorRegex;
 		if (OSValidator.isWindows()) {
@@ -111,10 +144,10 @@ public class GlobOperator implements Operator {
 		} else {
 			separatorRegex = "/";
 		}
-		
+
 		String[] splitedDir = fileName.split(separatorRegex);
 		Vector<String> dirList = new Vector<String>();
-		
+
 		//set first directory
 		if (FileUtil.isAbsolute(fileName)) {
 			if(OSValidator.isWindows()) {
@@ -129,7 +162,7 @@ public class GlobOperator implements Operator {
 				dirList.set(i, dirList.get(i).replace(Environment.currentDirectory + File.separator, ""));
 			}
 		}
-		
+
 		//append directories to path
 		for (int i = 1; i < splitedDir.length; i++) {
 			dirList = getMatchedDirs(dirList, splitedDir[i]);
@@ -142,7 +175,7 @@ public class GlobOperator implements Operator {
 		
 		return dirList.toArray(new String[dirList.size()]);
 	}
-	
+
 	/**
 	 * Remove all paths in the list that is not a folder.
 	 * 
@@ -156,7 +189,7 @@ public class GlobOperator implements Operator {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return all paths that matches the next directory when append with the
 	 * initial list of paths.
@@ -168,23 +201,23 @@ public class GlobOperator implements Operator {
 	 */
 	private Vector<String> getMatchedDirs(Vector<String> dirList, String nextDir) {
 		Vector<String> newList = new Vector<String>();
-		
+
 		for (int i = 0; i < dirList.size(); i++) {
 			if (nextDir.isEmpty()) {
 				newList.add(dirList.get(i));
 				continue;
 			}
-			
+
 			if (nextDir.contains(REGEX_WILDCARD)) {
 				appendMatchedPath(newList, dirList.get(i), nextDir);
 			} else {
 				appendPath(newList, dirList.get(i), nextDir);
 			}
 		}
-		
+
 		return newList;
 	}
-	
+
 	/**
 	 * Evaluate the wildcard and add new paths that matches the
 	 * content of the parent directory to the specified list 
@@ -211,7 +244,7 @@ public class GlobOperator implements Operator {
 			}
 		}
 	}
-	
+
 	/**
 	 * Add new path is in the parent directory
 	 * to the specified list if it is not hidden.
@@ -230,7 +263,7 @@ public class GlobOperator implements Operator {
 		} catch (IOException e) {
 			return;
 		}
-		
+
 		if (!file.isHidden()) {
 			paths.add(parent + File.separator + current);
 		}

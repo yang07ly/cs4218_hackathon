@@ -2,14 +2,12 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.StringJoiner;
-import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 /**
  * A Command Substitution is a call-command surrounded by backquotes (`) if the backquotes are not surrounded by 
@@ -24,18 +22,13 @@ public class CmdSubOperator implements Operator {
 	
 	/**
 	 * Searches for and processes the commands enclosed by back quotes for
-	 * command substitution. If no back quotes are found, the argsArray from the
-	 * input is returned with its quote removed. If back quotes are found, the 
-	 * back quotes and its enclosed commands substituted with the output from 
-	 * processing the commands enclosed in the back quotes with the back quotes
-	 * and any other quotes removed.
+	 * command substitution. The commands enclosed by back quotes will be
+	 * replaced by the command substitution results with newline replaced 
+	 * with a space. The replaced string are not escaped.
 	 * 
-	 * @param argsArray
-	 *            	String array of the individual arguments.
-	 * 
-	 * @return String array 
-	 * 				List of string with the back quotes command processed and
-	 * 				quotes removed.
+	 * @param cmd
+	 * 			  	CommandString containing the commands enclosed by back 
+	 * 				quotes for command substitution.
 	 * 
 	 * @throws AbstractApplicationException
 	 *             	If an exception happens while processing the application in the
@@ -43,56 +36,32 @@ public class CmdSubOperator implements Operator {
 	 * @throws ShellException
 	 *             	If an exception happens while processing the content in the
 	 *             	back quotes.
-	 */
-	public String[] evaluate(String... argsArray) throws AbstractApplicationException, ShellException {
-		Vector<String> results = new Vector<String>();
-		for (int i = 0; i < argsArray.length; i++) {
-			Integer[] bqIndices = shell.getIndicesOfCharNotInQuotes(argsArray[i], '`');
-			if (bqIndices.length == 0 || bqIndices.length % 2 != 0) {
-				// no command sub present
-				results.add((shell.removeQuotes(argsArray[i]))[0]);
+	 */	
+	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
+		if (cmd == null) {
+			throw new ShellException("Null Pointer Exception");
+		}
+		
+		Integer[] bqIndices = cmd.getIndicesOfCharNotEscaped('`');
+		if (bqIndices.length == 0) {
+			// no command sub present
+			return;
+		}
+		
+		if (bqIndices.length % 2 != 0) {
+			throw new ShellException("Back Quotes not closed");
+		}
+
+		Arrays.sort(bqIndices);
+		for (int i = 0; i < bqIndices.length; i+=2) {
+			if (bqIndices[i] + 1 == bqIndices[i+1]) {
+				cmd.removeRange(bqIndices[i], bqIndices[i+1] + 1);
 				continue;
 			}
-			
-			HashSet<Integer> removeIndices = new HashSet<Integer>();
-			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(argsArray[i], '"')));
-			removeIndices.addAll(Arrays.asList(shell.getIndicesOfCharNotInQuotes(argsArray[i], '\'')));
-			Arrays.sort(bqIndices);
-			
-			StringJoiner cmdSubResult = new StringJoiner("");
-			StringJoiner cmdSubCmd = new StringJoiner("");
-			int bqIndex = 0;
-			for (int j = 0; j < argsArray[i].length(); j++) {
-				if (removeIndices.contains(j)) {
-					//remove other quotes
-					continue;
-				}
-				if (bqIndex < bqIndices.length) {
-					if (j == bqIndices[bqIndex]) {
-						//removed first back quotes
-						continue;
-					}
-	
-					if  (j > bqIndices[bqIndex] && j < bqIndices[bqIndex + 1]) {
-						//command sub characters
-						cmdSubCmd.add(argsArray[i].substring(j, j + 1));
-						continue;
-					}
-					
-					if (j == bqIndices[bqIndex + 1]) {
-						//end of command sub
-						cmdSubResult.add(performCmdSub(cmdSubCmd.toString()));
-						cmdSubCmd = new StringJoiner("");
-						bqIndex += 2;
-						continue;
-					}
-				}
-				//other characters
-				cmdSubResult.add(argsArray[i].substring(j, j + 1));
-			}
-			results.add(cmdSubResult.toString());
+			String cmdSubCmd = cmd.substring(bqIndices[i] + 1, bqIndices[i+1]);
+			String cmdSubResult = performCmdSub(cmdSubCmd);
+			cmd.replaceRange(bqIndices[i], bqIndices[i+1] + 1, cmdSubResult);
 		}
-		return results.toArray(new String[results.size()]);		
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
@@ -25,18 +26,19 @@ public class PipeCommand implements Command{
 	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
 	
 	private final Shell shell;
-	private final String cmdline;
-	private String[] argsArray;
+	private final CommandString cmdline;
+	private CommandString[] argsArray;
 
-	public PipeCommand(Shell shell, String cmdline) {
+	public PipeCommand(Shell shell, CommandString cmdline) {
 		this.shell = shell;
 		this.cmdline = cmdline.trim();
-		argsArray = new String[0];
+		argsArray = new CommandString[0];
 	}
 
 	/**
-	 * Evaluates parts of the pipe-command separated by pipe operator. The resultant of evaluation which is the output of left part will
-	 *  be pass to the input of the right part 
+	 * Evaluates the separated commands by pipe and pipe the output of the preceding sub command
+	 * to the input of the current sub command. If an exception occurs on a sub command, any sub 
+	 * commands after it will not be processed.
 	 * 
 	 * @param stdin
 	 *            InputStream to get data from.
@@ -56,7 +58,7 @@ public class PipeCommand implements Command{
 		
 		InputStream inputStream = stdin;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		String command = argsArray[0];
+		CommandString command = argsArray[0];
 		CallCommand callCommand = new CallCommand(shell, command);
 		callCommand.parse();
 		callCommand.evaluate(inputStream, outputStream);
@@ -65,8 +67,7 @@ public class PipeCommand implements Command{
 			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			outputStream = new ByteArrayOutputStream();
 			
-			command = argsArray[i];
-			callCommand = new CallCommand(shell, command);
+			callCommand = new CallCommand(shell, argsArray[i]);
 			callCommand.parse();
 			callCommand.evaluate(inputStream, outputStream);
 		}
@@ -76,26 +77,24 @@ public class PipeCommand implements Command{
 	}
 
 	/**
-	 * Parses and splits the pipe-command to the call/pipe command into its different
-	 * components, separated by pipe operator.
+	 * Parses and splits the commands separated by unescaped pipe operator.
 	 * 
 	 * @throws ShellException
-	 *             If an exception happens while parsing the pipe-command, or if
-	 *             the input redirection file path is same as that of the output
-	 *             redirection file path.
+	 *             If the command starts or ends with a pipe or
+	 *             if there are no command between pipes.
 	 */
 	public void parse() throws ShellException {
-		Integer[] spaceIndices = shell.getIndicesOfCharNotInQuotes(cmdline, '|');
+		Integer[] spaceIndices = cmdline.getIndicesOfCharNotEscaped('|');
 		if (spaceIndices.length == 0) {
-			argsArray = new String[] {cmdline};
+			argsArray = new CommandString[] {cmdline};
 			return;
 		}
 		
 		Arrays.sort(spaceIndices);
-		Vector<String> cmdArgs = new Vector<String>();
+		Vector<CommandString> cmdArgs = new Vector<CommandString>();
 		int startIndex = 0;
 		for (int i = 0; i < spaceIndices.length; i++) {
-			String callCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			CommandString callCmd = cmdline.subCmdString(startIndex, spaceIndices[i]);
 			if (callCmd.matches("\\s*")) {
 				throw new ShellException(EXP_INVALID_PIPE);
 			}
@@ -106,14 +105,14 @@ public class PipeCommand implements Command{
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
 		if (startIndex < cmdline.length()) {
-			String callCmd = cmdline.substring(startIndex, cmdline.length());
+			CommandString callCmd = cmdline.subCmdString(startIndex, cmdline.length());
 			if (callCmd.matches("\\s*")) {
 				throw new ShellException(EXP_INVALID_PIPE);
 			}
 			cmdArgs.add(callCmd);
 		}
 		
-		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
+		argsArray = cmdArgs.toArray(new CommandString[cmdArgs.size()]);
 	}
 
 	/**
@@ -121,6 +120,6 @@ public class PipeCommand implements Command{
 	 */
 	@Override
 	public void terminate() {
-		// not used
+		//unused for now
 	}
 }
