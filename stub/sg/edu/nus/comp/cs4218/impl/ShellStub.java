@@ -3,16 +3,17 @@ package sg.edu.nus.comp.cs4218.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.StringJoiner;
-import java.util.Vector;
 
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 public class ShellStub implements Shell {
-	public static final String EVA_RESULT = "Shell stub evaluation result";
-	public static final String EVA_EXP = "shell: exception occured";
+	public static final String SHELL_RESULT = "ShellR";
+	public static final String GLOB_RESULT = "GlobR";
+	public static final String CMDSUB_RESULT = "CmdsubR";
+	public static final String SHELL_EXP = "shell: exception occured";
 
 	@Override
 	public Shell newInstance() {
@@ -30,48 +31,33 @@ public class ShellStub implements Shell {
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
 		try {
-			stdout.write(EVA_RESULT.getBytes());
+			stdout.write(SHELL_RESULT.getBytes());
 		} catch (IOException e) {
 			throw new ShellException("IO Exception");
 		}
 	}
-
-	@Override
-	public Integer[] getIndicesOfCharNotInQuotes(String source, char character) throws ShellException {
-		Vector<Integer> indices = new Vector<Integer>();
-		for (int i = 0; i < source.length(); i++) {
-			if (source.charAt(i) == character) {
-				indices.add(i);
-			}
-		}
-		return indices.toArray(new Integer[indices.size()]);
-	}
 	
 	@Override
-	public String[] removeQuotes(String... args) throws AbstractApplicationException, ShellException {
-		Vector<String> newArgs = new Vector<String>();
-		for (int i = 0; i < args.length; i++) {
-			StringJoiner newString = new StringJoiner("");
-			for (int j = 0; j < args[i].length(); j++) {
-				if (args[i].charAt(j) != '"' && args[i].charAt(j) != '`' && args[i].charAt(j) != '\'') {
-					newString.add(args[i].substring(j, j+1));
-				}
-			}
-			newArgs.add(newString.toString());
+	public void processQuotes(CommandString cmd) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void performGlob(CommandString cmd) throws AbstractApplicationException, ShellException {
+		int startIndex = 0;
+		int wildCardIndex;
+		while ((wildCardIndex = cmd.getFirstIndexOfCharNotEscaped(startIndex, '*')) != -1) {
+			cmd.replaceRange(wildCardIndex, wildCardIndex + 1, GLOB_RESULT);
+			startIndex += GLOB_RESULT.length();
 		}
-		return newArgs.toArray(new String[newArgs.size()]);
 	}
 
 	@Override
-	public String[] performGlob(String... args) throws AbstractApplicationException, ShellException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String[] performCmdSub(String... args) throws AbstractApplicationException, ShellException {
-		// TODO Auto-generated method stub
-		return null;
+	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException {
+		Integer[] bqIndices = cmd.getIndicesOfCharNotEscaped('`');
+		for (int i = 0; i < bqIndices.length; i+=2) {
+			cmd.replaceRange(bqIndices[i], bqIndices[i + 1] + 1, CMDSUB_RESULT);
+		}
 	}
 
 	@Override
@@ -91,5 +77,4 @@ public class ShellStub implements Shell {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
