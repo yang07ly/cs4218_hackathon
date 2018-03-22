@@ -11,7 +11,7 @@ import java.util.Vector;
  */
 public class CommandString {
 	private String cmdStr;
-	public final LinkedList<Boolean> hasEscaped;
+	private final LinkedList<Boolean> hasEscaped;
 
 	public CommandString() {
 		cmdStr = "";
@@ -118,8 +118,10 @@ public class CommandString {
 	 * @param bool
 	 * 			  	Boolean indicating the escape state to be set.
 	 */	
-	public void setCharEscaped(int index, boolean bool) {
-		hasEscaped.set(index, bool);
+	public void setCharEscaped(int index, boolean... bool) {
+		for (int i = index; (i - index) < bool.length && i < hasEscaped.size(); i++) {
+			hasEscaped.set(i, bool[i - index]);
+		}
 	}
 	
 	/**
