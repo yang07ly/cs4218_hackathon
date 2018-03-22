@@ -71,6 +71,7 @@ public class IoRedirOperator implements Operator {
 
 		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
 		shell.performCmdSub(fileString);
+		fileString.setAsteriskFalse();
 		shell.performGlob(fileString);
 		cmd.removeRange(indices[0], endIndex);
 		try {
@@ -114,6 +115,7 @@ public class IoRedirOperator implements Operator {
 
 		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
 		shell.performCmdSub(fileString);
+		fileString.setAsteriskFalse();
 		shell.performGlob(fileString);
 		cmd.removeRange(indices[0], endIndex);
 

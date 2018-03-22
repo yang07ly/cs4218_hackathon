@@ -11,7 +11,7 @@ import java.util.Vector;
  */
 public class CommandString {
 	private String cmdStr;
-	private final LinkedList<Boolean> hasEscaped;
+	public final LinkedList<Boolean> hasEscaped;
 
 	public CommandString() {
 		cmdStr = "";
@@ -21,6 +21,19 @@ public class CommandString {
 	public CommandString(String initStr) {
 		cmdStr = initStr;
 		hasEscaped = new LinkedList<Boolean>(Collections.nCopies(initStr.length(), false));
+	}
+	
+	/**
+	 * sets escapes status for * to false and true otherwise
+	 */
+	public void setAsteriskFalse() {
+		for(int i = 0; i < cmdStr.length(); i++) {
+			if(cmdStr.charAt(i) == '*') {
+				hasEscaped.set(i, false);
+			}else {
+				hasEscaped.set(i, true);
+			}
+		}
 	}
 	
 	/**
@@ -118,10 +131,8 @@ public class CommandString {
 	 * @param bool
 	 * 			  	Boolean indicating the escape state to be set.
 	 */	
-	public void setCharEscaped(int index, boolean... bool) {
-		for (int i = index; (i - index) < bool.length && i < hasEscaped.size(); i++) {
-			hasEscaped.set(i, bool[i - index]);
-		}
+	public void setCharEscaped(int index, boolean bool) {
+		hasEscaped.set(index, bool);
 	}
 	
 	/**
@@ -270,16 +281,6 @@ public class CommandString {
 	 */
 	public String toString() {
 		return cmdStr;
-	}
-	
-	/**
-	 * Return the escape states of this CommandString.
-	 *
-	 * @return Boolean Array
-	 * 				The escape states of this CommandString.
-	 */
-	public Boolean[] toBoolArray() {
-		return hasEscaped.toArray(new Boolean[hasEscaped.size()]);
 	}
 	
 	/**
