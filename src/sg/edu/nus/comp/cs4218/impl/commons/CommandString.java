@@ -24,19 +24,6 @@ public class CommandString {
 	}
 	
 	/**
-	 * sets escapes status for * to false and true otherwise
-	 */
-	public void setAsteriskFalse() {
-		for(int i = 0; i < cmdStr.length(); i++) {
-			if(cmdStr.charAt(i) == '*') {
-				hasEscaped.set(i, false);
-			}else {
-				hasEscaped.set(i, true);
-			}
-		}
-	}
-	
-	/**
 	 * Inserts the specified string at the specified position in this CommandString. 
 	 * Shifts the characters currently at that position (if any) and any subsequent 
 	 * characters to the right (adds one to their indices).

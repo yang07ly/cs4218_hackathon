@@ -2,7 +2,6 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import sg.edu.nus.comp.cs4218.Environment;
-import sg.edu.nus.comp.cs4218.Operator;
 import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
@@ -29,23 +27,21 @@ import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
  * <whitespace> ] <argument>
  **/
 
-public class IoRedirOperator implements Operator {
+public class IoRedirOperator {
 	private final Shell shell;
-	private final CmdSubOperator comSub;
 
 	public IoRedirOperator(Shell shell) {
 		this.shell = shell;
-		comSub = new CmdSubOperator(shell);
 	}
 
 	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
-		if(cmd == null) {
+		if (cmd == null) {
 			return null;
 		}
 		Integer[] indices = cmd.getIndicesOfCharNotEscaped('<');
 		if (indices.length > 1) {
 			throw new ShellException("only 1 inputstream can be specified");
-		}else if(indices.length == 0) {
+		} else if (indices.length == 0) {
 			return null;
 		}
 		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped(' ')));
@@ -71,11 +67,10 @@ public class IoRedirOperator implements Operator {
 
 		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
 		shell.performCmdSub(fileString);
-		fileString.setAsteriskFalse();
+		setAsteriskFalse(fileString);
 		shell.performGlob(fileString);
 		cmd.removeRange(indices[0], endIndex);
 		try {
-			String s = fileString.toString();
 			return new FileInputStream(FileUtil.getFileFromPath(fileString.toString()));
 		} catch (IOException e) {
 			throw new ShellException(e.getMessage());
@@ -83,13 +78,13 @@ public class IoRedirOperator implements Operator {
 	}
 
 	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
-		if(cmd == null) {
+		if (cmd == null) {
 			return null;
 		}
 		Integer[] indices = cmd.getIndicesOfCharNotEscaped('>');
 		if (indices.length > 1) {
 			throw new ShellException("only 1 outputstream can be specified");
-		}else if(indices.length == 0) {
+		} else if (indices.length == 0) {
 			return null;
 		}
 		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped(' ')));
@@ -115,7 +110,7 @@ public class IoRedirOperator implements Operator {
 
 		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
 		shell.performCmdSub(fileString);
-		fileString.setAsteriskFalse();
+		setAsteriskFalse(fileString);
 		shell.performGlob(fileString);
 		cmd.removeRange(indices[0], endIndex);
 
@@ -129,34 +124,18 @@ public class IoRedirOperator implements Operator {
 		}
 	}
 
-	@Override
-	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
-//		if (cmd == null) {
-//			return;
-//		}
-//		Vector<String> trimmedArgs = new Vector<String>();
-//		HashSet<Integer> set = new HashSet<Integer>(Arrays.asList(cmd.getIndicesOfCharNotEscaped('<')));
-//		set.addAll(Arrays.asList(cmd.getIndicesOfCharNotEscaped('>')));
-//		String command = cmd.toString();
-//		boolean hasStream = false;
-//		String arg = "";
-//		int startIndex = 0, endIndex = 0;
-//		for (int i = 0; i < command.length(); i++) {
-//			if (command.charAt(i) == ' ' && hasStream) {
-//
-//			}
-//			if (((command.charAt(i) == '<') || (command.charAt(i) == '>')) && set.contains(i)) {
-//				if (hasStream) {
-//					endIndex = i + 1;
-//
-//				} else {
-//					startIndex = i;
-//					hasStream = true;
-//				}
-//				continue;
-//			}
-//			arg += command.charAt(i);
-//		}
+	/**
+	 * sets escapes status for * to false and true otherwise
+	 */
+	public void setAsteriskFalse(CommandString command) {
+		String cmdStr = command.toString();
+		for (int i = 0; i < cmdStr.length(); i++) {
+			if (cmdStr.charAt(i) == '*') {
+				command.setCharEscaped(i, false);
+			} else {
+				command.setCharEscaped(i, true);
+			}
+		}
 	}
 
 }
