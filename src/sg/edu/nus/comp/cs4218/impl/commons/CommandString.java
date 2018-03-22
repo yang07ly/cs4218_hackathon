@@ -11,7 +11,7 @@ import java.util.Vector;
  */
 public class CommandString {
 	private String cmdStr;
-	public final LinkedList<Boolean> hasEscaped;
+	private final LinkedList<Boolean> hasEscaped;
 
 	public CommandString() {
 		cmdStr = "";
@@ -22,7 +22,7 @@ public class CommandString {
 		cmdStr = initStr;
 		hasEscaped = new LinkedList<Boolean>(Collections.nCopies(initStr.length(), false));
 	}
-	
+
 	/**
 	 * Inserts the specified string at the specified position in this CommandString. 
 	 * Shifts the characters currently at that position (if any) and any subsequent 
@@ -42,7 +42,7 @@ public class CommandString {
 			hasEscaped.addAll(Collections.nCopies(insertStr.length(), false));
 		}
 	}
-	
+
 	/**
 	 * Removes the character at the specified position in this CommandString. Shifts any 
 	 * subsequent characters to the left (subtracts one from their indices).
@@ -58,7 +58,7 @@ public class CommandString {
 		}
 		hasEscaped.remove(index);
 	}
-	
+
 	/**
 	 * Removes the characters at the specified range in this CommandString. 
 	 * The range begins at the specified beginIndex and extends to the 
@@ -81,7 +81,7 @@ public class CommandString {
 			hasEscaped.remove(i);
 		}
 	}
-	
+
 	/**
 	 * Replaces the characters at the specified range in this CommandString. 
 	 * The range begins at the specified beginIndex and extends to the 
@@ -108,7 +108,7 @@ public class CommandString {
 		}
 		hasEscaped.addAll(beginIndex, Collections.nCopies(replacement.length(), false));
 	}
-	
+
 	/**
 	 * Set the escape state for the character at the specified position.
 	 * 
@@ -118,10 +118,12 @@ public class CommandString {
 	 * @param bool
 	 * 			  	Boolean indicating the escape state to be set.
 	 */	
-	public void setCharEscaped(int index, boolean bool) {
-		hasEscaped.set(index, bool);
+	public void setCharEscaped(int index, boolean... bool) {
+		for (int i = index; (i - index) < bool.length && i < hasEscaped.size(); i++) {
+			hasEscaped.set(i, bool[i - index]);
+		}
 	}
-	
+
 	/**
 	 * Set the escape state for the characters at the specified range.
 	 * 
@@ -137,7 +139,7 @@ public class CommandString {
 			hasEscaped.set(i, bool);
 		}
 	}
-	
+
 	/**
 	 * Return the indices of the specified character in the CommandString which
 	 * are not escaped.
@@ -157,7 +159,7 @@ public class CommandString {
 		}
 		return charIndics.toArray(new Integer[charIndics.size()]);
 	}
-	
+
 	/**
 	 * Return the index of the first encounter of the specified character in the CommandString 
 	 * which are not escaped. The search begins with the character at the specified index and 
@@ -179,7 +181,7 @@ public class CommandString {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns the char value at the specified index. An index ranges from 0 to length() - 1. 
 	 * The first char value of the sequence is at index 0, the next at index 1, and so on, 
@@ -194,7 +196,7 @@ public class CommandString {
 	public char charAt(int index) {
 		return cmdStr.charAt(index);
 	}
-	
+
 	/**
 	 * Returns the escape state of char value at the specified index. An index ranges 
 	 * from 0 to length() - 1. The first char value of the sequence is at index 0, 
@@ -209,7 +211,7 @@ public class CommandString {
 	public boolean isCharEscaped(int index) {
 		return hasEscaped.get(index);
 	}
-	
+
 	/**
 	 * Returns a string that is a substring of this string. The substring begins 
 	 * at the specified beginIndex and extends to the end of this string. 
@@ -222,7 +224,7 @@ public class CommandString {
 	public String substring(int beginIndex) {
 		return cmdStr.substring(beginIndex, cmdStr.length());
 	}
-	
+
 	/**
 	 * Returns a string that is a substring of this CommandString. The substring begins 
 	 * at the specified beginIndex and extends to the character at index endIndex - 1. 
@@ -238,7 +240,7 @@ public class CommandString {
 	public String substring(int beginIndex, int endIndex) {
 		return cmdStr.substring(beginIndex, endIndex);
 	}
-	
+
 	/**
 	 * Returns a CommandString that is a substring of this CommandString. The substring begins 
 	 * at the specified beginIndex and extends to the character at index endIndex - 1. 
@@ -259,7 +261,7 @@ public class CommandString {
 		}
 		return newCmdStr;
 	}
-	
+
 	/**
 	 * This object string is returned.
 	 *
@@ -269,7 +271,17 @@ public class CommandString {
 	public String toString() {
 		return cmdStr;
 	}
-	
+
+	/**
+	 * Return the escape states of this CommandString.
+	 *
+	 * @return Boolean Array
+	 * 				The escape states of this CommandString.
+	 */
+	public Boolean[] toBoolArray() {
+		return hasEscaped.toArray(new Boolean[hasEscaped.size()]);
+	}
+
 	/**
 	 * Returns the length of this CommandString. The length is equal to the number of Unicode 
 	 * code units in the string.
@@ -280,7 +292,7 @@ public class CommandString {
 	public int length() {
 		return cmdStr.length();
 	}
-	
+
 	/**
 	 * Returns a string whose value is this string, with any leading and trailing whitespace removed.
 	 *
@@ -305,17 +317,17 @@ public class CommandString {
 			}
 			endIndex--;
 		}
-		
+
 		if (beginIndex == 0 && endIndex == cmdStr.length() - 1) {
 			return this;
 		}
 		if (endIndex < beginIndex) {
 			return new CommandString();
 		}
-		
+
 		return subCmdString(beginIndex, endIndex + 1);
 	}
-	
+
 	/**
 	 * Tells whether or not this string matches the given regular expression. 
 	 * An invocation of this method of the form str.matches(regex) yields 
@@ -323,10 +335,54 @@ public class CommandString {
 	 *
 	 * @param regex
 	 * 				The regular expression to which this string is to be matched.
-	 * @return 
+	 * @return boolean
 	 * 				true if, and only if, this CommandString matches the given regular expression.
 	 */
 	public boolean matches(String regex) {
 		return cmdStr.matches(regex);
+	}
+
+	/**
+	 * Compares this CommandString to the specified object. The result is true if and only 
+	 * if the argument is not null and is a CommandString object that represents the same 
+	 * sequence of characters and escape states as this object.
+	 *
+	 * @param obj
+	 * 				The object to compare this String against
+	 * @return boolean
+	 * 				true if the given object represents a String equivalent to this string, 
+	 * 				false otherwise.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof CommandString)) {
+			return false;
+		}
+
+		CommandString cmdStrObj = (CommandString) obj;
+		if (!cmdStr.equals(cmdStrObj.toString())) {
+			return false;
+		} 
+		for (int i = 0; i < hasEscaped.size(); i++) {
+			if (hasEscaped.get(i) != cmdStrObj.isCharEscaped(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns a hash code for this string.
+	 * 
+	 * @return int
+	 * 				A hashcode value of this object.
+	 */
+
+	@Override
+	public int hashCode() {
+		return cmdStr.hashCode();
 	}
 }
