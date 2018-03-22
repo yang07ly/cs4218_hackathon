@@ -53,7 +53,7 @@ public class CmdSubOperator implements Operator {
 		}
 
 		Arrays.sort(bqIndices);
-		for (int i = 0; i < bqIndices.length; i+=2) {
+		for (int i = bqIndices.length - 2; i >= 0; i-=2) {
 			if (bqIndices[i] + 1 == bqIndices[i+1]) {
 				cmd.removeRange(bqIndices[i], bqIndices[i+1] + 1);
 				continue;
