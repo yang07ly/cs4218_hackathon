@@ -48,15 +48,15 @@ public class MkdirApplicationTest {
 		Environment.currentDirectory = TEST_DIR;
 		mkdirApp = new MkdirApplication();
 		
-		Path folderPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING);
-		Path filePath = Paths.get(Environment.currentDirectory).resolve(FILE_EXISTING);
+		Path folderPath = Paths.get(TEST_DIR).resolve(DIR_EXISTING);
+		Path filePath = Paths.get(TEST_DIR).resolve(FILE_EXISTING);
 		Files.createDirectories(folderPath);
 		Files.createFile(filePath);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		File file = new File(Environment.currentDirectory);
+		File file = new File(TEST_DIR);
 		delete(file);
 	}
 
@@ -202,6 +202,11 @@ public class MkdirApplicationTest {
 		mkdirApp.run(null, null, null);
 	}
 	
+	/**
+	 * Deletes all files in the specified File.
+	 * @param file
+	 * 			The folder to have its contents deleted.
+	 */
 	private void delete(File file) throws IOException {	 
 		for (File childFile : file.listFiles()) {
 			if (childFile.isDirectory()) {
