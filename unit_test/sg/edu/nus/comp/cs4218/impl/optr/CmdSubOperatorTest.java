@@ -24,12 +24,11 @@ public class CmdSubOperatorTest {
 	private static final String CMD_STR = "cmd";
 	private static final String CMDSUB_STR = "`" + CMD_STR + "`";
 	private static final String NOT_CLOSED_EXP = "shell: Back Quotes not closed";
+	private static final String NULL_EXP = "shell: Null Pointer Exception";
 	
 	private ShellStub spyShell;
 	private CmdSubOperator cmdSubOptr;
-	private CommandString cmd;
-	private String expectedStr;
-	private Boolean[] expectedBool;
+	private CommandString cmd, expected;
 	
 	@Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -39,78 +38,71 @@ public class CmdSubOperatorTest {
 		spyShell = Mockito.spy(new ShellStub());
 		cmdSubOptr = new CmdSubOperator(spyShell);
 		cmd = new CommandString();
-		expectedStr = "";
-		expectedBool = new Boolean[0];
+		expected = new CommandString();
 	}
 	
 	@Test
 	public void testNoCmdSub() throws AbstractApplicationException, ShellException {
-		expectedStr = CMD_STR;
-		expectedBool = new Boolean[] {false, false, false};
-		
+		expected = new CommandString(CMD_STR);
 		cmd = new CommandString(CMD_STR);
-		cmdSubOptr.evaluate(cmd);
-		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		cmdSubOptr.evaluate(cmd);	
+		assertEquals(expected, cmd);
 	}
 	
 	@Test
 	public void testCmdSub() throws AbstractApplicationException, ShellException {
-		expectedStr = ShellStub.SHELL_RESULT;
-		expectedBool = new Boolean[] {false, false, false, false, false, false};
-		
+		expected = new CommandString(ShellStub.SHELL_RESULT);
 		cmd = new CommandString(CMDSUB_STR);
 		cmdSubOptr.evaluate(cmd);
-		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		assertEquals(expected, cmd);
 	}
 	
 	@Test
-	public void testCmdSubEscaped() throws AbstractApplicationException, ShellException {
-		expectedStr = CMDSUB_STR;
-		expectedBool = new Boolean[] {true, true, true, true, true};
-		
-		cmd = new CommandString(CMDSUB_STR);
-		cmd.setCharEscaped(0, true, true, true, true, true);
+	public void testCmdSubEmpty() throws AbstractApplicationException, ShellException {
+		expected = new CommandString();
+		cmd = new CommandString("``");
 		cmdSubOptr.evaluate(cmd);
-		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		assertEquals(expected, cmd);
 	}
 	
 	@Test
 	public void testCmdSubWithinChars() throws AbstractApplicationException, ShellException {
-		expectedStr = "F" + ShellStub.SHELL_RESULT + "E";
-		expectedBool = new Boolean[] {false, false, false, false, false, false, false, false};
+		expected = new CommandString("F" + ShellStub.SHELL_RESULT + "E");
 		
 		cmd = new CommandString("F" + CMDSUB_STR + "E");
-		cmd.setCharEscaped(0, false, false, true, true, true, false, false);
-		cmdSubOptr.evaluate(cmd);
+		cmd.setCharEscaped(2, true, true, true);
 		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		cmdSubOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
 	}
 	
 	@Test
 	public void testMutipleCmdSub() throws AbstractApplicationException, ShellException {
-		expectedStr = ShellStub.SHELL_RESULT + ShellStub.SHELL_RESULT;
-		expectedBool = new Boolean[] {false, false, false, false, false, false, false, false, false, false, false, false};
+		expected = new CommandString(ShellStub.SHELL_RESULT + ShellStub.SHELL_RESULT);
 		
 		cmd = new CommandString(CMDSUB_STR + CMDSUB_STR);
-		cmd.setCharEscaped(0, false, true, true, true, false, false, true, true, true, false);
-		cmdSubOptr.evaluate(cmd);
+		cmd.setCharEscaped(1, true, true, true);
+		cmd.setCharEscaped(6, true, true, true);
 		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		cmdSubOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
+	
+	@Test
+	public void testCmdSubEscaped() throws AbstractApplicationException, ShellException {
+		expected = new CommandString(CMDSUB_STR);
+		expected.setCharEscapedRange(0, CMDSUB_STR.length(), true);
+		
+		cmd = new CommandString(CMDSUB_STR);
+		cmd.setCharEscapedRange(0, CMDSUB_STR.length(), true);
+		
+		cmdSubOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
 	}
 	
 	@Test
 	public void testCmdSubAppReturnMultipleLines() throws AbstractApplicationException, ShellException {
-		expectedStr = "Rline1. Rline2.";
-		expectedBool = new Boolean[] {false, false, false, false, false, false, false, false, 
-										false, false, false, false, false, false, false};
+		expected = new CommandString( "Rline1. Rline2.");
 		
 		Shell mockShell = Mockito.mock(Shell.class);
         Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
@@ -124,11 +116,17 @@ public class CmdSubOperatorTest {
 		}).when(mockShell).parseAndEvaluate(Mockito.anyString(), Mockito.any(OutputStream.class));
 		
 		cmd = new CommandString(CMDSUB_STR);
-		cmd.setCharEscaped(0, false, true, true, true, false);
-		cmdSubOptr.evaluate(cmd);
+		cmd.setCharEscaped(1, true, true, true);
 		
-		assertEquals(expectedStr, cmd.toString());
-		assertArrayEquals(expectedBool, cmd.toBoolArray());
+		cmdSubOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
+	
+	@Test
+	public void testInvalidCmdSubNull() throws AbstractApplicationException, ShellException {
+		thrown.expect(ShellException.class);
+		thrown.expectMessage(NULL_EXP); 
+		cmdSubOptr.evaluate(null);
 	}
 	
 	@Test
