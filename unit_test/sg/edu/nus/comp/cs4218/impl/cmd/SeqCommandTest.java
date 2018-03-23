@@ -95,6 +95,16 @@ public class SeqCommandTest {
 	}
 	
 	@Test
+	public void testParseSeqWithLeadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString(SPACES + CMD + SEMICOLON + CMD + SPACES);
+		expectedArgs = getExpectedCmdStrArr(CMD, CMD);
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (CommandString[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+	
+	@Test
 	public void testParseSeqEscapedSemiColon() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + CMD);
 		cmdLine.setCharEscaped(3, true);
