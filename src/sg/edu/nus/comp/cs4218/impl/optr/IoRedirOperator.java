@@ -113,7 +113,6 @@ public class IoRedirOperator {
 		setAsteriskFalse(fileString);
 		shell.performGlob(fileString);
 		cmd.removeRange(indices[0], endIndex);
-
 		try {
 			Path path = Paths.get(Environment.currentDirectory).resolve(fileString.toString());
 			return new FileOutputStream(new File(path.toString()));
