@@ -30,7 +30,17 @@ public class PipeCommandIT {
 		expected = "";
 		output = new ByteArrayOutputStream();
 	}
-
+	
+	@Test
+	public void testEvalPipeWithoutParse() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo no parse");
+		expected = "";
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.evaluate(System.in, output);
+		assertEquals(expected, output.toString());
+	}
+	
 	@Test
 	public void testInvalidPipeEmpty() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");

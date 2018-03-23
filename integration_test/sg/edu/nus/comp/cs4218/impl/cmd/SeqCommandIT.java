@@ -36,7 +36,17 @@ public class SeqCommandIT {
 		cmdLine = new CommandString();
 		output = new ByteArrayOutputStream();
 	}
-
+	
+	@Test
+	public void testEvalSeqWithoutParse() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo no parse");
+		expected = "";
+		
+		seqCmd = new SeqCommand(new ShellImpl(), cmdLine);
+		seqCmd.evaluate(System.in, output);
+		assertEquals(expected, output.toString());
+	}
+	
 	@Test
 	public void testInvalidSeqEmpty() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");
