@@ -45,8 +45,8 @@ public class PipeCommandIT {
 
 	@Test
 	public void testNoPipe() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo abc");
-		expected = "abc";
+		cmdLine = new CommandString("echo no pipe");
+		expected = "no pipe";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
@@ -56,8 +56,8 @@ public class PipeCommandIT {
 
 	@Test
 	public void testOnePipe() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo cat | cat");
-		expected = "cat";
+		cmdLine = new CommandString("echo one pipe | cat");
+		expected = "one pipe";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
@@ -67,8 +67,8 @@ public class PipeCommandIT {
 
 	@Test
 	public void testMultiplePipe() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo abc | cat | sed s/bc/cd/");
-		expected = "acd";
+		cmdLine = new CommandString("echo mutiple pipes | cat | sed s/pipes/Pipes/");
+		expected = "mutiple Pipes";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
@@ -78,7 +78,7 @@ public class PipeCommandIT {
 
 	@Test
 	public void testInvalidPipeAtFront() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("| echo abc");
+		cmdLine = new CommandString("| echo pipe front");
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
@@ -90,7 +90,7 @@ public class PipeCommandIT {
 
 	@Test
 	public void testInvalidPipeAtBack() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo |");
+		cmdLine = new CommandString("echo pipe back |");
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
@@ -102,8 +102,8 @@ public class PipeCommandIT {
 
 	@Test
 	public void testPipeWithinText() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo abc|cat");
-		expected = "abc";
+		cmdLine = new CommandString("echo pipeWithinText|cat");
+		expected = "pipeWithinText";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
@@ -122,9 +122,9 @@ public class PipeCommandIT {
 
 	@Test
 	public void testPipeEscaped() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo abc |cat");
+		cmdLine = new CommandString("echo escaped |pipe");
 		cmdLine.setCharEscapedRange(9, 13, true);
-		expected = "abc |cat";
+		expected = "escaped |pipe";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
