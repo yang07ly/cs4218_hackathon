@@ -22,11 +22,13 @@ import org.mockito.internal.util.reflection.Whitebox;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
+import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 public class CallCommandIT {
+	private static final String QWERTY = "qwerty";
 	private static final String ABC = "abc";
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT_STREAM = "outputStream";
@@ -241,7 +243,7 @@ public class CallCommandIT {
 		BufferedReader reader = new BufferedReader(
 				new FileReader(new File(Environment.currentDirectory + File.separator + "xaa")));
 		assertEquals("asdfgh", reader.readLine());
-		assertEquals("qwerty", reader.readLine());
+		assertEquals(QWERTY, reader.readLine());
 		assertEquals("zxcvbn", reader.readLine());
 		reader.close();
 		Files.delete(Paths.get(Environment.currentDirectory + File.separator + "xaa"));
@@ -287,6 +289,20 @@ public class CallCommandIT {
 		callCmd.evaluate(System.in, output);
 
 		assertEquals(expected, output.toString());
+	}
+
+	@Test
+	public void testInvalidApp() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("eco abc");
+		expected = QWERTY;
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: eco: Invalid app");
+		
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
 	}
 
 	@Test
@@ -476,5 +492,75 @@ public class CallCommandIT {
 		callCmd.evaluate(System.in, output);
 
 		assertEquals(expected, output.toString());
+	}
+
+	@Test
+	public void testEscapedChars() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("cat file with space.txt");
+		cmdLine.setCharEscapedRange(4, 23, true);
+		expected = QWERTY;
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+
+		assertEquals(expected, output.toString());
+	}
+
+	@Test
+	public void testInvalidCmdSub() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("echo `cat file.txt");
+		expected = QWERTY;
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: Back Quotes not closed");
+		
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+	}
+
+	@Test
+	public void testInvalidInputStream() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("cat < asdf");
+		expected = QWERTY;
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: asdf: No such file or directory");
+		
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+	}
+
+	@Test
+	public void testInvalidOutputStream() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("cat > abc > asdf");
+		expected = QWERTY;
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: only 1 outputstream can be specified");
+		
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+	}
+
+	@Test
+	public void testInvalidAppError() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = CAT_TEST_DIR;
+		cmdLine = new CommandString("cat  ");
+		cmdLine.setCharEscapedRange(4, 5, true);
+
+		thrown.expect(CatException.class);
+		thrown.expectMessage("cat:  : invalid path");
+		
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
 	}
 }
