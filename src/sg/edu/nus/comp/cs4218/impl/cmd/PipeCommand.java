@@ -94,8 +94,8 @@ public class PipeCommand implements Command{
 		Vector<CommandString> cmdArgs = new Vector<CommandString>();
 		int startIndex = 0;
 		for (int i = 0; i < spaceIndices.length; i++) {
-			CommandString callCmd = cmdline.subCmdString(startIndex, spaceIndices[i]);
-			if (callCmd.matches("\\s*")) {
+			CommandString callCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			if (callCmd.trim().length() == 0) {
 				throw new ShellException(EXP_INVALID_PIPE);
 			}
 			cmdArgs.add(callCmd);
@@ -105,8 +105,8 @@ public class PipeCommand implements Command{
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
 		if (startIndex < cmdline.length()) {
-			CommandString callCmd = cmdline.subCmdString(startIndex, cmdline.length());
-			if (callCmd.matches("\\s*")) {
+			CommandString callCmd = cmdline.substring(startIndex, cmdline.length());
+			if (callCmd.trim().length() == 0) {
 				throw new ShellException(EXP_INVALID_PIPE);
 			}
 			cmdArgs.add(callCmd);

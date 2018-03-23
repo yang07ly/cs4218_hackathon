@@ -213,35 +213,6 @@ public class CommandString {
 	}
 
 	/**
-	 * Returns a string that is a substring of this string. The substring begins 
-	 * at the specified beginIndex and extends to the end of this string. 
-	 * 
-	 * @param beginIndex
-	 * 				Integer of the beginning index, inclusive.
-	 * @return String
-	 * 				The specified substring.
-	 */	
-	public String substring(int beginIndex) {
-		return cmdStr.substring(beginIndex, cmdStr.length());
-	}
-
-	/**
-	 * Returns a string that is a substring of this CommandString. The substring begins 
-	 * at the specified beginIndex and extends to the character at index endIndex - 1. 
-	 * Thus the length of the substring is endIndex-beginIndex.  
-	 * 
-	 * @param beginIndex
-	 * 				Integer of the beginning index, inclusive.
-	 * @param endIndex
-	 * 				Integer of the ending index, exclusive.
-	 * @return String
-	 * 				The specified substring.
-	 */	
-	public String substring(int beginIndex, int endIndex) {
-		return cmdStr.substring(beginIndex, endIndex);
-	}
-
-	/**
 	 * Returns a CommandString that is a substring of this CommandString. The substring begins 
 	 * at the specified beginIndex and extends to the character at index endIndex - 1. 
 	 * Thus the length of the substring is endIndex-beginIndex. The character state of the
@@ -254,7 +225,7 @@ public class CommandString {
 	 * @return CommandString
 	 * 				The specified substring.
 	 */	
-	public CommandString subCmdString(int beginIndex, int endIndex) {
+	public CommandString substring(int beginIndex, int endIndex) {
 		CommandString newCmdStr = new CommandString(cmdStr.substring(beginIndex, endIndex));
 		for (int i = beginIndex; i < endIndex; i++) {
 			newCmdStr.setCharEscaped(i - beginIndex, hasEscaped.get(i));
@@ -270,16 +241,6 @@ public class CommandString {
 	 */
 	public String toString() {
 		return cmdStr;
-	}
-
-	/**
-	 * Return the escape states of this CommandString.
-	 *
-	 * @return Boolean Array
-	 * 				The escape states of this CommandString.
-	 */
-	public Boolean[] toBoolArray() {
-		return hasEscaped.toArray(new Boolean[hasEscaped.size()]);
 	}
 
 	/**
@@ -325,21 +286,7 @@ public class CommandString {
 			return new CommandString();
 		}
 
-		return subCmdString(beginIndex, endIndex + 1);
-	}
-
-	/**
-	 * Tells whether or not this string matches the given regular expression. 
-	 * An invocation of this method of the form str.matches(regex) yields 
-	 * exactly the same result as the expression.
-	 *
-	 * @param regex
-	 * 				The regular expression to which this string is to be matched.
-	 * @return boolean
-	 * 				true if, and only if, this CommandString matches the given regular expression.
-	 */
-	public boolean matches(String regex) {
-		return cmdStr.matches(regex);
+		return substring(beginIndex, endIndex + 1);
 	}
 
 	/**

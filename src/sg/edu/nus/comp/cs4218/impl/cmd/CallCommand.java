@@ -99,18 +99,18 @@ public class CallCommand implements Command {
 			app = cmdline.toString();
 			return;
 		}
-		app = cmdline.substring(0, sepIndices[0]);
+		app = cmdline.substring(0, sepIndices[0]).toString();
 		
 		Vector<String> cmdArgs = new Vector<String>();
 		int startIndex = sepIndices[0] + 1;
 		for (int i = 1; i < sepIndices.length; i++) {
 			if (startIndex != sepIndices[i]) {
-				cmdArgs.add(cmdline.substring(startIndex, sepIndices[i]));
+				cmdArgs.add(cmdline.substring(startIndex, sepIndices[i]).toString());
 			}
 			startIndex = sepIndices[i] + 1;
 		}
 		if (startIndex < cmdline.length()) {
-			cmdArgs.add(cmdline.substring(startIndex, cmdline.length()));
+			cmdArgs.add(cmdline.substring(startIndex, cmdline.length()).toString());
 		}
 		argsArray = cmdArgs.toArray(new String[cmdArgs.size()]);
 	}

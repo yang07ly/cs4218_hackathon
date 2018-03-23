@@ -52,7 +52,7 @@ public class GlobOperator implements Operator {
 				if (cmd.charAt(i) == '*' && !cmd.isCharEscaped(i)) {
 					regexArg.add(REGEX_WILDCARD);
 				} else {
-					regexArg.add(cmd.substring(i, i+1));
+					regexArg.add(cmd.substring(i, i+1).toString());
 				}
 			}
 

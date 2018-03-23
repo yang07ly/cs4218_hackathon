@@ -65,7 +65,7 @@ public class IoRedirOperator {
 			throw new ShellException("no input file specified");
 		}
 
-		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
+		CommandString fileString = cmd.substring(startIndex, endIndex);
 		shell.performCmdSub(fileString);
 		setAsteriskFalse(fileString);
 		shell.performGlob(fileString);
@@ -108,7 +108,7 @@ public class IoRedirOperator {
 			throw new ShellException("no output file specified");
 		}
 
-		CommandString fileString = cmd.subCmdString(startIndex, endIndex);
+		CommandString fileString = cmd.substring(startIndex, endIndex);
 		shell.performCmdSub(fileString);
 		setAsteriskFalse(fileString);
 		shell.performGlob(fileString);

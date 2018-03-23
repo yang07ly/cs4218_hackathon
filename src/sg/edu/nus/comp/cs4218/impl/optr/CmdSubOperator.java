@@ -58,7 +58,7 @@ public class CmdSubOperator implements Operator {
 				cmd.removeRange(bqIndices[i], bqIndices[i+1] + 1);
 				continue;
 			}
-			String cmdSubCmd = cmd.substring(bqIndices[i] + 1, bqIndices[i+1]);
+			String cmdSubCmd = cmd.substring(bqIndices[i] + 1, bqIndices[i+1]).toString();
 			String cmdSubResult = performCmdSub(cmdSubCmd);
 			cmd.replaceRange(bqIndices[i], bqIndices[i+1] + 1, cmdSubResult);
 		}

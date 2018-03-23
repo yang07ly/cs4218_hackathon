@@ -88,19 +88,19 @@ public class SeqCommand implements Command {
 		Vector<CommandString> cmdArgs = new Vector<CommandString>();
 		int startIndex = 0;
 		for (int i = 0; i < spaceIndices.length; i++) {
-			CommandString callCmd = cmdline.subCmdString(startIndex, spaceIndices[i]);
-			if (callCmd.matches("\\s*")) {
+			CommandString pierCmd = cmdline.substring(startIndex, spaceIndices[i]);
+			if (pierCmd.trim().length() == 0) {
 				throw new ShellException(EXP_INVALID_SEQ);
 			}
-			cmdArgs.add(callCmd);
+			cmdArgs.add(pierCmd);
 			startIndex = spaceIndices[i] + 1;
 		}
 		if (startIndex < cmdline.length()) {
-			CommandString callCmd = cmdline.subCmdString(startIndex, cmdline.length());
-			if (callCmd.matches("\\s*")) {
+			CommandString pipeCmd = cmdline.substring(startIndex, cmdline.length());
+			if (pipeCmd.trim().length() == 0) {
 				throw new ShellException(EXP_INVALID_SEQ);
 			}
-			cmdArgs.add(callCmd);
+			cmdArgs.add(pipeCmd);
 		}
 
 		argsArray = cmdArgs.toArray(new CommandString[cmdArgs.size()]);
