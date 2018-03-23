@@ -65,12 +65,6 @@ public interface Shell {
 	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
 	/**
-	 * Removes any IO redirection operators and their arguments and returns back the string array
-	 * @param args		String array of the individual arguments.
-	 */
-	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException;
-	
-	/**
 	 * Scans the arguments and sets the input stream
 	 * @param args		String array of the individual arguments.
 	 * @throws AbstractApplicationException 

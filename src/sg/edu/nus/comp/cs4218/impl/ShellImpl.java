@@ -197,19 +197,6 @@ public class ShellImpl implements Shell {
 	}
 	
 	/**
-	 * Removes any IO redirection operators and their arguments and returns back the string array
-	 * @param args
-	 *            	String array of the individual arguments.
-	 * @return	String array of arguments without IO redirection operators and their arguments
-	 * @throws AbstractApplicationException
-	 * @throws ShellException
-	 */
-	@Override
-	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException {
-		return ioRedirOptr.evaluate(args);
-	}
-	
-	/**
 	 * Scans the arguments and sets the input stream
 	 * @param args
 	 *            	String array of the individual arguments.
