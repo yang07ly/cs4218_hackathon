@@ -32,7 +32,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidEmptyCmd() throws ShellException, AbstractApplicationException {
+	public void testInvalidPipeEmpty() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");
 
 		thrown.expect(ShellException.class);
@@ -123,12 +123,84 @@ public class PipeCommandIT {
 	@Test
 	public void testPipeEscaped() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo escaped |pipe");
-		cmdLine.setCharEscapedRange(9, 13, true);
+		cmdLine.setCharEscaped(13, true);
 		expected = "escaped |pipe";
 		
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
 		pipeCmd.evaluate(System.in, output);
 		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testPipeEscapedWithNotEscaped() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo escaped |pipe | sed s/pipe/pipe_with_valid_pipe/");
+		cmdLine.setCharEscaped(13, true);
+		expected = "escaped |pipe_with_valid_pipe";
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testInvalidPipeAppException() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("cat nonExistentFile");
+
+		thrown.expect(AbstractApplicationException.class);
+		thrown.expectMessage("cat: nonExistentFile: No such file or directory");
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+	
+	@Test
+	public void testInvalidPipeShellException() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("invalidApp");
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: invalidApp: Invalid app");
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+	
+	@Test
+	public void testInvalidMultiPipeWithExceptionAtStart() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("ec pipe1 | cat | sed s/pipe1/sed-replacement/");
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: ec: Invalid app");
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+	
+	@Test
+	public void testInvalidMultiPipeWithExceptionAtMiddle() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo pipe1 | ct | sed s/pipe1/sed-replacement/");
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: ct: Invalid app");
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+	
+	@Test
+	public void testInvalidMultiSeqWithExceptionAtEnd() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo pipe1 | cat | sd s/pipe1/sed-replacement/");
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: sd: Invalid app");
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 	}
 }
