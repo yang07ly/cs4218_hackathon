@@ -61,19 +61,13 @@ public class ShellStub implements Shell {
 	}
 
 	@Override
-	public String[] removeIOStreamFromArgs(String... args) throws AbstractApplicationException, ShellException {
+	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InputStream getInputStream(String... args) throws ShellException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public OutputStream getOutputStream(String... args) throws ShellException {
+	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
