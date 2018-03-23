@@ -18,7 +18,7 @@ import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
 public class GlobOperatorTest {
 
 	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "glob_test_system";
-	
+
 	private static final String FILE1 = "file1.txt";
 	private static final String FILE2 = "file2.txt";
 	private static final String FILE_W_SPACES = "file name with spaces.txt";
@@ -28,7 +28,7 @@ public class GlobOperatorTest {
 	private static final String FOLDER1 = "folder1";
 	private static final String FOLDER2 = "folder2";
 	private static final String FOLDER_W_SPACES = "folder name with spaces";
-	
+
 	private static final String FOLDER1_FILE1 = FOLDER1 + File.separator + FILE1;
 	private static final String FOLDER1_FILE2 = FOLDER1 + File.separator + FILE2;
 	private static final String FOLDER1_FOLDER_WS = FOLDER1 + File.separator + FOLDER_W_SPACES;
@@ -39,16 +39,16 @@ public class GlobOperatorTest {
 	private static final String ABS_FILE2 = TEST_DIR + File.separator + FILE2;
 	private static final String ABS_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
 	private static final String ABS_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
-	
+
 	private static final String STR_SPACE = " ";
 	private static final String FILE_WILDCARD = "file*";
 
 	private GlobOperator globOptr;
 	private CommandString cmd, expected;
-	
+
 	@Rule
-    public ExpectedException thrown = ExpectedException.none();
-	
+	public ExpectedException thrown = ExpectedException.none();
+
 	@Before
 	public void setUp() throws Exception {
 		Environment.currentDirectory = TEST_DIR;
@@ -104,7 +104,7 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobEverythingWithEmptyParent() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2);
@@ -144,6 +144,14 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
+	
+	@Test
+	public void testGlobMutipleWildcard() throws AbstractApplicationException, ShellException {
+		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
+		cmd = new CommandString("file*.*");
+		globOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
 
 	@Test
 	public void testGlobParentDirectory() throws AbstractApplicationException, ShellException {
@@ -154,7 +162,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMultipleInSingleFolder() throws AbstractApplicationException, ShellException {
+	public void testGlobMultipleFileInSingleFolder() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE1, FOLDER1);
 		cmd = new CommandString("*1*");
 		globOptr.evaluate(cmd);
@@ -162,13 +170,13 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMultipleInMutipleFolder() throws AbstractApplicationException, ShellException {
+	public void testGlobMultipleFileInMutipleFolder() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2);
 		cmd = new CommandString("*" + File.separator + FILE_WILDCARD);
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobMutiplePath() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER1_FOLDER_WS, FOLDER2_FILE1, FOLDER2_FILE2);
@@ -176,7 +184,7 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobExistingAndNonExistingFile() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2, FILE_NONEXISTENT);
@@ -185,22 +193,43 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
-	@Test
-	public void testGlobEscapedWildcard() throws AbstractApplicationException, ShellException {
-		expected = getExpectedCmdStr(FILE_WILDCARD);
-		cmd = new CommandString(FILE_WILDCARD);
-		cmd.setCharEscaped(0, true, true, true, true, true);
-		globOptr.evaluate(cmd);
-		assertEquals(expected, cmd);
-	}
-	
 
 	@Test
 	public void testGlobFileNameWithSpaces() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES);
 		cmd = new CommandString("file name with*");
-		cmd.setCharEscaped(0, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false);
+		cmd.setCharEscapedRange(0, 13, true);
+		globOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
+
+	@Test
+	public void testGlobFileNameWithSpacesWithMutipleWildcard() throws AbstractApplicationException, ShellException {
+		expected = getExpectedCmdStr(FILE_W_SPACES);
+		cmd = new CommandString("file name* with*");
+		cmd.setCharEscapedRange(0, 9, true);
+		cmd.setCharEscapedRange(10, 15, true);
+		globOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
+
+	@Test
+	public void testGlobEscapedWildcard() throws AbstractApplicationException, ShellException {
+		expected = getExpectedCmdStr(FILE_WILDCARD);
+		cmd = new CommandString(FILE_WILDCARD);
+		cmd.setCharEscapedRange(0, cmd.length(), true);
+		globOptr.evaluate(cmd);
+		assertEquals(expected, cmd);
+	}
+	
+	@Test
+	public void testGlobValidAndEscapedWildcard() throws AbstractApplicationException, ShellException {
+		expected = new CommandString("**");
+		expected.setCharEscaped(0, true);
+		
+		cmd = new CommandString("**");
+		cmd.setCharEscaped(0, true);
+		
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -208,10 +237,10 @@ public class GlobOperatorTest {
 	@Test
 	public void testInvalidGlobNull() throws AbstractApplicationException, ShellException {
 		thrown.expect(ShellException.class);
-        thrown.expectMessage("shell: Null Pointer Exception");
+		thrown.expectMessage("shell: Null Pointer Exception");
 		globOptr.evaluate(null);
 	}
-	
+
 	private CommandString getExpectedCmdStr(String... strings) {
 		CommandString cmdStr = new CommandString();
 		int startIndex = 0;
@@ -219,7 +248,7 @@ public class GlobOperatorTest {
 			cmdStr.insertStringAt(startIndex, strings[i]);
 			cmdStr.setCharEscapedRange(startIndex, cmdStr.length(), true);
 			startIndex = cmdStr.length();
-			
+
 			if (i < strings.length - 1) {
 				cmdStr.insertStringAt(startIndex, " ");
 				cmdStr.setCharEscapedRange(startIndex, cmdStr.length(), false);
