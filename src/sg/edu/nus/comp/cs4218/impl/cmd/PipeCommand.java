@@ -104,13 +104,12 @@ public class PipeCommand implements Command{
 		if (startIndex >= cmdline.length()) {
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
-		if (startIndex < cmdline.length()) {
-			CommandString callCmd = cmdline.substring(startIndex, cmdline.length());
-			if (callCmd.trim().length() == 0) {
-				throw new ShellException(EXP_INVALID_PIPE);
-			}
-			cmdArgs.add(callCmd);
+		
+		CommandString callCmd = cmdline.substring(startIndex, cmdline.length());
+		if (callCmd.trim().length() == 0) {
+			throw new ShellException(EXP_INVALID_PIPE);
 		}
+		cmdArgs.add(callCmd);
 		
 		argsArray = cmdArgs.toArray(new CommandString[cmdArgs.size()]);
 	}
