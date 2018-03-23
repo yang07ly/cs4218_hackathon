@@ -13,11 +13,12 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.cmd.PipeCommand;
-import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
+import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 public class PipeCommandIT {
-	private PipeCommand pipeCom;
-	private String cmdLine, expected;
+	private PipeCommand pipeCmd;
+	private CommandString cmdLine;
+	private String expected;
 	private ByteArrayOutputStream output;
 
 	@Rule
@@ -25,119 +26,109 @@ public class PipeCommandIT {
 
 	@Before
 	public void setUp() throws Exception {
-		expected = cmdLine = "";
+		cmdLine = new CommandString();
+		expected = "";
 		output = new ByteArrayOutputStream();
 	}
 
 	@Test
-	public void testEmptyCmd() throws ShellException, AbstractApplicationException {
-		cmdLine = "";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
-		expected = "shell: : Invalid app";
+	public void testInvalidEmptyCmd() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("");
 
 		thrown.expect(ShellException.class);
-		thrown.expectMessage(expected);
+		thrown.expectMessage("shell: : Invalid app");
 		
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 	}
 
 	@Test
 	public void testNoPipe() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
+		cmdLine = new CommandString("echo abc");
 		expected = "abc";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 		assertEquals(expected, output.toString());
 	}
 
 	@Test
 	public void testOnePipe() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc | cat";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
-		expected = "abc";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		cmdLine = new CommandString("echo cat | cat");
+		expected = "cat";
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 		assertEquals(expected, output.toString());
 	}
 
 	@Test
 	public void testMultiplePipe() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc | cat | cat";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
-		expected = "abc";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		cmdLine = new CommandString("echo abc | cat | sed s/bc/cd/");
+		expected = "acd";
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 		assertEquals(expected, output.toString());
 	}
 
 	@Test
-	public void testPipeAtFront() throws ShellException, AbstractApplicationException {
-		cmdLine = "| echo abc";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
+	public void testInvalidPipeAtFront() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("| echo abc");
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 	}
 
 	@Test
-	public void testPipeAtBack() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo |";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
+	public void testInvalidPipeAtBack() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo |");
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Invalid pipe operator/s");
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 	}
 
 	@Test
 	public void testPipeWithinText() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc|cat";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
+		cmdLine = new CommandString("echo abc|cat");
 		expected = "abc";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+	
+	@Test
+	public void testPipeWithleadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("     echo leading and trailing spaces |cat      ");
+		expected = "leading and trailing spaces";
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 	}
 
 	@Test
-	public void testPipeWithinDoubleQuotes() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc \"|cat\"";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
+	public void testPipeEscaped() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo abc |cat");
+		cmdLine.setCharEscapedRange(9, 13, true);
 		expected = "abc |cat";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
+		
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
 		assertEquals(expected, output.toString());
-	}
-
-	@Test
-	public void testPipeWithinSingleQuotes() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc '|cat'";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
-		expected = "abc |cat";
-
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
-		assertEquals(expected, output.toString());
-	}
-
-	@Test
-	public void testPipeWithinBackQuotes() throws ShellException, AbstractApplicationException {
-		cmdLine = "echo abc `|cat`";
-		pipeCom = new PipeCommand(new ShellImpl(), cmdLine);
-		expected = "abc |cat";
-
-		thrown.expect(ShellException.class);
-		thrown.expectMessage("shell: Invalid pipe operator/s");
-		pipeCom.parse();
-		pipeCom.evaluate(System.in, output);
 	}
 }
