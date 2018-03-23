@@ -118,15 +118,15 @@ public class ShellImpl implements Shell {
 	 * Parses and evaluates user's command line.
 	 * 
 	 * @param cmdline
-	 *            String of the user inputed command.
+	 *            	String of the user inputed command.
 	 * @param outputStream
-	 *            OutputStream for the application to print its output to.
+	 *            	OutputStream for the application to print its output to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while running any of the
-	 *             application(s).
+	 *             	If an exception happens while running any of the
+	 *             	application(s).
 	 * @throws ShellException
-	 *             If an unsupported or invalid command is detected.
+	 *             	If an unsupported or invalid command is detected.
 	 */
 	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
@@ -200,9 +200,10 @@ public class ShellImpl implements Shell {
 	 * Scans the arguments and sets the input stream
 	 * @param args
 	 *            	String array of the individual arguments.
-	 * @return	the input stream
+	 * @return InpurStream
+	 * 				The input stream.
 	 * @throws ShellException
-	 * 			if more than 1 input stream is specified
+	 * 				If more than 1 input stream is specified.
 	 * @throws AbstractApplicationException 
 	 */
 	@Override
@@ -214,9 +215,10 @@ public class ShellImpl implements Shell {
 	 * Scans the arguments and sets the output stream
 	 * @param args 
 	 *            	String array of the individual arguments.
-	 * @return	the output stream
+	 * @return OutputStream
+	 * 				The output stream.
 	 * @throws ShellException
-	 * 			if more than 1 output stream is specified
+	 * 				If more than 1 output stream is specified.
 	 * @throws AbstractApplicationException 
 	 */
 	@Override
