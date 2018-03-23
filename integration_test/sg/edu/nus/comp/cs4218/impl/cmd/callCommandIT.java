@@ -6,8 +6,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
@@ -35,6 +40,8 @@ public class CallCommandIT {
 	private static final String CMP_TEST_DIR = TEST_DIR + File.separator + "cmp_test_system";
 	private static final String GREP_TEST_DIR = TEST_DIR + File.separator + "grep_test_system";
 	private static final String SED_TEST_DIR = TEST_DIR + File.separator + "sed_test_system";
+	private static final String GLOB_TEST_DIR = TEST_DIR + File.separator + "glob_test_system";
+	private static final String IO_TEST_DIR = TEST_DIR + File.separator + "ioRedir_test_system";
 
 	private CallCommand callCmd;
 	private CommandString cmdLine;
@@ -309,6 +316,169 @@ public class CallCommandIT {
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
 
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testGlob() throws ShellException, AbstractApplicationException {
+		Environment.currentDirectory = GLOB_TEST_DIR;
+		cmdLine = new CommandString("echo file*");
+		expected = "file name with spaces.txt file1.txt file2.txt";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testInputStream() throws ShellException, AbstractApplicationException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat < file.txt");
+		expected = "filefile";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testOutputStream() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("echo abc > file1.txt");
+		expected = "";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		
+		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + File.separator + "file1.txt")));
+		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, "outputStream");
+		outputStream.close();
+		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "file1.txt");
+		
+		assertEquals("abc", new String(Files.readAllBytes(filePath)));
+		assertEquals(expected, output.toString());
+		Files.delete(filePath);
+	}
+	
+	@Test
+	public void testCmdSub() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat `echo file.txt`");
+		expected = "filefile";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testInputStreamWithOutputStream() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat < file.txt > file1.txt");
+		expected = "";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		
+		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + File.separator + "file1.txt")));
+		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, "outputStream");
+		outputStream.close();
+		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "file1.txt");
+		
+		assertEquals("filefile", new String(Files.readAllBytes(filePath)));
+		assertEquals(expected, output.toString());
+		Files.delete(filePath);
+	}
+	
+	@Test
+	public void testInputStreamWithGlob() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat < f*");
+		expected = "filefile";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testInputStreamWithCmdSub() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat `echo file.txt` < file.txt -");
+		expected = "filefile\nfilefile";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		
+		assertEquals(expected, output.toString());
+	}
+	
+	@Test
+	public void testOutputStreamWithGlob() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat file.txt > glob*");
+		expected = "";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+
+		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "globOut.txt");
+		assertTrue(Files.exists(filePath));
+		
+		assertEquals("filefile", new String(Files.readAllBytes(filePath)));
+		assertEquals(expected, output.toString());
+		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, "outputStream");
+		outputStream.close();
+		outputStream = new FileOutputStream(filePath.toFile());
+		outputStream.write("".getBytes());
+		outputStream.close();
+	}
+	
+	@Test
+	public void testOutputStreamWithCmdSub() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("cat file.txt > `echo globOut.txt`");
+		cmdLine.setCharEscapedRange(16, 32, true);
+		expected = "";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+
+		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "globOut.txt");
+		assertTrue(Files.exists(filePath));
+		
+		assertEquals("filefile", new String(Files.readAllBytes(filePath)));
+		assertEquals(expected, output.toString());
+		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, "outputStream");
+		outputStream.close();
+		outputStream = new FileOutputStream(filePath.toFile());
+		outputStream.write("".getBytes());
+		outputStream.close();
+	}
+	
+	@Test
+	public void testCmdSubWithGlob() throws ShellException, AbstractApplicationException, IOException {
+		Environment.currentDirectory = IO_TEST_DIR;
+		cmdLine = new CommandString("echo `cat containsStar.txt`");
+		cmdLine.setCharEscapedRange(6, 26, true);
+		expected = "file.txt";
+
+		callCmd = new CallCommand(new ShellImpl(), cmdLine);
+		callCmd.parse();
+		callCmd.evaluate(System.in, output);
+		
 		assertEquals(expected, output.toString());
 	}
 }

@@ -27,7 +27,7 @@ public class IoRedirOperatorTest {
 	private static final String OUTPUT_TXT = "output.txt";
 	private static final String ASD = "asd";
 	private IoRedirOperator ioRedirOp;
-	private CommandString input, output, expected;
+	private CommandString input, expected;
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	private String currentDir;
@@ -41,7 +41,6 @@ public class IoRedirOperatorTest {
 				+ "ioRedir_test_system";
 		ioRedirOp = new IoRedirOperator(new ShellStub());
 		input = new CommandString();
-		output = new CommandString();
 		expected = new CommandString();
 		inputStream = null;
 		outputStream = null;
@@ -66,8 +65,18 @@ public class IoRedirOperatorTest {
 		inputStream = ioRedirOp.getInputStream(input);
 		outputStream = ioRedirOp.getOutputStream(input);
 
-		assertTrue(inputStream == null);
 		assertTrue(outputStream == null);
+	}
+
+	@Test
+	public void testNoIO2() throws ShellException, AbstractApplicationException {
+		expected = new CommandString(ASD);
+		input = new CommandString(ASD);
+
+		inputStream = ioRedirOp.getInputStream(input);
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertTrue(inputStream == null);
 	}
 
 	@Test
@@ -88,7 +97,6 @@ public class IoRedirOperatorTest {
 		outputStream = ioRedirOp.getOutputStream(input);
 
 		assertTrue(inputStream != null);
-		assertTrue(outputStream == null);
 		inputStream.close();
 	}
 
@@ -122,8 +130,6 @@ public class IoRedirOperatorTest {
 		inputStream = ioRedirOp.getInputStream(input);
 		outputStream = ioRedirOp.getOutputStream(input);
 
-		assertEquals(input, output);
-		assertTrue(inputStream == null);
 		assertTrue(outputStream != null);
 		assertTrue(Files.exists(Paths.get(currentDir + ASD)));
 
@@ -139,8 +145,6 @@ public class IoRedirOperatorTest {
 		inputStream = ioRedirOp.getInputStream(input);
 		outputStream = ioRedirOp.getOutputStream(input);
 
-		assertEquals(input, output);
-		assertTrue(inputStream == null);
 		assertTrue(outputStream != null);
 		assertTrue(Files.exists(Paths.get(currentDir + OUTPUT_TXT)));
 
@@ -171,19 +175,29 @@ public class IoRedirOperatorTest {
 
 	@Test
 	public void testOneInputAndOneOutput() throws ShellException, AbstractApplicationException, IOException {
-		expected = new CommandString("hi  ");
+		expected = new CommandString("hi  > asd");
 		input = new CommandString("hi < file.txt > asd");
 
 		inputStream = ioRedirOp.getInputStream(input);
-		outputStream = ioRedirOp.getOutputStream(input);
 
 		assertEquals(expected, input);
 		assertTrue(inputStream != null);
+
+		inputStream.close();
+	}
+
+	@Test
+	public void testOneInputAndOneOutput2() throws ShellException, AbstractApplicationException, IOException {
+		expected = new CommandString("hi < file.txt ");
+		input = new CommandString("hi < file.txt > asd");
+
+		outputStream = ioRedirOp.getOutputStream(input);
+
+		assertEquals(expected, input);
 		assertTrue(outputStream != null);
 		assertTrue(Files.exists(Paths.get(currentDir + ASD)));
 
 		outputStream.close();
-		inputStream.close();
 		Files.delete(Paths.get(currentDir + ASD));
 	}
 
