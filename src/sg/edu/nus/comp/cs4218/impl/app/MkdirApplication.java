@@ -56,18 +56,18 @@ public class MkdirApplication implements MkdirInterface {
 		
 		for (int i = 0; i < folderName.length; i++) {
 			if (folderName[i].length() == 0) {
-				throw new MkdirException("cannot create directory ‘’: No such file or directory");
+				throw new MkdirException("cannot create directory '': No such file or directory");
 			}
 			
 			try {
 				Path folderPath = Paths.get(Environment.currentDirectory).resolve(folderName[i]);
 				Files.createDirectory(folderPath);
 			} catch (InvalidPathException e) {
-				throw new MkdirException("cannot create directory ‘" + folderName[i] + "’: No such file or directory");
+				throw new MkdirException("cannot create directory '" + folderName[i] + "': No such file or directory");
 			} catch (FileAlreadyExistsException e) {
-				throw new MkdirException("cannot create directory ‘" + folderName[i] + "’: File exists");
+				throw new MkdirException("cannot create directory '" + folderName[i] + "': File exists");
 			}catch (IOException e) {
-				throw new MkdirException("cannot create directory ‘" + folderName[i] + "’: No such file or directory");
+				throw new MkdirException("cannot create directory '" + folderName[i] + "': No such file or directory");
 			}
 		}
 	}
