@@ -14,6 +14,7 @@ import sg.edu.nus.comp.cs4218.exception.CmpException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 public class CmpApplication implements CmpInterface {
+	private final String NEWLINE = System.lineSeparator();
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CmpException {
@@ -99,7 +100,7 @@ public class CmpApplication implements CmpInterface {
 			if (readValueA != readValueB) {
 				numLinesInMsg++;
 				if (numLinesInMsg > 1) {
-					msg += "\n";
+					msg += NEWLINE;
 				}
 				if (isPrintSimplify) { // -s
 					return "Files differ";

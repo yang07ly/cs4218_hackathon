@@ -14,15 +14,13 @@ import sg.edu.nus.comp.cs4218.exception.PasteException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
 
 public class PasteApplication implements PasteInterface {
+	private final String NEWLINE = System.lineSeparator();
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws PasteException {
 		if (args == null || args.length == 0) {
 			throw new PasteException("No files specified");
 		} else {
-			if (args.length > 2) {
-				throw new PasteException("More than 2 files specified");
-			}
 			Vector<String> files = new Vector<String>();
 			boolean[] flags = new boolean[2];
 			getArguments(args, flags, files);
@@ -129,7 +127,7 @@ public class PasteApplication implements PasteInterface {
 					}
 				}
 				if(numLines != 0 && hasLines) {
-					stringBuilder.append(new String("\n"));
+					stringBuilder.append(new String(NEWLINE));
 				}
 				numLines++;
 				stringBuilder.append(new String(lineBuilder));

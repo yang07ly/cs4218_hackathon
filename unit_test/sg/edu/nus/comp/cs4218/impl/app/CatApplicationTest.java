@@ -20,6 +20,7 @@ public class CatApplicationTest {
 
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String FILE1_CONTENT = "asdf";
+	private static final String NEWLINE = System.lineSeparator();
 	CatApplication app;
 	OutputStream outputStream;
 	String expected, output, currentDir;
@@ -80,7 +81,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFiles() throws CatException {
-		expected = "asdf\nqwer";
+		expected = "asdf" + NEWLINE + "qwer";
 		String[] args = { FILE1_TXT, "file2.txt" };
 
 		app.run(args, System.in, outputStream);
@@ -90,7 +91,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFilesWithInvalidFiles() throws CatException {
-		expected = "asdf\ncat: asdf: No such file or directory\nqwer";
+		expected = "asdf" + NEWLINE + "cat: asdf: No such file or directory" + NEWLINE + "qwer";
 		String[] args = { FILE1_TXT, "asdf", "file2.txt" };
 
 		app.run(args, System.in, outputStream);

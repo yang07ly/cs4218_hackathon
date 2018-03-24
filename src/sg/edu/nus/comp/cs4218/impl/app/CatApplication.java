@@ -25,6 +25,7 @@ import sg.edu.nus.comp.cs4218.exception.CatException;
  * </p>
  */
 public class CatApplication implements Application {
+	private final String NEWLINE = System.lineSeparator();
 
 	/**
 	 * Runs the cat application with the specified arguments.
@@ -70,7 +71,7 @@ public class CatApplication implements Application {
 			for (int i = 0; i < numOfFiles; i++) {
 				try {
 					if (i > 0) {
-						stdout.write("\n".getBytes());
+						stdout.write(NEWLINE.getBytes());
 					}
 					if (args[i].equals("-")) {
 						if (!hasInputStream) {

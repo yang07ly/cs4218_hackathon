@@ -27,6 +27,7 @@ public class CmpApplicationTest {
 	private static final String CMP_INVALID_FLAGS = "cmp: Invalid flags";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
 	private static final String FILE3_TXT = "file3.txt";
+	private static final String NEWLINE = System.lineSeparator();
 	CmpApplication app;
 	OutputStream outputStream;
 	String expected, output;
@@ -248,9 +249,9 @@ public class CmpApplicationTest {
 	public void testFileFileRelRelFalseFalseTrue() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -264,9 +265,9 @@ public class CmpApplicationTest {
 	public void testFileEmptyFileRelRelTrueFalseTrue() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", output);
 		}
 	}
 
@@ -275,9 +276,9 @@ public class CmpApplicationTest {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
 		output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -379,9 +380,9 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -408,9 +409,9 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", output);
 		}
 	}
 
