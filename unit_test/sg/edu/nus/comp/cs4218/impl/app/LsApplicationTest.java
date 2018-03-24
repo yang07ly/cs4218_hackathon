@@ -86,61 +86,61 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testListCurrentFolder() throws LsException {
+	public void testListToListCurDirContentUsingNoArg() throws LsException {
 		expected = CUR_CONTENT;
 		result = lsApp.listFolderContent(false, false);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListFile() throws LsException {
+	public void testListToListFileUsingFileInArg() throws LsException {
 		expected = FILE1;
 		result = lsApp.listFolderContent(false, false, FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListRelativeFolderContent() throws LsException {
+	public void testListToListDirContentUsingRelDirInArg() throws LsException {
 		expected = FOLDER1_CONTENT;
 		result = lsApp.listFolderContent(false, false, FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListAbsoluteFolderContent() throws LsException {
+	public void testListToListDirContentUsingAbsDirInArg() throws LsException {
 		expected = FOLDER1_1_CONTENT;
 		result = lsApp.listFolderContent(false, false, ABS_FOLDER1_1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDisplayNameContainQuote() throws LsException {
+	public void testListToAppendQuoteToNameUsingFileNameWithSpaceInArg() throws LsException {
 		expected = "'" + FILE_WITH_SPACE + "'";
 		result = lsApp.listFolderContent(false, false, FILE_WITH_SPACE);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testNoHiddenFilesInCurrentFolder() throws LsException {
+	public void testListToNotListHiddenFileUsingNoArg() throws LsException {
 		result = lsApp.listFolderContent(false, false);
 		assertFalse(result.contains(FILE_HIDDEN));
 	}
 
 	@Test
-	public void testNoHiddenFilesInOtherFolder() throws LsException {
+	public void testListToNotListHiddenFileUsingDirInArg() throws LsException {
 		result = lsApp.listFolderContent(false, false, FOLDER1);
 		assertFalse(result.contains(FILE_HIDDEN));
 	}
 
 	@Test
-	public void testListMutipleFiles() throws LsException {
+	public void testListToListFilesUsingMultiFilesInArg() throws LsException {
 		expected = FILE1 + STR_TABS + FILE2;
 		result = lsApp.listFolderContent(false, false, FILE1, FILE2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testListMultipleFoldersContent() throws LsException {
+	public void testListToListMultiDirsContentUsingMultiDirsInArg() throws LsException {
 		expected = HEAD_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2
 				+ OSUtil.NEWLINE + FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, false, FOLDER1, FOLDER2);
@@ -148,7 +148,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testListMutipleFilesAndFolders() throws LsException {
+	public void testListToListMultiFilesAndDirsContentUsingMultiFilesAndDirsInArg() throws LsException {
 		expected = ABS_FILE1 + STR_TABS + FILE2 + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_ABS_FOLDER1 + OSUtil.NEWLINE
 				+ FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2 + OSUtil.NEWLINE + FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, false, ABS_FILE1, FILE2, ABS_FOLDER1, FOLDER2);
@@ -156,35 +156,35 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testDirectoryListCurrentFolder() throws LsException {
+	public void testListToListCurDirOnlyUsingDirOnlyWithNoArg() throws LsException {
 		expected = ".";
 		result = lsApp.listFolderContent(true, false);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListRelativeFile() throws LsException {
+	public void testListToListRelDirUsingDirOnlyWithRelDirInArg() throws LsException {
 		expected = REL_FOLDER2_FILE1;
 		result = lsApp.listFolderContent(true, false, REL_FOLDER2_FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListAbsoluteFolder() throws LsException {
+	public void testListToListAbsDirUsingDirOnlyWithAbsDirInArg() throws LsException {
 		expected = ABS_FOLDER2;
 		result = lsApp.listFolderContent(true, false, ABS_FOLDER2);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testDirectoryListFilesAndFolders() throws LsException {
+	public void testListToListFilesAndDirsUsingDirOnlyWithFilesAndDirsInArg() throws LsException {
 		expected = ABS_FOLDER1_FILE1 + STR_TABS + ABS_FOLDER2 + STR_TABS + FOLDER1 + STR_TABS + REL_FOLDER2_FILE2;
 		result = lsApp.listFolderContent(true, false, ABS_FOLDER2, REL_FOLDER2_FILE2, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testRecursiveListCurrentFolder() throws LsException {
+	public void testListToListAllCurDirContentUsingRecursiveWithNoArg() throws LsException {
 		expected = ".:" + OSUtil.NEWLINE + CUR_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + "'." + File.separator
 				+ FOLDER_WITH_SPACE + "':" + OSUtil.NEWLINE + FOLDER_WS_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + "."
 				+ File.separator + FOLDER1 + ":" + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE
@@ -196,7 +196,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testRecursiveListAbsoluteFolder() throws LsException {
+	public void testListToListAllDirContentUsingRecursiveWithDirInArg() throws LsException {
 		expected = HEAD_ABS_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE
 				+ HEAD_ABS_FOLDER11 + OSUtil.NEWLINE + FOLDER1_1_CONTENT;
 		result = lsApp.listFolderContent(false, true, ABS_FOLDER1);
@@ -204,7 +204,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testRecursiveListMultipleFolders() throws LsException {
+	public void testListToListAllDirsContentUsingRecursiveWithMultiDirsInArg() throws LsException {
 		expected = HEAD_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1_1
 				+ OSUtil.NEWLINE + FOLDER1_1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2 + OSUtil.NEWLINE
 				+ FOLDER2_CONTENT;
@@ -213,7 +213,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testRecursiveListFilesAndFolders() throws LsException {
+	public void testListToListAllFilesAndDirsContentUsingRecursiveWithMultiFilesAndDirsInArg() throws LsException {
 		expected = ABS_FOLDER1_FILE1 + STR_TABS + REL_FOLDER2_FILE1 + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_ABS_FOLDER2
 				+ OSUtil.NEWLINE + FOLDER2_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1 + OSUtil.NEWLINE
 				+ FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1_1 + OSUtil.NEWLINE
@@ -223,42 +223,42 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testDirectoryAndRecursiveListFilesAndFolders() throws LsException {
+	public void testListToFilesAndDirsUsingDirOnlyAndRecursiveWithMultiFilesAndDirsInArg() throws LsException {
 		expected = ABS_FOLDER1_FILE1 + STR_TABS + ABS_FOLDER2 + STR_TABS + FOLDER1 + STR_TABS + REL_FOLDER2_FILE2;
 		result = lsApp.listFolderContent(true, true, ABS_FOLDER2, REL_FOLDER2_FILE2, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testInvalidFile() throws LsException {
+	public void testListToThrowsLsExpUsingNonExistentFile() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: cannot access 'nonExistentFile': No such file or directory");
 		lsApp.listFolderContent(true, true, FILE_NON_EXISTENT);
 	}
 
 	@Test
-	public void testInvalidFileWithValidFiles() throws LsException {
+	public void testListToThrowsLsExpUsingMultiFilesWithNonExistentFile() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: cannot access 'nonExistentFile': No such file or directory");
 		lsApp.listFolderContent(true, true, FILE1, FILE_NON_EXISTENT, FOLDER1);
 	}
 
 	@Test
-	public void testInvalidEmptyFile() throws LsException {
+	public void testListToThrowsLsExpUsingEmptyFileName() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: cannot access '': No such file or directory");
 		lsApp.listFolderContent(true, true, "");
 	}
 
 	@Test
-	public void testInvalidSpacesAsFileName() throws LsException {
+	public void testListToThrowsLsExpUsingSpacesFileName() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: cannot access '   ': No such file or directory");
 		lsApp.listFolderContent(true, true, "   ");
 	}
 
 	@Test
-	public void testOptionCombiSingleDash() throws LsException {
+	public void testRunToListDirUsingCombiOptionInSingleDash() throws LsException {
 		expected = ABS_FOLDER1;
 		String[] strArr = { "-dR", ABS_FOLDER1 };
 
@@ -268,7 +268,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testOptionCombiDoubleDashNoSpace() throws LsException {
+	public void testRunToListDirUsingCombiOptionWithDoubleDashWithoutSpace() throws LsException {
 		expected = ABS_F1_1_FILE2 + STR_TABS + FOLDER2;
 		String[] strArr = { "-d-R", ABS_F1_1_FILE2, FOLDER2 };
 
@@ -278,7 +278,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testOptionCombiDoubleDashWithSpace() throws LsException {
+	public void testRunToListDirUsingCombiOptionWithDoubleDashWithSpace() throws LsException {
 		expected = REL_FOLDER1_1;
 		String[] strArr = { "-d", "-R", REL_FOLDER1_1 };
 
@@ -288,7 +288,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testOptionCombiDiffSeq() throws LsException {
+	public void testRunToListDirUsingCombiOptionWithDiffSeq() throws LsException {
 		expected = REL_F1_1_FILE2;
 		String[] strArr = { "-R-d", REL_F1_1_FILE2 };
 
@@ -298,7 +298,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testOptionPositionAtEnd() throws LsException {
+	public void testRunToListDirUsingOptionAtEnd() throws LsException {
 		expected = FOLDER1 + STR_TABS + FOLDER2;
 		String[] strArr = { FOLDER1, FOLDER2, "-d" };
 
@@ -308,7 +308,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testOptionPositionAtCenter() throws LsException {
+	public void testRunToListDirUsingOptionBtwDirs() throws LsException {
 		expected = FOLDER1 + STR_TABS + FOLDER2;
 		String[] strArr = { FOLDER1, "-R", FOLDER2, "-d" };
 
@@ -318,7 +318,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testNullArgs() throws LsException {
+	public void testRunToThrowsLsExpUsingNullArg() throws LsException {
 		expected = CUR_CONTENT;
 		lsApp.run(null, null, stdout);
 		result = stdout.toString();
@@ -326,7 +326,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testInvalidOption() throws LsException {
+	public void testRunToThrowsLsExpUsingInvalidOption() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: invalid option -- 'f'");
 		String[] strArr = { "-f", FOLDER1 };
@@ -334,7 +334,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testInvalidOptionDash() throws LsException {
+	public void testRunToThrowsLsExpUsingOptionWithDoubleDash() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: invalid option -- '-'");
 		String[] strArr = { "--", FOLDER1 };
@@ -342,7 +342,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testInvalidOptionCombi() throws LsException {
+	public void testRunToThrowsLsExpUsingOptionEndWithDash() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: invalid option -- '-'");
 		String[] strArr = { "-d-R-", FOLDER1 };
@@ -350,7 +350,7 @@ public class LsApplicationTest {
 	}
 
 	@Test
-	public void testInvalidNullOutputStream() throws LsException {
+	public void testRunToThrowsLsExpUsingNullOutputStream() throws LsException {
 		thrown.expect(LsException.class);
 		thrown.expectMessage("ls: Null Pointer Exception");
 		lsApp.run(null, null, null);

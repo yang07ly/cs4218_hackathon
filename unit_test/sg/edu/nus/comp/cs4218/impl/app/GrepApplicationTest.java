@@ -83,14 +83,14 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepTextFromRelativeFile() throws GrepException {
+	public void testMutiFileToGrepLineUsingRelFile() throws GrepException {
 		expected = FILE1_LINE1 + FILE1_LINE2;
 		result = grepApp.grepFromMultipleFiles(PATTERN_FILE, false, FILE_1);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepTextFromAbsoluteFile() throws GrepException {
+	public void testMutiFileToGrepLineUsingAbsFile() throws GrepException {
 		expected = FILE1_LINE3 + FILE1_LINE5 + FILE1_LINEA;
 		result = grepApp.grepFromMultipleFiles(PATTERN_HAS, false,
 				Environment.currentDirectory + File.separator + FILE_1);
@@ -98,35 +98,35 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepRegexMatchNumericFromFile() throws GrepException {
+	public void testMutiFileToGrepLineUsingRegexPattern() throws GrepException {
 		expected = FILE1_LINE1 + FILE1_LINE2 + FILE1_LINE3 + FILE1_LINE4 + FILE1_LINE5;
 		result = grepApp.grepFromMultipleFiles(PATTERN_DIGIT, false, FILE_1);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepNoMatchedFromFile() throws GrepException {
+	public void testMutiFileToGrepNothingUsingUnmatchedPattern() throws GrepException {
 		expected = "";
 		result = grepApp.grepFromMultipleFiles(PATTERN_NOMATCH, false, FILE_1);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepEmptyFromFile() throws GrepException {
+	public void testMutiFileToGrepAllLineUsingEmptyPattern() throws GrepException {
 		expected = FILE2_LINEA + FILE2_LINEB + FILE2_LINEC + FILE2_LINED + FILE2_LINEE + FILE2_LINE1;
 		result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_2);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepTwoSpacesFromFile() throws GrepException {
+	public void testMutiFileToGrepLineWithTwoSpacesUsingTwoSpacesPattern() throws GrepException {
 		expected = FILE1_LINE5;
 		result = grepApp.grepFromMultipleFiles(PATTERN_TWOSPACES, false, FILE_1);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepCharAFromMutipleFiles() throws GrepException {
+	public void testMutiFileToGrepLineFromMutiFilesUsingMutiFiles() throws GrepException {
 		expected = FILE_1 + STR_COLON + FILE1_LINE2 + FILE_1 + STR_COLON + FILE1_LINE3 + ABS_FILE2 + STR_COLON
 				+ FILE2_LINEB + ABS_FILE2 + STR_COLON + FILE2_LINEC + ABS_FILE2 + STR_COLON + FILE2_LINE1;
 		result = grepApp.grepFromMultipleFiles(PATTERN_SINGLE_A, false, FILE_1, ABS_FILE2);
@@ -134,140 +134,140 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepEmptyFromEmptyFile() throws GrepException {
+	public void testMutiFileToGrepEmptyUsingEmptyPatternAndEmptyFile() throws GrepException {
 		expected = STR_EMPTY;
 		result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_EMPTY);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepEmptyFromTwoEmptyFile() throws GrepException {
+	public void testMutiFileToGrepEmptyFromMutiFilesUsingEmptyPatternAndMutiEmptyFiles() throws GrepException {
 		expected = FILE_EMPTY + STR_COLON + STR_EMPTY + OSUtil.NEWLINE + FILE_EMPTY + STR_COLON + STR_EMPTY;
 		result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_EMPTY, FILE_EMPTY);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testInvertGrepRegexMatchFromFile() throws GrepException {
+	public void testMutiFileToGrepLineUsingInvertMatch() throws GrepException {
 		expected = FILE1_LINEA;
 		result = grepApp.grepFromMultipleFiles(PATTERN_DIGIT, true, FILE_1);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testInvalidGrepNullPatternFromFile() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingNullPattern() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		grepApp.grepFromMultipleFiles(null, false, FILE_1);
 	}
 
 	@Test
-	public void testInvalidGrepNoFile() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingNoFile() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false);
 	}
 
 	@Test
-	public void testInvalidGrepEmptyFileName() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingEmptyFileName() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage("grep: : No such file or directory");
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false, "");
 	}
 
 	@Test
-	public void testInvalidGrepSpacesFileName() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingSpacesAsFileName() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage("grep:    : No such file or directory");
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false, "   ");
 	}
 
 	@Test
-	public void testInvalidGrepFromNonExistentFile() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingNonExistentFile() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + FILE_NONEXISTENT + ": No such file or directory");
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false, FILE_NONEXISTENT);
 	}
 
 	@Test
-	public void testInvalidGrepFromFolder() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingDir() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + FOLDER_1 + ": Is a directory");
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false, FOLDER_1);
 	}
 
 	@Test
-	public void testInvalidGrepFromMutipleFiles() throws GrepException {
+	public void testMutiFileToThrowsGrepExpUsingMutiFilesWithNonExistentFile() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + FILE_NONEXISTENT + ": No such file or directory");
 		grepApp.grepFromMultipleFiles(PATTERN_FILE, false, FILE_1, FILE_NONEXISTENT);
 	}
 
 	@Test
-	public void testGrepTextFromInputStream() throws GrepException {
+	public void testStdinToGrepLineUsingInputStream() throws GrepException {
 		expected = STREAM_LINE2 + STREAM_LINE4 + STREAM_LINEA;
 		result = grepApp.grepFromStdin(PATTERN_HAS, false, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepRegexMatchNumericFromInputStream() throws GrepException {
+	public void testStdinToGrepLineUsingRegexPattern() throws GrepException {
 		expected = STREAM_LINE1 + STREAM_LINE2 + STREAM_LINE3 + STREAM_LINE4;
 		result = grepApp.grepFromStdin(PATTERN_DIGIT, false, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepEmptyFromInputStream() throws GrepException {
+	public void testStdinToGrepLineUsingEmptyInputStream() throws GrepException {
 		expected = STREAM_LINE1 + STREAM_LINE2 + STREAM_LINE3 + STREAM_LINE4 + STREAM_LINEA;
 		result = grepApp.grepFromStdin(PATTERN_EMPTY, false, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepTwoSpacesFromInputStream() throws GrepException {
+	public void testStdinToGrepLineUsingTwoSpacePattern() throws GrepException {
 		expected = STREAM_LINE4;
 		result = grepApp.grepFromStdin(PATTERN_TWOSPACES, false, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepNoMatchedFromInputStream() throws GrepException {
+	public void testStdinToGrepEmptyUsingNomatchedPattern() throws GrepException {
 		expected = "";
 		result = grepApp.grepFromStdin(PATTERN_NOMATCH, false, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testGrepEmptyFromEmptyInputStream() throws GrepException {
+	public void testStdinToGrepEmptyUsingEmptyPatternAndEmptyInputStream() throws GrepException {
 		expected = "";
 		result = grepApp.grepFromStdin(PATTERN_EMPTY, false, new ByteArrayInputStream("".getBytes()));
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testInvertGrepRegexMatchNumericFromInputStream() throws GrepException {
+	public void testStdinToGrepLineUsingInvertMatch() throws GrepException {
 		expected = STREAM_LINEA;
 		result = grepApp.grepFromStdin(PATTERN_DIGIT, true, stdin);
 		assertEquals(expected.trim(), result);
 	}
 
 	@Test
-	public void testInvalidGrepNullPatternFromInputStream() throws GrepException {
+	public void testStdinToThrowsGrepExpUsingNullPattern() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		grepApp.grepFromStdin(null, false, stdin);
 	}
 
 	@Test
-	public void testInvalidGrepNullInputStream() throws GrepException {
+	public void testStdinToThrowsGrepExpUsingNullInputStream() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		grepApp.grepFromStdin(PATTERN_HAS, false, null);
 	}
 
 	@Test
-	public void testGrepPatternExtractionFoFile() throws GrepException {
+	public void testRunToGrepLineUsingFile() throws GrepException {
 		expected = FILE1_LINE3;
 		String[] strArr = { PATTERN_SDIGIT, FILE_1 };
 
@@ -277,7 +277,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepPatternExtractionForInputStream() throws GrepException {
+	public void testRunToGrepLineUsingInputStream() throws GrepException {
 		expected = STREAM_LINE2;
 		String[] strArr = { PATTERN_SDIGIT };
 
@@ -287,7 +287,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepOptionPositionFront() throws GrepException {
+	public void testRunToGrepLineUsingOptionAtFront() throws GrepException {
 		expected = FILE1_LINEA;
 		String[] strArr = { GREP_OPTION, PATTERN_DIGIT, FILE_1 };
 
@@ -297,7 +297,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepOptionPositionEndOfStream() throws GrepException {
+	public void testRunToGrepLineUsingOptionAfterPattern() throws GrepException {
 		expected = STREAM_LINEA;
 		String[] strArr = { PATTERN_DIGIT, GREP_OPTION };
 
@@ -307,7 +307,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepOptionPositionEndOfFile() throws GrepException {
+	public void testRunToGrepLineUsingOptionAfterFile() throws GrepException {
 		expected = FILE2_LINEB + FILE2_LINEC + FILE2_LINED + FILE2_LINEE;
 		String[] strArr = { PATTERN_DIGIT, FILE_2, GREP_OPTION };
 
@@ -317,7 +317,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepOptionPositionBetPatternAndFile() throws GrepException {
+	public void testRunToGrepLineUsingOptionBtwPatternAndFile() throws GrepException {
 		expected = FILE1_LINEA;
 		String[] strArr = { PATTERN_DIGIT, GREP_OPTION, FILE_1 };
 
@@ -327,7 +327,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testGrepOptionPositionBetFiles() throws GrepException {
+	public void testRunToGrepLineUsingOptionBtwTwoFiles() throws GrepException {
 		expected = FILE_2 + STR_COLON + FILE2_LINEB + FILE_2 + STR_COLON + FILE2_LINEC + FILE_2 + STR_COLON
 				+ FILE2_LINED + FILE_2 + STR_COLON + FILE2_LINEE + FILE_1 + STR_COLON + FILE1_LINEA;
 		String[] strArr = { PATTERN_DIGIT, FILE_2, GREP_OPTION, FILE_1 };
@@ -338,21 +338,21 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testInvalidGrepNullArgs() throws GrepException {
+	public void testRunToThrowGrepExpUsingNullArg() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		grepApp.run(null, stdin, stdout);
 	}
 
 	@Test
-	public void testInvalidGrepEmptyArgs() throws GrepException {
+	public void testRunToThrowGrepExpUsingEmptyArg() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + "pattern is not specified");
 		grepApp.run(new String[0], stdin, stdout);
 	}
 
 	@Test
-	public void testInvalidGrepNoPattern() throws GrepException {
+	public void testRunToThrowGrepExpUsingNoPattern() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + "pattern is not specified");
 		String[] strArr = { GREP_OPTION };
@@ -360,7 +360,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testInvalidGrepOption() throws GrepException {
+	public void testRunToThrowGrepExpUsingInvalidGrepOption() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage("grep: invalid option -- 'i'");
 		String[] strArr = { "-i", PATTERN_FILE, FILE_1 };
@@ -368,7 +368,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testInvalidGrepNoOption() throws GrepException {
+	public void testRunToThrowGrepExpUsingUnspecifiedGrepOption() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage("grep: file: No such file or directory");
 		String[] strArr = { "-", PATTERN_FILE, FILE_1 };
@@ -376,7 +376,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testInvalidPatternPosition() throws GrepException {
+	public void testRunToThrowGrepExpUsingPatternAfterFile() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(STR_GREP + PATTERN_FILE + ": No such file or directory");
 		String[] strArr = { FILE_1, PATTERN_FILE };
@@ -384,7 +384,7 @@ public class GrepApplicationTest {
 	}
 
 	@Test
-	public void testInvalidGrepNullOutputStream() throws GrepException {
+	public void testRunToThrowGrepExpUsingNullOutputStream() throws GrepException {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage(EXP_NULL_POINTER);
 		String[] strArr = { PATTERN_FILE, FILE_1 };

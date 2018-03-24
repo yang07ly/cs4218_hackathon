@@ -35,7 +35,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoText() throws EchoException {
+	public void testRunToEchoTextUsingOneStrInArg() throws EchoException {
 		expected = TEXT1;
 		String[] strArr = { TEXT1 };
 
@@ -45,7 +45,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoMultipleText() throws EchoException {
+	public void testRunToEchoMultiTextUsingMultiStrsInArg() throws EchoException {
 		expected = TEXT1 + SPACE + TEXT2;
 		String[] strArr = { TEXT1, TEXT2 };
 
@@ -55,7 +55,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoEmptyString() throws EchoException {
+	public void testRunToEchoNothingUsingEmptyStrInArg() throws EchoException {
 		expected = EMPTY;
 		String[] strArr = { EMPTY };
 
@@ -65,7 +65,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoMultipleEmptyString() throws EchoException {
+	public void testRunToEchoSpaceUsingMultiEmptyStrsInArg() throws EchoException {
 		expected = SPACE;
 		String[] strArr = { EMPTY, EMPTY };
 
@@ -75,7 +75,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoSpaces() throws EchoException {
+	public void testRunToEchoMultiSpacesUsingSpacesInArg() throws EchoException {
 		expected = SPACES;
 		String[] strArr = { SPACES };
 
@@ -85,7 +85,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoEmptyArgs() throws EchoException {
+	public void testRunToEchoEmptyUsingEmptyArg() throws EchoException {
 		expected = EMPTY;
 		String[] strArr = {};
 
@@ -95,7 +95,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextWithSpaces() throws EchoException {
+	public void testRunToEchoTextWithSpaceUsingStrWithSpaceInArg() throws EchoException {
 		expected = TEXT1 + SPACES + TEXT2;
 		String[] strArr = { TEXT1 + SPACES + TEXT2 };
 
@@ -105,7 +105,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextStartWithSpaces() throws EchoException {
+	public void testRunToEchoSpacesAtFrontUsingStrWithSpacesAtFrontInArg() throws EchoException {
 		expected = SPACES + TEXT2;
 		String[] strArr = { SPACES + TEXT2 };
 
@@ -115,7 +115,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextEndWithSpaces() throws EchoException {
+	public void testRunToEchoSpacesAtEndUsingStrWithSpacesAtEndInArg() throws EchoException {
 		expected = TEXT1 + SPACES;
 		String[] strArr = { TEXT1 + SPACES };
 
@@ -125,7 +125,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoMutipleTextWithSpaces() throws EchoException {
+	public void testRunToEchoMultiTextAndSpacesUsingMultiStrWithSpacesInArg() throws EchoException {
 		expected = TEXT1 + SPACES + SPACE + TEXT1 + SPACES + TEXT2 + SPACE + SPACES + TEXT2;
 		String[] strArr = { TEXT1 + SPACES, TEXT1 + SPACES + TEXT2, SPACES + TEXT2 };
 
@@ -135,7 +135,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextWithTab() throws EchoException {
+	public void testRunToEchoTabUsingTabStrInArg() throws EchoException {
 		expected = TAB;
 		String[] strArr = { TAB };
 
@@ -145,7 +145,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextStartWithTab() throws EchoException {
+	public void testRunToEchoTabAtFrontUsingStrWuthTabAtFrontInArg() throws EchoException {
 		expected = TAB + TEXT2;
 		String[] strArr = { TAB + TEXT2 };
 
@@ -155,7 +155,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoTextEndWithTab() throws EchoException {
+	public void testRunToEchoTabAtEndUsingStrWuthTabAtEndInArg() throws EchoException {
 		expected = TEXT1 + TAB;
 		String[] strArr = { TEXT1 + TAB };
 
@@ -165,7 +165,7 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testEchoMutipleTextWithTab() throws EchoException {
+	public void testRunToEchoMultiTextAndTabUsingMultiStrWithTabInArg() throws EchoException {
 		expected = TEXT1 + TAB + SPACE + TEXT1 + TAB + TEXT2 + SPACE + TAB + TEXT2;
 		String[] strArr = { TEXT1 + TAB, TEXT1 + TAB + TEXT2, TAB + TEXT2 };
 
@@ -175,14 +175,14 @@ public class EchoApplicationTest {
 	}
 
 	@Test
-	public void testInvalidNullArgs() throws EchoException {
+	public void testRunToThrowsEchoExpUsingNullArg() throws EchoException {
 		thrown.expect(EchoException.class);
 		thrown.expectMessage("echo: Null arguments");
 		echoApp.run(null, null, stdout);
 	}
 
 	@Test
-	public void testInvalidNullOutputStream() throws EchoException {
+	public void testRunToThrowsEchoExpUsingNullOutputStream() throws EchoException {
 		thrown.expect(EchoException.class);
 		thrown.expectMessage("echo: OutputStream not provided");
 		echoApp.run(new String[] { TEXT1 }, null, null);

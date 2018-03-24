@@ -38,7 +38,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testRelativeDirectoryChange() throws CdException {
+	public void testChgDirToChgToDirUsingRelDir() throws CdException {
 		expected = ABS_DIR_FOLDER1;
 		cdApp.changeToDirectory(DIR_FOLDER1);
 		result = Environment.currentDirectory;
@@ -46,7 +46,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testAbsoluteDirectoryChange() throws CdException {
+	public void testChgDirToChgToDirUsingAbsDir() throws CdException {
 		expected = ABS_DIR_FOLDER2;
 		cdApp.changeToDirectory(ABS_DIR_FOLDER2);
 		result = Environment.currentDirectory;
@@ -54,7 +54,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testUserDirectoryChange() throws CdException {
+	public void testChgDirToChgToUserDirUsingNullDir() throws CdException {
 		expected = DIR_USER;
 		cdApp.changeToDirectory(null);
 		result = Environment.currentDirectory;
@@ -62,7 +62,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testCurrentDirectoryChange() throws CdException {
+	public void testChgDirToChgToCurDirUsingDot() throws CdException {
 		expected = DIR_CD_TEST_SYS;
 		cdApp.changeToDirectory(".");
 		result = Environment.currentDirectory;
@@ -70,7 +70,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testParentDirectoryChange() throws CdException {
+	public void testChgDirToChgToParentDirUsingTwoDot() throws CdException {
 		expected = DIR_TEST_SYS;
 		cdApp.changeToDirectory("..");
 		result = Environment.currentDirectory;
@@ -78,15 +78,15 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testDirChangeMixWithSpecialDir() throws CdException {
+	public void testChgDirToChgToDirUsingRelMixWithTwoDot() throws CdException {
 		expected = ABS_DIR_FOLDER2;
-		cdApp.changeToDirectory("folder1" + OSUtil.SEP + "../folder2");
+		cdApp.changeToDirectory(DIR_FOLDER1 + OSUtil.SEP + ".." + OSUtil.SEP + DIR_FOLDER2);
 		result = Environment.currentDirectory;
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void testEmptyDirectoryChange() throws CdException {
+	public void testChgDirToChgToCurDirUsingEmptyDir() throws CdException {
 		expected = DIR_USER;
 		cdApp.changeToDirectory("");
 		result = Environment.currentDirectory;
@@ -94,7 +94,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testNullArgs() throws CdException {
+	public void testRunToChgToUserDirUsingAllNull() throws CdException {
 		expected = DIR_USER;
 		cdApp.run(null, null, null);
 		result = Environment.currentDirectory;
@@ -102,7 +102,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testEmptyArgs() throws CdException {
+	public void testRunToChgToUserDirUsingEmptyArgs() throws CdException {
 		expected = DIR_USER;
 		cdApp.run(new String[0], null, null);
 		result = Environment.currentDirectory;
@@ -110,7 +110,7 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testEmptyStringInArgs() throws CdException {
+	public void testRunToChgToUserDirUsingEmptyStrInArgs() throws CdException {
 		expected = DIR_USER;
 		cdApp.run(new String[] { "" }, null, null);
 		result = Environment.currentDirectory;
@@ -118,28 +118,28 @@ public class CdApplicationTest {
 	}
 
 	@Test
-	public void testInvalidNonExistentChange() throws CdException {
+	public void testRunToThrowsCdExpUsingUnknownDir() throws CdException {
 		thrown.expect(CdException.class);
 		thrown.expectMessage("cd: unknownDir: No such file or directory");
 		cdApp.changeToDirectory("unknownDir");
 	}
 
 	@Test
-	public void testInvalidFileChange() throws CdException {
+	public void testRunToThrowsCdExpUsingFile() throws CdException {
 		thrown.expect(CdException.class);
 		thrown.expectMessage("cd: file1.txt: Not a directory");
 		cdApp.changeToDirectory("file1.txt");
 	}
 
 	@Test
-	public void testInvalidSpacesDirectoryChange() throws CdException {
+	public void testRunToThrowsCdExpUsingMultiSpaces() throws CdException {
 		thrown.expect(CdException.class);
 		thrown.expectMessage("cd:    : No such file or directory");
 		cdApp.changeToDirectory("   ");
 	}
 
 	@Test
-	public void testInvalidMultipleDirectoryChange() throws CdException {
+	public void testRunToThrowsCdExpUsingMultiDirs() throws CdException {
 		thrown.expect(CdException.class);
 		thrown.expectMessage("cd: too many arguments");
 		cdApp.run(new String[] { DIR_FOLDER1, DIR_FOLDER2 }, null, null);

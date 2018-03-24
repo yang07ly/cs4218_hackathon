@@ -62,7 +62,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testRelativeMkDir() throws MkdirException {
+	public void testCreateFolderToCreateDirUsingRelDir() throws MkdirException {
 		mkdirApp.createFolder(DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
@@ -70,7 +70,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testAbsoluteMkDir() throws MkdirException {
+	public void testCreateFolderToCreateDirUsingAbsDirInArg() throws MkdirException {
 		mkdirApp.createFolder(ABS_DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
@@ -78,7 +78,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkDirInDir() throws MkdirException {
+	public void testCreateFolderToCreateDirInDirUsingRelDirInArg() throws MkdirException {
 		mkdirApp.createFolder(DIR_EXISTING + File.separator + DIR_FOLDER1);
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING + File.separator + DIR_FOLDER1);
 		assertTrue(Files.exists(dirPath));
@@ -86,7 +86,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkMutipleDirs() throws MkdirException {
+	public void testCreateFolderToCreateMultiDirsUsingMultiDirInArg() throws MkdirException {
 		String[] folderNames = { DIR_FOLDER1, DIR_FOLDER2, DIR_FOLDER3 };
 		mkdirApp.createFolder(folderNames);
 		for (int i = 0; i < folderNames.length; i++) {
@@ -97,7 +97,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkMutipleDirsInSeq() throws MkdirException {
+	public void testCreateFolderToCreateDirInNewDirUsingMultiDirInSeqInArg() throws MkdirException {
 		String[] folderNames = { DIR_FOLDER1, DIR_FOLDER1_1, DIR_FOLDER1_1_1 };
 		mkdirApp.createFolder(folderNames);
 		for (int i = 0; i < folderNames.length; i++) {
@@ -108,7 +108,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkDirOfExistingDirWithDiffCaseInUnix() throws MkdirException {
+	public void testCreateFolderToCreateDirUsingExistingNameInDiffCaseInUnix() throws MkdirException {
 		Assume.assumeTrue(OSUtil.isUnix());
 		mkdirApp.createFolder(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
@@ -117,7 +117,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testInvalidMkDirOfExistingDirWithDiffCaseInWindows() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingExistingNameInDiffCaseInWindows() throws MkdirException {
 		Assume.assumeTrue(OSUtil.isWindows());
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage(
@@ -126,7 +126,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkDirOnlySpacesNameInUnix() throws MkdirException {
+	public void testCreateFolderToCreateDirUsingSpacesAsNameInUnix() throws MkdirException {
 		Assume.assumeTrue(OSUtil.isUnix());
 		mkdirApp.createFolder("   ");
 		dirPath = Paths.get(Environment.currentDirectory).resolve("   ");
@@ -135,7 +135,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testInvalidMkDirOnlySpacesNameInWindows() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingSpacesAsNameInWindows() throws MkdirException {
 		Assume.assumeTrue(OSUtil.isWindows());
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory '   ': No such file or directory");
@@ -143,35 +143,35 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testInvalidMkDirNullName() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingNullName() throws MkdirException {
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: missing operand");
 		mkdirApp.createFolder();
 	}
 
 	@Test
-	public void testInvalidMkDirEmptyName() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingEmptyName() throws MkdirException {
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory '': No such file or directory");
 		mkdirApp.createFolder("");
 	}
 
 	@Test
-	public void testInvalidMkDirOfExistingDir() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingExistingDirName() throws MkdirException {
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory 'existingFolder': File exists");
 		mkdirApp.createFolder(DIR_EXISTING);
 	}
 
 	@Test
-	public void testInvalidMkDirOfExistingFile() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingExistingFileName() throws MkdirException {
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory 'existingFile.txt': File exists");
 		mkdirApp.createFolder(FILE_EXISTING);
 	}
 
 	@Test
-	public void testInvalidMkDirInNonExistDir() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingNonExistentDir() throws MkdirException {
 		String newPath = DIR_NONEXISTENT + File.separator + DIR_FOLDER1;
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory '" + newPath + "': No such file or directory");
@@ -179,7 +179,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testInvalidMkDirWithValidDir() throws MkdirException {
+	public void testCreateFolderToThrowsMkdirExpUsingMutiDirsWithAnInvalidDir() throws MkdirException {
 		String newPath = DIR_NONEXISTENT + File.separator + DIR_FOLDER2;
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory '" + newPath + "': No such file or directory");
@@ -187,7 +187,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkDirRun() throws MkdirException {
+	public void testRunToCreateDirInNewDirUsingMultiDirInSeqInArg() throws MkdirException {
 		String[] folderNames = { DIR_FOLDER1, DIR_FOLDER1_1, DIR_FOLDER1_1_1 };
 		mkdirApp.run(folderNames, null, null);
 		for (int i = 0; i < folderNames.length; i++) {
@@ -198,7 +198,7 @@ public class MkdirApplicationTest {
 	}
 
 	@Test
-	public void testMkDirNullArgs() throws MkdirException {
+	public void testRunToThrowsMkdirExpUsingNullArg() throws MkdirException {
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: missing operand");
 		mkdirApp.run(null, null, null);
