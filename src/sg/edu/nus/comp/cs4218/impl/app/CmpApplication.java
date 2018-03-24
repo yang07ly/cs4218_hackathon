@@ -108,7 +108,7 @@ public class CmpApplication implements CmpInterface {
 						msg += byteNumber + " " + getOctalString(readValueA) + " " + getChar(readValueA) + " "
 								+ getOctalString(readValueB) + " " + getChar(readValueB);
 					} else { // -c
-						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
+						msgWithoutL += "char " + byteNumber + ", " + "line " + lineNumber + " is "
 								+ getOctalString(readValueA) + " " + getChar(readValueA) + " "
 								+ getOctalString(readValueB) + " " + getChar(readValueB);
 						return msgWithoutL;
@@ -116,7 +116,7 @@ public class CmpApplication implements CmpInterface {
 				} else if (isPrintOctalDiff) { // -l
 					msg += byteNumber + " " + getOctalString(readValueA) + " " + getOctalString(readValueB);
 				} else { // no flags
-					msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber;
+					msgWithoutL += "char " + byteNumber + ", " + "line " + lineNumber;
 					return msgWithoutL;
 				}
 			}

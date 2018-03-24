@@ -112,6 +112,7 @@ public class PasteApplication implements PasteInterface {
 		try {
 			boolean hasLines = true;
 			StringBuilder stringBuilder = new StringBuilder();
+			int numLines = 0;
 			while (hasLines) {
 				hasLines = false;
 				StringBuilder lineBuilder = new StringBuilder();
@@ -127,6 +128,10 @@ public class PasteApplication implements PasteInterface {
 						}
 					}
 				}
+				if(numLines != 0 && hasLines) {
+					stringBuilder.append(new String("\n"));
+				}
+				numLines++;
 				stringBuilder.append(new String(lineBuilder));
 			}
 			return new String(stringBuilder);

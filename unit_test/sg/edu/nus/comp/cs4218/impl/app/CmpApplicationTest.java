@@ -232,9 +232,9 @@ public class CmpApplicationTest {
 	public void testFileFileRelRelTrueFalseFalse() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, false);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt file2.txt differ: char 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt file2.txt differ: char 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
@@ -329,7 +329,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyStreamFalseFalseFalse() throws CmpException, IOException {
-		expected = "file1.txt - differ: byte 1, line 1";
+		expected = "file1.txt - differ: char 1, line 1";
 		File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, false);
@@ -359,9 +359,9 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, false);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt - differ: char 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt - differ: char 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
