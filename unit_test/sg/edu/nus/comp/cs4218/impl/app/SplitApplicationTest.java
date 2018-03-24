@@ -568,4 +568,12 @@ public class SplitApplicationTest {
 		Files.delete(Paths.get(path2.toString() + "ab"));
 	}
 
+	@Test
+	public void testInvalidLines() throws SplitException {
+		expected = "split: 43s: invalid number of lines";
+		String[] args = { "file1.txt", "-l", "43s" };
+		thrown.expect(SplitException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
 }

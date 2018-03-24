@@ -1,8 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.optr;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,11 +11,12 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
-import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class GlobOperatorTest {
 
-	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "glob_test_system";
+	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system" + OSUtil.SEP
+			+ "glob_test_system";
 
 	private static final String FILE1 = "file1.txt";
 	private static final String FILE2 = "file2.txt";
@@ -29,16 +28,16 @@ public class GlobOperatorTest {
 	private static final String FOLDER2 = "folder2";
 	private static final String FOLDER_W_SPACES = "folder name with spaces";
 
-	private static final String FOLDER1_FILE1 = FOLDER1 + File.separator + FILE1;
-	private static final String FOLDER1_FILE2 = FOLDER1 + File.separator + FILE2;
-	private static final String FOLDER1_FOLDER_WS = FOLDER1 + File.separator + FOLDER_W_SPACES;
-	private static final String FOLDER2_FILE1 = FOLDER2 + File.separator + FILE1;
-	private static final String FOLDER2_FILE2 = FOLDER2 + File.separator + FILE2;
-	private static final String ABS_FILE_W_SPACES = TEST_DIR + File.separator + FILE_W_SPACES;
-	private static final String ABS_FILE1 = TEST_DIR + File.separator + FILE1;
-	private static final String ABS_FILE2 = TEST_DIR + File.separator + FILE2;
-	private static final String ABS_FOLDER1 = TEST_DIR + File.separator + FOLDER1;
-	private static final String ABS_FOLDER2 = TEST_DIR + File.separator + FOLDER2;	
+	private static final String FOLDER1_FILE1 = FOLDER1 + OSUtil.SEP + FILE1;
+	private static final String FOLDER1_FILE2 = FOLDER1 + OSUtil.SEP + FILE2;
+	private static final String FOLDER1_FOLDER_WS = FOLDER1 + OSUtil.SEP + FOLDER_W_SPACES;
+	private static final String FOLDER2_FILE1 = FOLDER2 + OSUtil.SEP + FILE1;
+	private static final String FOLDER2_FILE2 = FOLDER2 + OSUtil.SEP + FILE2;
+	private static final String ABS_FILE_W_SPACES = TEST_DIR + OSUtil.SEP + FILE_W_SPACES;
+	private static final String ABS_FILE1 = TEST_DIR + OSUtil.SEP + FILE1;
+	private static final String ABS_FILE2 = TEST_DIR + OSUtil.SEP + FILE2;
+	private static final String ABS_FOLDER1 = TEST_DIR + OSUtil.SEP + FOLDER1;
+	private static final String ABS_FOLDER2 = TEST_DIR + OSUtil.SEP + FOLDER2;
 
 	private static final String STR_SPACE = " ";
 	private static final String FILE_WILDCARD = "file*";
@@ -100,7 +99,7 @@ public class GlobOperatorTest {
 	@Test
 	public void testGlobEverythingAbsolute() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2);
-		cmd = new CommandString(Environment.currentDirectory + File.separator + "*");
+		cmd = new CommandString(Environment.currentDirectory + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -108,7 +107,7 @@ public class GlobOperatorTest {
 	@Test
 	public void testGlobEverythingWithEmptyParent() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2);
-		cmd = new CommandString(Environment.currentDirectory + File.separator + File.separator + "*");
+		cmd = new CommandString(Environment.currentDirectory + OSUtil.SEP + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -144,7 +143,7 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobMutipleWildcard() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
@@ -156,7 +155,7 @@ public class GlobOperatorTest {
 	@Test
 	public void testGlobParentDirectory() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER2_FILE1);
-		cmd = new CommandString("*" + File.separator + FILE1);
+		cmd = new CommandString("*" + OSUtil.SEP + FILE1);
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -172,7 +171,7 @@ public class GlobOperatorTest {
 	@Test
 	public void testGlobMultipleFileInMutipleFolder() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2);
-		cmd = new CommandString("*" + File.separator + FILE_WILDCARD);
+		cmd = new CommandString("*" + OSUtil.SEP + FILE_WILDCARD);
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -180,7 +179,7 @@ public class GlobOperatorTest {
 	@Test
 	public void testGlobMutiplePath() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER1_FOLDER_WS, FOLDER2_FILE1, FOLDER2_FILE2);
-		cmd = new CommandString(FOLDER1 + File.separator + "*" + STR_SPACE + FOLDER2 + File.separator + "*");
+		cmd = new CommandString(FOLDER1 + OSUtil.SEP + "*" + STR_SPACE + FOLDER2 + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
@@ -221,15 +220,15 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobValidAndEscapedWildcard() throws AbstractApplicationException, ShellException {
 		expected = new CommandString("**");
 		expected.setCharEscaped(0, true);
-		
+
 		cmd = new CommandString("**");
 		cmd.setCharEscaped(0, true);
-		
+
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}

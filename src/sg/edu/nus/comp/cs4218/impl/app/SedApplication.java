@@ -16,28 +16,26 @@ import java.util.regex.Pattern;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.SedInterface;
 import sg.edu.nus.comp.cs4218.exception.SedException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
- * The sed command copies input file (or input stream) to stdout and performs string
- * replacement. For each line containing a match to a specified pattern (in JAVA format),
- * replaces the matched substring with the specified string.
+ * The sed command copies input file (or input stream) to stdout and performs
+ * string replacement. For each line containing a match to a specified pattern
+ * (in JAVA format), replaces the matched substring with the specified string.
  * 
  * <p>
  * <b>Command format:</b> <code>sed REPLACEMENT [FILE]</code>
  * <dl>
  * <dt>REPLACEMENT</dt>
- * <dd>
- * <code>s/regexp/replacement/</code> – replace the first (in each line) substring matched 
- * by regexp with the string replacement.
+ * <dd><code>s/regexp/replacement/</code> – replace the first (in each line)
+ * substring matched by regexp with the string replacement. <br />
+ * <code>s/regexp/replacement/X</code> – X is a number. Only replace the Xth
+ * match of the regexp. <br />
  * <br />
- * <code>s/regexp/replacement/X</code> – X is a number. Only replace the Xth match of the 
- * regexp.
- * <br /><br />
- * Note that the symbols “/” used to separate regexp and replacement string can be
- * substituted by any other symbols. For example, “s/a/b/” and “s|a|b|” are the same
- * replacement rules. However, this separation symbol should not be used inside the
- * regexp and the replacement string.
- * </dd>
+ * Note that the symbols “/” used to separate regexp and replacement string can
+ * be substituted by any other symbols. For example, “s/a/b/” and “s|a|b|” are
+ * the same replacement rules. However, this separation symbol should not be
+ * used inside the regexp and the replacement string.</dd>
  * <dt>FILE</dt>
  * <dd>the name of the file(s). If no files are specified, use stdin.</dd>
  * </dl>
@@ -62,13 +60,11 @@ public class SedApplication implements SedInterface {
 	 *            OutputStream.
 	 * 
 	 * @throws SedException
-	 *            If the file(s) specified do not exist or are unreadable or
-	 *            if options id specified incorrectly or
-	 *            if an I/O exception occurs..
+	 *             If the file(s) specified do not exist or are unreadable or if
+	 *             options id specified incorrectly or if an I/O exception occurs..
 	 */
 	@Override
-	public void run(String[] args, InputStream stdin, OutputStream stdout) 
-			throws SedException {
+	public void run(String[] args, InputStream stdin, OutputStream stdout) throws SedException {
 		if (stdout == null) {
 			throw new SedException(EXP_NULL_POINTER);
 		}
@@ -100,27 +96,23 @@ public class SedApplication implements SedInterface {
 	}
 
 	/**
-	 * Returns string of the file content with the matched 
-	 * substring on each line replaced. For each line, find
-	 * the substring that matched the pattern and replace 
-	 * the substring in the specified index of the matched 
-	 * substring list. 
-	 * @param pattern 
-	 * 				String specifying a regular expression 
-	 * 				in JAVA format.
-	 * @param replacement 
-	 * 				String to replace the matched pattern.
-	 * @param replacementIndex 
-	 * 				Integer specifying the index of the matched
-	 * 				substring to be replaced (default is 0).
-	 * @param fileName 
-	 * 				String specifying name of a valid file.
+	 * Returns string of the file content with the matched substring on each line
+	 * replaced. For each line, find the substring that matched the pattern and
+	 * replace the substring in the specified index of the matched substring list.
+	 * 
+	 * @param pattern
+	 *            String specifying a regular expression in JAVA format.
+	 * @param replacement
+	 *            String to replace the matched pattern.
+	 * @param replacementIndex
+	 *            Integer specifying the index of the matched substring to be
+	 *            replaced (default is 0).
+	 * @param fileName
+	 *            String specifying name of a valid file.
 	 * @throws SedException
-	 * 				If pattern is null or empty or
-	 * 				if replacement is null or
-	 * 				if fileName is null or 
-	 * 				if replacementIndex is 0 or
-	 * 				if an I/O exception occurs.
+	 *             If pattern is null or empty or if replacement is null or if
+	 *             fileName is null or if replacementIndex is 0 or if an I/O
+	 *             exception occurs.
 	 */
 	@Override
 	public String replaceSubstringInFile(String pattern, String replacement, int replacementIndex, String fileName)
@@ -145,11 +137,11 @@ public class SedApplication implements SedInterface {
 			throw new SedException("read error on " + fileName + ": Is a directory");
 		}
 
-		String outputStr = "";	
+		String outputStr = "";
 		try {
 			BufferedReader content = new BufferedReader(new FileReader(filePath.toFile()));
 			String line;
-			while((line = content.readLine()) != null) {
+			while ((line = content.readLine()) != null) {
 				outputStr += getReplacedLine(pattern, replacement, replacementIndex, line);
 			}
 			content.close();
@@ -161,27 +153,23 @@ public class SedApplication implements SedInterface {
 	}
 
 	/**
-	 * Returns string of the Stdin arg content with the matched 
-	 * substring on each line replaced. For each line, find
-	 * the substring that matched the pattern and replace 
-	 * the substring in the specified index of the matched 
-	 * substring list.
-	 * @param pattern 
-	 * 				String specifying a regular expression 
-	 * 				in JAVA format.
-	 * @param replacement 
-	 * 				String to replace the matched pattern.
-	 * @param replacementIndex 
-	 * 				Integer specifying the index of the matched 
-	 * 				substring to be replaced (default is 0).
-	 * @param stdin 
-	 * 				InputStream containing arguments from Stdin.
+	 * Returns string of the Stdin arg content with the matched substring on each
+	 * line replaced. For each line, find the substring that matched the pattern and
+	 * replace the substring in the specified index of the matched substring list.
+	 * 
+	 * @param pattern
+	 *            String specifying a regular expression in JAVA format.
+	 * @param replacement
+	 *            String to replace the matched pattern.
+	 * @param replacementIndex
+	 *            Integer specifying the index of the matched substring to be
+	 *            replaced (default is 0).
+	 * @param stdin
+	 *            InputStream containing arguments from Stdin.
 	 * @throws SedException
-	 * 				If pattern is null or empty or
-	 * 				if replacement is null or
-	 * 				if fileName is null or 
-	 * 				if replacementIndex is 0 or
-	 * 				if an I/O exception occurs.
+	 *             If pattern is null or empty or if replacement is null or if
+	 *             fileName is null or if replacementIndex is 0 or if an I/O
+	 *             exception occurs.
 	 */
 	@Override
 	public String replaceSubstringInStdin(String pattern, String replacement, int replacementIndex, InputStream stdin)
@@ -196,7 +184,7 @@ public class SedApplication implements SedInterface {
 		try {
 			BufferedReader content = new BufferedReader(inStream);
 			String line;
-			while((line = content.readLine()) != null) {
+			while ((line = content.readLine()) != null) {
 				outputStr += getReplacedLine(pattern, replacement, replacementIndex, line);
 			}
 
@@ -208,13 +196,13 @@ public class SedApplication implements SedInterface {
 
 	/**
 	 * Validate that the Sed options and throw SedException when error occurs.
+	 * 
 	 * @param option
-	 * 				String of the specified sed option.
+	 *            String of the specified sed option.
 	 * @throws SedException
-	 * 				If the command is unknown or unterminated.
+	 *             If the command is unknown or unterminated.
 	 */
-	private void validateReplOptions(String option) 
-			throws SedException {
+	private void validateReplOptions(String option) throws SedException {
 		if (!option.startsWith("s")) {
 			throw new SedException("char 1: unknown command: '" + option.charAt(0) + "'");
 		}
@@ -223,18 +211,18 @@ public class SedApplication implements SedInterface {
 			throw new SedException("char 1: unterminated: '" + option.charAt(0) + "'");
 		}
 
-		char sepChar = option.charAt(1);	
+		char sepChar = option.charAt(1);
 		if (!option.matches("s" + sepChar + ".*" + sepChar + ".*" + sepChar + ".*")) {
 			throw new SedException("char " + option.length() + ": unterminated: '" + option.charAt(0) + "'");
-		}	
+		}
 	}
 
 	/**
 	 * Return the separating character in the validated option.
+	 * 
 	 * @param option
-	 * 				String of the validated sed option.
-	 * @return char
-	 * 				Separating character specified in the option.
+	 *            String of the validated sed option.
+	 * @return char Separating character specified in the option.
 	 */
 	private char getSepChar(String option) {
 		return option.charAt(1);
@@ -242,17 +230,16 @@ public class SedApplication implements SedInterface {
 
 	/**
 	 * Return the regular expression in the validated option.
+	 * 
 	 * @param option
-	 * 				String of the validated sed option.
+	 *            String of the validated sed option.
 	 * @param sepChar
-	 * 				String of the separating character specified in sed option.
-	 * @return String
-	 * 				Regular expression in the option.
+	 *            String of the separating character specified in sed option.
+	 * @return String Regular expression in the option.
 	 * @throws SedException
-	 * 				If the regular expression is empty.
+	 *             If the regular expression is empty.
 	 */
-	private String getRegExp(String option, char sepChar) 
-			throws SedException {
+	private String getRegExp(String option, char sepChar) throws SedException {
 		int endIndex = option.indexOf(sepChar, 2);
 		String regexp = option.substring(2, endIndex);
 
@@ -264,12 +251,12 @@ public class SedApplication implements SedInterface {
 
 	/**
 	 * Return the replacement expression in the validated option.
+	 * 
 	 * @param option
-	 * 				String of the validated sed option.
+	 *            String of the validated sed option.
 	 * @param sepChar
-	 * 				String of the separating character specified in sed option.
-	 * @return String
-	 * 				Replacement expression in the option, possibly empty.
+	 *            String of the separating character specified in sed option.
+	 * @return String Replacement expression in the option, possibly empty.
 	 */
 	private String getReplExp(String option, char sepChar) {
 		int beginIndex = option.indexOf(sepChar, 2) + 1;
@@ -279,17 +266,16 @@ public class SedApplication implements SedInterface {
 
 	/**
 	 * Return the value of the Nth in the validated option.
+	 * 
 	 * @param option
-	 * 				String of the validated sed option.
+	 *            String of the validated sed option.
 	 * @param sepChar
-	 * 				String of the separating character specified in sed option.
-	 * @return int
-	 * 				The value of the Nth.
+	 *            String of the separating character specified in sed option.
+	 * @return int The value of the Nth.
 	 * @throws SedException
-	 * 				If the Nth value is not an integer or is 0.
+	 *             If the Nth value is not an integer or is 0.
 	 */
-	private int getNthValue(String option, char sepChar) 
-			throws SedException {
+	private int getNthValue(String option, char sepChar) throws SedException {
 		int beginIndex = option.lastIndexOf(sepChar);
 		String nthStr = option.substring(beginIndex + 1);
 
@@ -304,30 +290,30 @@ public class SedApplication implements SedInterface {
 		}
 
 		if (matchIndex == 0) {
-			throw new SedException("char " + beginIndex + ": number option to '" + option.charAt(0) 
-			+ "' command may not be zero");
+			throw new SedException(
+					"char " + beginIndex + ": number option to '" + option.charAt(0) + "' command may not be zero");
 		}
 		return matchIndex;
 	}
 
 	/**
-	 * Returns string of the line with the matched substring replaced. 
-	 * @param pattern 
-	 * 				String specifying a regular expression in JAVA format.
-	 * @param replacement 
-	 * 				String to replace the matched pattern.
-	 * @param replacementIndex 
-	 * 				Integer specifying the index of the matched substring to be 
-	 * 				replaced (default is 0).
-	 * @param line 
-	 * 				String of the line to be replaced.
-	 * @return String
-	 * 				Line with the matched substring replaced.
+	 * Returns string of the line with the matched substring replaced.
+	 * 
+	 * @param pattern
+	 *            String specifying a regular expression in JAVA format.
+	 * @param replacement
+	 *            String to replace the matched pattern.
+	 * @param replacementIndex
+	 *            Integer specifying the index of the matched substring to be
+	 *            replaced (default is 0).
+	 * @param line
+	 *            String of the line to be replaced.
+	 * @return String Line with the matched substring replaced.
 	 * @throws SedException
-	 * 				If pattern is empty or the Nth value is 0.
+	 *             If pattern is empty or the Nth value is 0.
 	 */
 	private String getReplacedLine(String pattern, String replacement, int replacementIndex, String line)
-			throws SedException{
+			throws SedException {
 		if (pattern == null || replacement == null || line == null) {
 			throw new SedException(EXP_NULL_POINTER);
 		}
@@ -343,9 +329,9 @@ public class SedApplication implements SedInterface {
 		if (replacementIndex < 0) {
 			throw new SedException("command may not be negative");
 		}
-		
+
 		Matcher matcher = Pattern.compile(pattern).matcher(line);
-		for(int i = 0; i < replacementIndex; i++) {
+		for (int i = 0; i < replacementIndex; i++) {
 			matcher.find();
 		}
 
@@ -353,8 +339,9 @@ public class SedApplication implements SedInterface {
 		try {
 			matchedIndex = matcher.start();
 		} catch (IllegalStateException e) {
-			return line + "\n";
+			return line + OSUtil.NEWLINE;
 		}
-		return line.substring(0, matchedIndex) + line.substring(matchedIndex).replaceFirst(pattern, replacement) + "\n";
+		return line.substring(0, matchedIndex) + line.substring(matchedIndex).replaceFirst(pattern, replacement)
+				+ OSUtil.NEWLINE;
 	}
 }

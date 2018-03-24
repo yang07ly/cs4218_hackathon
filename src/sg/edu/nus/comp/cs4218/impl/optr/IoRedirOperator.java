@@ -33,7 +33,17 @@ public class IoRedirOperator {
 	public IoRedirOperator(Shell shell) {
 		this.shell = shell;
 	}
-
+	
+	/**
+	 * Scans the arguments and sets the input stream
+	 * @param args
+	 *            	String array of the individual arguments.
+	 * @return InpurStream
+	 * 				The input stream.
+	 * @throws ShellException
+	 * 				If more than 1 input stream is specified.
+	 * @throws AbstractApplicationException 
+	 */
 	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
 		if (cmd == null) {
 			return null;
@@ -76,7 +86,17 @@ public class IoRedirOperator {
 			throw new ShellException(e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Scans the arguments and sets the output stream
+	 * @param args 
+	 *            	String array of the individual arguments.
+	 * @return OutputStream
+	 * 				The output stream.
+	 * @throws ShellException
+	 * 				If more than 1 output stream is specified.
+	 * @throws AbstractApplicationException 
+	 */
 	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
 		if (cmd == null) {
 			return null;
@@ -124,7 +144,9 @@ public class IoRedirOperator {
 	}
 
 	/**
-	 * sets escapes status for * to false and true otherwise
+	 * Sets escapes status for '*' character to false and true otherwise.
+	 * @param command 
+	 *            	CommandString to set false to '*' character.
 	 */
 	public void setAsteriskFalse(CommandString command) {
 		String cmdStr = command.toString();

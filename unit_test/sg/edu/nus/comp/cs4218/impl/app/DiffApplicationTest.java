@@ -19,6 +19,7 @@ import sg.edu.nus.comp.cs4218.exception.DiffException;
 
 public class DiffApplicationTest {
 
+	private static final String DIR2 = "dir2";
 	private static final String AND = " and ";
 	private static final String FILES = "Files ";
 	private static final String FILE2_WITH_BLANKS = "file2_withBlankLines.txt";
@@ -115,7 +116,7 @@ public class DiffApplicationTest {
 		expected = EMPTY_ARGS;
 		thrown.expect(DiffException.class);
 		thrown.expectMessage(expected);
-		output = app.diffTwoDir("", "dir2", false, false, false);
+		output = app.diffTwoDir("", DIR2, false, false, false);
 	}
 
 	@Test
@@ -400,7 +401,7 @@ public class DiffApplicationTest {
 	@Test
 	public void testDirDirRelRel() throws DiffException {
 		expected = "Only in dir1: emptyFile.txt" + NEWLINE + "Only in dir2: file2.txt";
-		output = app.diffTwoDir(DIR1, "dir2", false, false, false);
+		output = app.diffTwoDir(DIR1, DIR2, false, false, false);
 		assertEquals(expected, output);
 	}
 
@@ -408,7 +409,7 @@ public class DiffApplicationTest {
 	public void testDirDirAbsAbs() throws DiffException {
 		expected = "Only in " + currentDir + DIR1 + ": emptyFile.txt" + NEWLINE + "Only in " + currentDir
 				+ "dir2: file2.txt";
-		output = app.diffTwoDir(currentDir + DIR1, currentDir + "dir2", false, false, false);
+		output = app.diffTwoDir(currentDir + DIR1, currentDir + DIR2, false, false, false);
 		assertEquals(expected, output);
 	}
 
@@ -418,5 +419,82 @@ public class DiffApplicationTest {
 		output = app.diffTwoFiles(currentDir + "file3.txt", currentDir + "file3_lastLineEmpty.txt", false, false,
 				false);
 		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testRunDirDir() throws DiffException {
+		expected = "Only in dir1: emptyFile.txt" + NEWLINE + "Only in dir2: file2.txt";
+		String[] args = { DIR1, DIR2 };
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunDirFile() throws DiffException {
+		expected = "";
+		String[] args = { DIR1, FILE1_TXT };
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunFileFile() throws DiffException {
+		expected = "< line6" + NEWLINE + "> line2";
+		String[] args = { FILE2_TXT, FILE1_TXT };
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunFileStream() throws DiffException, FileNotFoundException {
+		expected = "< line6" + NEWLINE + "> line2";
+		String[] args = { FILE2_TXT, "-" };
+		app.run(args, new FileInputStream(new File(currentDir + FILE1_TXT)), outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testNonTextFile() throws DiffException, FileNotFoundException {
+		expected = "diff: doge.jpg is not a text file";
+		String[] args = { FILE2_TXT, "doge.jpg" };
+		thrown.expect(DiffException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunDirStream() throws DiffException, FileNotFoundException {
+		expected = "diff: cannot compare directory and inputstream";
+		String[] args = { DIR1, "-" };
+		thrown.expect(DiffException.class);
+		thrown.expectMessage(expected);
+		app.run(args, new FileInputStream(new File(currentDir + FILE1_TXT)), outputStream);
+	}
+
+	@Test
+	public void testRunFlags() throws DiffException, FileNotFoundException {
+		expected = "Files file1.txt and file1_copy.txt are identical";
+		String[] args = { FILE1_TXT, FILE1_COPY_TXT, "-sB-q" };
+		app.run(args, new FileInputStream(new File(currentDir + FILE1_TXT)), outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testInvalidRunFlags() throws DiffException, FileNotFoundException {
+		expected = "diff: Invalid flags";
+		String[] args = { FILE1_TXT, FILE1_COPY_TXT, "-a" };
+		thrown.expect(DiffException.class);
+		thrown.expectMessage(expected);
+		app.run(args, new FileInputStream(new File(currentDir + FILE1_TXT)), outputStream);
+	}
+
+	@Test
+	public void testInvalidRunFlags2() throws DiffException, FileNotFoundException {
+		expected = "diff: Invalid flags";
+		String[] args = { FILE1_TXT, FILE1_COPY_TXT, "--s" };
+		thrown.expect(DiffException.class);
+		thrown.expectMessage(expected);
+		app.run(args, new FileInputStream(new File(currentDir + FILE1_TXT)), outputStream);
 	}
 }

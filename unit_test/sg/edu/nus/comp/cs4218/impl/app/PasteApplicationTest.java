@@ -205,4 +205,51 @@ public class PasteApplicationTest {
 		output = app.mergeFileAndStdin(inputStream, args);
 		assertEquals(expected, output);
 	}
+
+	@Test
+	public void testRunMultipleFiles() throws FileNotFoundException, PasteException {
+		String file = currentDir + FILE2_TXT;
+		String[] args = { FILE1_TXT, file };
+		expected = "asdfgh\tqwerty";
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunMultipleFilesStream() throws FileNotFoundException, PasteException {
+		String file = currentDir + FILE2_TXT;
+		String[] args = { FILE1_TXT, file, "-" };
+		expected = "asdfgh\tqwerty\tasdfgh";
+		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
+		app.run(args, inputStream, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunMergeStdin() throws FileNotFoundException, PasteException {
+		String[] args = {};
+		expected = "asdfgh";
+		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
+		app.run(args, inputStream, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunMergeStdin2() throws FileNotFoundException, PasteException {
+		String[] args = { "-" };
+		expected = "asdfgh";
+		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
+		app.run(args, inputStream, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
+
+	@Test
+	public void testRunMergeMultipleFiles() throws FileNotFoundException, PasteException {
+		String[] args = { "file1.txt", "" };
+		expected = "paste: '': No such file or directory";
+		thrown.expect(PasteException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+		assertEquals(expected, outputStream.toString());
+	}
 }

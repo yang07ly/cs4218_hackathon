@@ -10,9 +10,10 @@ import java.io.OutputStream;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 
 public final class StreamUtil {
-	
-	private StreamUtil() {}
-	
+
+	private StreamUtil() {
+	}
+
 	/**
 	 * Static method to close an inputStream.
 	 * 
@@ -22,8 +23,7 @@ public final class StreamUtil {
 	 * @throws ShellException
 	 *             If inputStream cannot be closed successfully.
 	 */
-	public static void closeInputStream(InputStream inputStream)
-			throws ShellException {
+	public static void closeInputStream(InputStream inputStream) throws ShellException {
 		if (inputStream == null) {
 			return;
 		}
@@ -46,8 +46,7 @@ public final class StreamUtil {
 	 * @throws ShellException
 	 *             If outputStream cannot be closed successfully.
 	 */
-	public static void closeOutputStream(OutputStream outputStream)
-			throws ShellException {
+	public static void closeOutputStream(OutputStream outputStream) throws ShellException {
 		if (outputStream == null) {
 			return;
 		}
@@ -71,8 +70,7 @@ public final class StreamUtil {
 	 * @throws ShellException
 	 *             If exception is thrown during writing.
 	 */
-	public static void writeToStdout(OutputStream outputStream,
-			OutputStream stdout) throws ShellException {
+	public static void writeToStdout(OutputStream outputStream, OutputStream stdout) throws ShellException {
 		if (outputStream instanceof FileOutputStream) {
 			return;
 		}
@@ -84,8 +82,8 @@ public final class StreamUtil {
 	}
 
 	/**
-	 * Static method to pipe data from an outputStream to an inputStream, for
-	 * the evaluation of the Pipe Commands.
+	 * Static method to pipe data from an outputStream to an inputStream, for the
+	 * evaluation of the Pipe Commands.
 	 * 
 	 * @param outputStream
 	 *            Source outputStream to get stream from.
@@ -95,9 +93,7 @@ public final class StreamUtil {
 	 * @throws ShellException
 	 *             If exception is thrown during piping.
 	 */
-	public static InputStream outputStreamToInputStream(
-			OutputStream outputStream) throws ShellException {
-		return new ByteArrayInputStream(
-				((ByteArrayOutputStream) outputStream).toByteArray());
+	public static InputStream outputStreamToInputStream(OutputStream outputStream) throws ShellException {
+		return new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray());
 	}
 }

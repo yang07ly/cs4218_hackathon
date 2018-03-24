@@ -12,17 +12,19 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.app.PasteInterface;
 import sg.edu.nus.comp.cs4218.exception.PasteException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class PasteApplication implements PasteInterface {
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws PasteException {
 		if (args == null || args.length == 0) {
-			throw new PasteException("No files specified");
-		} else {
-			if (args.length > 2) {
-				throw new PasteException("More than 2 files specified");
+			try {
+				stdout.write(mergeStdin(stdin).getBytes());
+			} catch (IOException e) {
+				throw new PasteException(e.getMessage());
 			}
+		} else {
 			Vector<String> files = new Vector<String>();
 			boolean[] flags = new boolean[2];
 			getArguments(args, flags, files);
@@ -34,7 +36,7 @@ public class PasteApplication implements PasteInterface {
 					} else {
 						stdout.write(mergeFile(allFiles).getBytes());
 					}
-				} else {
+				} else if(flags[1]){
 					stdout.write(mergeStdin(stdin).getBytes());
 				}
 			} catch (IOException e) {
@@ -46,9 +48,13 @@ public class PasteApplication implements PasteInterface {
 
 	/**
 	 * extracts flags and arguments from cmd string
-	 * @param args string array of arguments
-	 * @param flags boolean array to store the flags
-	 * @param files Vector of string to store the files
+	 * 
+	 * @param args
+	 *            string array of arguments
+	 * @param flags
+	 *            boolean array to store the flags
+	 * @param files
+	 *            Vector of string to store the files
 	 * @return Vector of string for the files
 	 * @throws PasteException
 	 */
@@ -104,7 +110,9 @@ public class PasteApplication implements PasteInterface {
 
 	/**
 	 * merge all contents from all buffered readers
-	 * @param readers buffered readers to merge content of
+	 * 
+	 * @param readers
+	 *            buffered readers to merge content of
 	 * @return the merged string
 	 * @throws PasteException
 	 */
@@ -112,6 +120,7 @@ public class PasteApplication implements PasteInterface {
 		try {
 			boolean hasLines = true;
 			StringBuilder stringBuilder = new StringBuilder();
+			int numLines = 0;
 			while (hasLines) {
 				hasLines = false;
 				StringBuilder lineBuilder = new StringBuilder();
@@ -127,6 +136,10 @@ public class PasteApplication implements PasteInterface {
 						}
 					}
 				}
+				if (numLines != 0 && hasLines) {
+					stringBuilder.append(OSUtil.NEWLINE);
+				}
+				numLines++;
 				stringBuilder.append(new String(lineBuilder));
 			}
 			return new String(stringBuilder);

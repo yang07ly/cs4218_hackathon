@@ -12,6 +12,7 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.app.CmpInterface;
 import sg.edu.nus.comp.cs4218.exception.CmpException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class CmpApplication implements CmpInterface {
 
@@ -99,7 +100,7 @@ public class CmpApplication implements CmpInterface {
 			if (readValueA != readValueB) {
 				numLinesInMsg++;
 				if (numLinesInMsg > 1) {
-					msg += "\n";
+					msg += OSUtil.NEWLINE;
 				}
 				if (isPrintSimplify) { // -s
 					return "Files differ";
@@ -108,7 +109,7 @@ public class CmpApplication implements CmpInterface {
 						msg += byteNumber + " " + getOctalString(readValueA) + " " + getChar(readValueA) + " "
 								+ getOctalString(readValueB) + " " + getChar(readValueB);
 					} else { // -c
-						msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber + " is "
+						msgWithoutL += "char " + byteNumber + ", " + "line " + lineNumber + " is "
 								+ getOctalString(readValueA) + " " + getChar(readValueA) + " "
 								+ getOctalString(readValueB) + " " + getChar(readValueB);
 						return msgWithoutL;
@@ -116,7 +117,7 @@ public class CmpApplication implements CmpInterface {
 				} else if (isPrintOctalDiff) { // -l
 					msg += byteNumber + " " + getOctalString(readValueA) + " " + getOctalString(readValueB);
 				} else { // no flags
-					msgWithoutL += "byte " + byteNumber + ", " + "line " + lineNumber;
+					msgWithoutL += "char " + byteNumber + ", " + "line " + lineNumber;
 					return msgWithoutL;
 				}
 			}

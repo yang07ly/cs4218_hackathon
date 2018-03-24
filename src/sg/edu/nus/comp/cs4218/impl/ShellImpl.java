@@ -38,35 +38,34 @@ import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
  */
 
 public class ShellImpl implements Shell {
-	
+
 	CmdSubOperator cmdSubOptr;
 	GlobOperator globOptr;
 	IoRedirOperator ioRedirOptr;
 	QuoteOperator quoteOptr;
-	
+
 	public ShellImpl() {
 		cmdSubOptr = new CmdSubOperator(this);
 		globOptr = new GlobOperator();
 		ioRedirOptr = new IoRedirOperator(this);
 		quoteOptr = new QuoteOperator();
 	}
-	
 
 	@Override
 	public Shell newInstance() {
 		return new ShellImpl();
 	}
-	
+
 	/**
-	 * Static method to run the application as specified by the application
-	 * command keyword and arguments.
+	 * Static method to run the application as specified by the application command
+	 * keyword and arguments.
 	 * 
 	 * @param app
-	 *            String containing the keyword that specifies what application
-	 *            to run.
+	 *            String containing the keyword that specifies what application to
+	 *            run.
 	 * @param args
-	 *            String array containing the arguments to pass to the
-	 *            applications for running.
+	 *            String array containing the arguments to pass to the applications
+	 *            for running.
 	 * @param inputStream
 	 *            InputputStream for the application to get arguments from, if
 	 *            needed.
@@ -74,14 +73,12 @@ public class ShellImpl implements Shell {
 	 *            OutputStream for the application to print its output to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while running any of the
-	 *             application(s).
+	 *             If an exception happens while running any of the application(s).
 	 * @throws ShellException
 	 *             If an unsupported or invalid application command is detected.
 	 */
 	@Override
-	public void runApp(String app, String[] argsArray,
-			InputStream inputStream, OutputStream outputStream)
+	public void runApp(String app, String[] argsArray, InputStream inputStream, OutputStream outputStream)
 			throws AbstractApplicationException, ShellException {
 		Application absApp = null;
 		if (("cat").equals(app)) {// cat [FILE]...
@@ -113,7 +110,7 @@ public class ShellImpl implements Shell {
 		}
 		absApp.run(argsArray, inputStream, outputStream);
 	}
-	
+
 	/**
 	 * Parses and evaluates user's command line.
 	 * 
@@ -123,101 +120,101 @@ public class ShellImpl implements Shell {
 	 *            OutputStream for the application to print its output to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while running any of the
-	 *             application(s).
+	 *             If an exception happens while running any of the application(s).
 	 * @throws ShellException
 	 *             If an unsupported or invalid command is detected.
 	 */
 	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		CommandString cmd = new CommandString(cmdline.replace("\t", "    "));
+		CommandString cmd = new CommandString(cmdline);
 		processQuotes(cmd);
-		
+
 		SeqCommand seqCmd = new SeqCommand(this, cmd);
 		seqCmd.parse();
 		seqCmd.evaluate(System.in, stdout);
 	}
-	
+
 	/**
 	 * Remove all unescaped double and single quotes and set all characters in
 	 * quotes to escaped characters. Back quotes are not removed.
 	 * 
 	 * @param cmd
-	 * 			  	CommandString containing the string to have its 
-	 * 				double and single quotes removed and set escaped 
-	 * 				characters.
+	 *            CommandString containing the string to have its double and single
+	 *            quotes removed and set escaped characters.
 	 * 
 	 * @throws ShellException
-	 *            	If the quotes are not closed or the input command is null.
+	 *             If the quotes are not closed or the input command is null.
 	 */
 	@Override
 	public void processQuotes(CommandString cmd) throws AbstractApplicationException, ShellException {
 		quoteOptr.evaluate(cmd);
 	}
-	
+
 	/**
-	 * Replace paths with wildcard with all the paths to existing files and 
-	 * directories such that these paths can be obtained by replacing all the 
-	 * unescaped asterisk symbols in specified path by some (possibly empty) 
-	 * sequences of non-slash characters. If no such path exist, paths with 
-	 * wildcard are not replaced.
+	 * Replace paths with wildcard with all the paths to existing files and
+	 * directories such that these paths can be obtained by replacing all the
+	 * unescaped asterisk symbols in specified path by some (possibly empty)
+	 * sequences of non-slash characters. If no such path exist, paths with wildcard
+	 * are not replaced.
 	 * 
 	 * @param cmd
-	 * 			  CommandString containing the paths with wildcard.
+	 *            CommandString containing the paths with wildcard.
 	 * 
 	 * @throws ShellException
-	 *            If the input command is null.
+	 *             If the input command is null.
 	 */
 	@Override
 	public void performGlob(CommandString cmd) throws AbstractApplicationException, ShellException {
 		globOptr.evaluate(cmd);
 	}
-	
+
 	/**
-	 * Searches for and processes the commands enclosed by back quotes for
-	 * command substitution. The commands enclosed by back quotes will be
-	 * replaced by the command substitution results with newline replaced 
-	 * with a space. The replaced string are not escaped.
+	 * Searches for and processes the commands enclosed by back quotes for command
+	 * substitution. The commands enclosed by back quotes will be replaced by the
+	 * command substitution results with newline replaced with a space. The replaced
+	 * string are not escaped.
 	 * 
 	 * @param cmd
-	 * 			  	CommandString containing the commands enclosed by back 
-	 * 				quotes for command substitution.
+	 *            CommandString containing the commands enclosed by back quotes for
+	 *            command substitution.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             	If an exception happens while processing the application in the
-	 *             	back quotes.
+	 *             If an exception happens while processing the application in the
+	 *             back quotes.
 	 * @throws ShellException
-	 *             	If an exception happens while processing the content in the
-	 *             	back quotes.
+	 *             If an exception happens while processing the content in the back
+	 *             quotes.
 	 */
 	@Override
 	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException {
 		cmdSubOptr.evaluate(cmd);
 	}
-	
+
 	/**
 	 * Scans the arguments and sets the input stream
+	 * 
 	 * @param args
-	 *            	String array of the individual arguments.
-	 * @return	the input stream
+	 *            String array of the individual arguments.
+	 * @return InpurStream The input stream.
 	 * @throws ShellException
-	 * 			if more than 1 input stream is specified
-	 * @throws AbstractApplicationException 
+	 *             If more than 1 input stream is specified.
+	 * @throws AbstractApplicationException
 	 */
 	@Override
 	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
 		return ioRedirOptr.getInputStream(cmd);
 	}
-	
+
 	/**
 	 * Scans the arguments and sets the output stream
-	 * @param args 
-	 *            	String array of the individual arguments.
-	 * @return	the output stream
+	 * 
+	 * @param args
+	 *            String array of the individual arguments.
+	 * @return OutputStream The output stream.
 	 * @throws ShellException
-	 * 			if more than 1 output stream is specified
-	 * @throws AbstractApplicationException 
+	 *             If more than 1 output stream is specified.
+	 * @throws AbstractApplicationException
 	 */
 	@Override
 	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException {
@@ -233,8 +230,7 @@ public class ShellImpl implements Shell {
 	public static void main(String... args) {
 		ShellImpl shell = new ShellImpl();
 
-		BufferedReader bReader = new BufferedReader(new InputStreamReader(
-				System.in));
+		BufferedReader bReader = new BufferedReader(new InputStreamReader(System.in));
 		String readLine = null;
 		String currentDir;
 

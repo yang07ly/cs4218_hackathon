@@ -27,6 +27,7 @@ public class CmpApplicationTest {
 	private static final String CMP_INVALID_FLAGS = "cmp: Invalid flags";
 	private static final String EMPTY_FILE_TXT = "emptyFile.txt";
 	private static final String FILE3_TXT = "file3.txt";
+	private static final String NEWLINE = System.lineSeparator();
 	CmpApplication app;
 	OutputStream outputStream;
 	String expected, output;
@@ -232,9 +233,9 @@ public class CmpApplicationTest {
 	public void testFileFileRelRelTrueFalseFalse() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, false);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt file2.txt differ: byte 10, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt file2.txt differ: char 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt file2.txt differ: byte 9, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt file2.txt differ: char 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
@@ -248,9 +249,9 @@ public class CmpApplicationTest {
 	public void testFileFileRelRelFalseFalseTrue() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -264,9 +265,9 @@ public class CmpApplicationTest {
 	public void testFileEmptyFileRelRelTrueFalseTrue() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", output);
 		}
 	}
 
@@ -275,9 +276,9 @@ public class CmpApplicationTest {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
 		output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -329,7 +330,7 @@ public class CmpApplicationTest {
 
 	@Test
 	public void testFileStreamEmptyStreamFalseFalseFalse() throws CmpException, IOException {
-		expected = "file1.txt - differ: byte 1, line 1";
+		expected = "file1.txt - differ: char 1, line 1";
 		File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, false);
@@ -359,9 +360,9 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, false);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("file1.txt - differ: byte 10, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt - differ: char 10, line 2 is 151 i 154 l", output);
 		} else {
-			assertEquals("file1.txt - differ: byte 9, line 2 is 151 i 154 l", output);
+			assertEquals("file1.txt - differ: char 9, line 2 is 151 i 154 l", output);
 		}
 	}
 
@@ -379,9 +380,9 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 154\n11 154 151", output);
+			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
 		} else {
-			assertEquals("9 151 154\n10 154 151", output);
+			assertEquals("9 151 154" + NEWLINE + "10 154 151", output);
 		}
 	}
 
@@ -408,9 +409,49 @@ public class CmpApplicationTest {
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
-			assertEquals("10 151 i 154 l\n11 154 l 151 i", output);
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", output);
 		} else {
-			assertEquals("9 151 i 154 l\n10 154 l 151 i", output);
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", output);
+		}
+	}
+
+	@Test
+	public void testNonTextFiles() throws CmpException, IOException {
+		String[] args = { "doge.jpg", FILE1_TXT };
+		expected = "cmp: doge.jpg is not a text file";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunNoArgs() throws CmpException, IOException {
+		String[] args = {};
+		expected = "cmp: requires 2 files to be specified";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunEmptyArg() throws CmpException, IOException {
+		String[] args = { FILE1_TXT, "" };
+		expected = "cmp: '': No such file or directory";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunFileAndStdin() throws CmpException, IOException {
+		String[] args = { FILE1_TXT, "-", "-cl" };
+		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+		InputStream inputStream = new FileInputStream(file);
+		app.run(args, inputStream, outputStream);
+		if (System.getProperty(OS_NAME).length() > 8) {
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", outputStream.toString());
+		} else {
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", outputStream.toString());
 		}
 	}
 

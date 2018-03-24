@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import sg.edu.nus.comp.cs4218.Application;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.CatException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * The cat command concatenates the content of given files and prints on the
@@ -70,7 +71,7 @@ public class CatApplication implements Application {
 			for (int i = 0; i < numOfFiles; i++) {
 				try {
 					if (i > 0) {
-						stdout.write("\n".getBytes());
+						stdout.write(OSUtil.NEWLINE.getBytes());
 					}
 					if (args[i].equals("-")) {
 						if (!hasInputStream) {
@@ -95,7 +96,7 @@ public class CatApplication implements Application {
 				} catch (IOException e) {
 					throw new CatException("Could not write to output stream");
 				} catch (InvalidPathException pathE) {
-					throw new CatException(args[i] + ": invalid path");
+					throw new CatException(args[i] + ": No such file or directory");
 				}
 			}
 		}

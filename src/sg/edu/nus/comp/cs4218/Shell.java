@@ -38,9 +38,9 @@ public interface Shell {
 	/**
 	 * Remove all unescaped double and single quotes and set all characters in
 	 * quotes to escaped characters. Back quotes are not removed.
-	 * @param cmd	CommandString containing the string to have its 
-	 * 				double and single quotes removed and set escaped 
-	 * 				characters.
+	 * @param cmd		CommandString containing the string to have its 
+	 * 					double and single quotes removed and set escaped 
+	 * 					characters.
 	 */
 	public void processQuotes(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
@@ -50,7 +50,7 @@ public interface Shell {
 	 * unescaped asterisk symbols in specified path by some (possibly empty) 
 	 * sequences of non-slash characters. If no such path exist, paths with 
 	 * wildcard are not replaced.
-	 * @param cmd	CommandString containing the paths with wildcard.
+	 * @param cmd		CommandString containing the paths with wildcard.
 	 */
 	public void performGlob(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
@@ -59,22 +59,20 @@ public interface Shell {
 	 * command substitution. The commands enclosed by back quotes will be
 	 * replaced by the command substitution results with newline replaced 
 	 * with a space. The replaced string are not escaped.
-	 * @param cmd	CommandString containing the commands enclosed by back 
-	 * 				quotes for command substitution.
+	 * @param cmd		CommandString containing the commands enclosed by back 
+	 * 					quotes for command substitution.
 	 */
 	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException;
 	
 	/**
 	 * Scans the arguments and sets the input stream
 	 * @param args		String array of the individual arguments.
-	 * @throws AbstractApplicationException 
 	 */
 	public InputStream getInputStream(CommandString cmd) throws ShellException, AbstractApplicationException;
 	
 	/**
 	 * Scans the arguments and sets the output stream
 	 * @param args		String array of the individual arguments.
-	 * @throws AbstractApplicationException 
 	 */
 	public OutputStream getOutputStream(CommandString cmd) throws ShellException, AbstractApplicationException;
 }

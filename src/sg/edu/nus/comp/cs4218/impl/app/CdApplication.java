@@ -30,17 +30,17 @@ public class CdApplication implements CdInterface {
 	 * The cd command changes the current working directory.
 	 * 
 	 * @param args
-	 *            Array of arguments for the application. Array element is
-	 *            the path to a file. If there is more than one element or
-	 *            path does not exist, exception will be thrown.
+	 *            Array of arguments for the application. Array element is the path
+	 *            to a file. If there is more than one element or path does not
+	 *            exist, exception will be thrown.
 	 * @param stdin
 	 *            An InputStream, not used.
 	 * @param stdout
 	 *            An OutputStream, not used.
 	 * 
 	 * @throws CdException
-	 *             If the path specified do not exist, unreadable or is 
-	 *             not a directory or if more than one argument is specified.
+	 *             If the path specified do not exist, unreadable or is not a
+	 *             directory or if more than one argument is specified.
 	 */
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws CdException {
@@ -49,19 +49,20 @@ public class CdApplication implements CdInterface {
 		} else if (args.length > 1) {
 			throw new CdException("too many arguments");
 		} else {
-			changeToDirectory(args[0]);	
+			changeToDirectory(args[0]);
 		}
 	}
 
 	/**
-	 * Change the environment context to a different directory. 
-	 * @param path 
-	 * 				String of the path to a directory
-	 * @param env 
-	 * 				Environment context 
+	 * Change the environment context to a different directory.
+	 * 
+	 * @param path
+	 *            String of the path to a directory
+	 * @param env
+	 *            Environment context
 	 * @throws Exception
-	 * 				If the path specified do not exist, unreadable or is 
-	 *             	not a directory.
+	 *             If the path specified do not exist, unreadable or is not a
+	 *             directory.
 	 */
 	@Override
 	public void changeToDirectory(String path) throws CdException {

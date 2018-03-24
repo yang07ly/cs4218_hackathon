@@ -2,6 +2,7 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.Vector;
 
@@ -11,48 +12,48 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
-import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
- * A glob operator is used to evaluate wildcards specified in the path to a 
- * valid path in the system by replacing all the unquoted asterisk symbols 
- * in specified path by some (possibly empty) sequences of non-slash characters.
+ * A glob operator is used to evaluate wildcards specified in the path to a
+ * valid path in the system by replacing all the unquoted asterisk symbols in
+ * specified path by some (possibly empty) sequences of non-slash characters.
  */
 public class GlobOperator implements Operator {
 	private static final String REGEX_WILDCARD = ".*?";
-	
+
 	/**
-	 * Replace paths with wildcard with all the paths to existing files and 
-	 * directories such that these paths can be obtained by replacing all the 
-	 * unescaped asterisk symbols in specified path by some (possibly empty) 
-	 * sequences of non-slash characters. If no such path exist, paths with 
-	 * wildcard are not replaced.
+	 * Replace paths with wildcard with all the paths to existing files and
+	 * directories such that these paths can be obtained by replacing all the
+	 * unescaped asterisk symbols in specified path by some (possibly empty)
+	 * sequences of non-slash characters. If no such path exist, paths with wildcard
+	 * are not replaced.
 	 * 
 	 * @param cmd
-	 * 			  CommandString containing the paths with wildcard.
+	 *            CommandString containing the paths with wildcard.
 	 * 
 	 * @throws ShellException
-	 *            If the input command is null.
+	 *             If the input command is null.
 	 */
 	@Override
 	public void evaluate(CommandString cmd) throws AbstractApplicationException, ShellException {
 		if (cmd == null) {
 			throw new ShellException("Null Pointer Exception");
 		}
-		
+
 		int wildCardIndex;
 		int iterIndex = 0;
 		while ((wildCardIndex = cmd.getFirstIndexOfCharNotEscaped(iterIndex, '*')) != -1) {
 			int beginIndex = getStartIndexOfGlobWord(cmd, wildCardIndex);
 			int endIndex = getEndIndexOfGlobWord(cmd, wildCardIndex) + 1;
-			
-			//replace * with regex wildcard .*? and * with \*
+
+			// replace * with regex wildcard .*? and * with \*
 			StringJoiner regexArg = new StringJoiner("");
 			for (int i = beginIndex; i < endIndex; i++) {
 				if (cmd.charAt(i) == '*' && !cmd.isCharEscaped(i)) {
 					regexArg.add(REGEX_WILDCARD);
 				} else {
-					regexArg.add(cmd.substring(i, i+1).toString());
+					regexArg.add(cmd.substring(i, i + 1).toString());
 				}
 			}
 
@@ -61,7 +62,9 @@ public class GlobOperator implements Operator {
 				iterIndex = endIndex;
 				continue;
 			}
-			
+
+			Arrays.sort(globResult);
+
 			iterIndex = beginIndex;
 			cmd.removeRange(beginIndex, endIndex);
 			for (int i = 0; i < globResult.length; i++) {
@@ -72,16 +75,16 @@ public class GlobOperator implements Operator {
 			cmd.removeCharAt(iterIndex - 1);
 		}
 	}
-	
+
 	/**
-	 * Return the start index of the glob word associated the the index
-	 * of the wildcard.
+	 * Return the start index of the glob word associated the the index of the
+	 * wildcard.
 	 * 
 	 * @param cmd
-	 * 			  CommandString containing the paths with wildcard.
+	 *            CommandString containing the paths with wildcard.
 	 * @param wildCardIndex
-	 * 			  Integer index of the wildcard character of interest
-	 * 			  in the CommandString.
+	 *            Integer index of the wildcard character of interest in the
+	 *            CommandString.
 	 */
 	private int getStartIndexOfGlobWord(CommandString cmd, int wildCardIndex) {
 		int index = wildCardIndex;
@@ -93,16 +96,16 @@ public class GlobOperator implements Operator {
 		}
 		return 0;
 	}
-	
+
 	/**
-	 * Return the end index of the glob word associated the the index
-	 * of the wildcard.
+	 * Return the end index of the glob word associated the the index of the
+	 * wildcard.
 	 * 
 	 * @param cmd
-	 * 			  CommandString containing the paths with wildcard.
+	 *            CommandString containing the paths with wildcard.
 	 * @param wildCardIndex
-	 * 			  Integer index of the wildcard character of interest
-	 * 			  in the CommandString.
+	 *            Integer index of the wildcard character of interest in the
+	 *            CommandString.
 	 */
 	private int getEndIndexOfGlobWord(CommandString cmd, int wildCardIndex) {
 		int index = wildCardIndex;
@@ -116,30 +119,29 @@ public class GlobOperator implements Operator {
 	}
 
 	/**
-	 * Returns all the paths to existing files and directories such that these 
-	 * paths can be obtained by replacing all the unquoted asterisk symbols in 
-	 * specified path by some (possibly empty) sequences of non-slash characters.
-	 * If no such path exist, am empty paths is returned.
+	 * Returns all the paths to existing files and directories such that these paths
+	 * can be obtained by replacing all the unquoted asterisk symbols in specified
+	 * path by some (possibly empty) sequences of non-slash characters. If no such
+	 * path exist, am empty paths is returned.
 	 * 
 	 * @param fileName
-	 * 			  String of the file path regex.
-	 * @return String Array
-	 * 			  paths that matches the wildcard fileName.
+	 *            String of the file path regex.
+	 * @return String Array paths that matches the wildcard fileName.
 	 * 
 	 * @throws IOException
-	 *            If the specified path is null.
+	 *             If the specified path is null.
 	 */
 	private String[] evaluate(String fileName) throws ShellException {
 		if (fileName == null) {
 			throw new ShellException("Null Pointer Exception");
 		}
 		if (fileName.isEmpty()) {
-			return new String[] {fileName};
+			return new String[] { fileName };
 		}
 
-		//get file separator
+		// get file separator
 		String separatorRegex;
-		if (OSValidator.isWindows()) {
+		if (OSUtil.isWindows()) {
 			separatorRegex = "/|\\\\";
 		} else {
 			separatorRegex = "/";
@@ -148,9 +150,9 @@ public class GlobOperator implements Operator {
 		String[] splitedDir = fileName.split(separatorRegex);
 		Vector<String> dirList = new Vector<String>();
 
-		//set first directory
+		// set first directory
 		if (FileUtil.isAbsolute(fileName)) {
-			if(OSValidator.isWindows()) {
+			if (OSUtil.isWindows()) {
 				dirList.add(splitedDir[0]);
 			} else {
 				dirList.add("");
@@ -163,16 +165,16 @@ public class GlobOperator implements Operator {
 			}
 		}
 
-		//append directories to path
+		// append directories to path
 		for (int i = 1; i < splitedDir.length; i++) {
 			dirList = getMatchedDirs(dirList, splitedDir[i]);
 		}
 
-		//check for directory only
+		// check for directory only
 		if (fileName.matches(".*" + separatorRegex + "$")) {
 			removeFilesFromList(dirList);
 		}
-		
+
 		return dirList.toArray(new String[dirList.size()]);
 	}
 
@@ -180,7 +182,7 @@ public class GlobOperator implements Operator {
 	 * Remove all paths in the list that is not a folder.
 	 * 
 	 * @param dirList
-	 * 			  Vector of string containing the file paths.
+	 *            Vector of string containing the file paths.
 	 */
 	private void removeFilesFromList(Vector<String> dirList) {
 		for (int i = dirList.size() - 1; i >= 0; i--) {
@@ -191,13 +193,13 @@ public class GlobOperator implements Operator {
 	}
 
 	/**
-	 * Return all paths that matches the next directory when append with the
-	 * initial list of paths.
+	 * Return all paths that matches the next directory when append with the initial
+	 * list of paths.
 	 * 
 	 * @param dirList
-	 * 			  Vector of string containing the file paths.
+	 *            Vector of string containing the file paths.
 	 * @param nextDir
-	 * 			  String of the file/folder to append.
+	 *            String of the file/folder to append.
 	 */
 	private Vector<String> getMatchedDirs(Vector<String> dirList, String nextDir) {
 		Vector<String> newList = new Vector<String>();
@@ -219,16 +221,15 @@ public class GlobOperator implements Operator {
 	}
 
 	/**
-	 * Evaluate the wildcard and add new paths that matches the
-	 * content of the parent directory to the specified list 
-	 * if it is not hidden.
+	 * Evaluate the wildcard and add new paths that matches the content of the
+	 * parent directory to the specified list if it is not hidden.
 	 * 
 	 * @param paths
-	 * 			  Vector of string used to append new paths to.
+	 *            Vector of string used to append new paths to.
 	 * @param parent
-	 * 			  String of the parent directory.
+	 *            String of the parent directory.
 	 * @param wildCardName
-	 * 			  String of file or folder in the parent directory.
+	 *            String of file or folder in the parent directory.
 	 */
 	private void appendMatchedPath(Vector<String> paths, String parent, String wildCardName) {
 		String regex = wildCardName.replace("*", "\\*").replace(".\\*?", REGEX_WILDCARD);
@@ -246,15 +247,15 @@ public class GlobOperator implements Operator {
 	}
 
 	/**
-	 * Add new path is in the parent directory
-	 * to the specified list if it is not hidden.
+	 * Add new path is in the parent directory to the specified list if it is not
+	 * hidden.
 	 * 
 	 * @param paths
-	 * 			  Vector of string used to append new paths to.
+	 *            Vector of string used to append new paths to.
 	 * @param parent
-	 * 			  String of the parent directory.
+	 *            String of the parent directory.
 	 * @param wildCardName
-	 * 			  String of file or folder in the parent directory.
+	 *            String of file or folder in the parent directory.
 	 */
 	private void appendPath(Vector<String> paths, String parent, String current) {
 		File file;
