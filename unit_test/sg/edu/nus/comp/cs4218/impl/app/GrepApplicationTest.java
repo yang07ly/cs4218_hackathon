@@ -141,6 +141,13 @@ public class GrepApplicationTest {
 	}
 
 	@Test
+	public void testGrepEmptyFromTwoEmptyFile() throws GrepException {
+		expected = FILE_EMPTY + STR_COLON + STR_EMPTY + OSUtil.NEWLINE + FILE_EMPTY + STR_COLON + STR_EMPTY;
+		result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_EMPTY, FILE_EMPTY);
+		assertEquals(expected.trim(), result);
+	}
+
+	@Test
 	public void testInvertGrepRegexMatchFromFile() throws GrepException {
 		expected = FILE1_LINEA;
 		result = grepApp.grepFromMultipleFiles(PATTERN_DIGIT, true, FILE_1);
@@ -357,6 +364,14 @@ public class GrepApplicationTest {
 		thrown.expect(GrepException.class);
 		thrown.expectMessage("grep: invalid option -- 'i'");
 		String[] strArr = { "-i", PATTERN_FILE, FILE_1 };
+		grepApp.run(strArr, stdin, stdout);
+	}
+
+	@Test
+	public void testInvalidGrepNoOption() throws GrepException {
+		thrown.expect(GrepException.class);
+		thrown.expectMessage("grep: file: No such file or directory");
+		String[] strArr = { "-", PATTERN_FILE, FILE_1 };
 		grepApp.run(strArr, stdin, stdout);
 	}
 

@@ -139,7 +139,7 @@ public class GrepApplication implements GrepInterface {
 	 */
 	@Override
 	public String grepFromMultipleFiles(String pattern, Boolean isInvert, String... fileNames) throws GrepException {
-		if (fileNames == null || fileNames.length == 0) {
+		if (fileNames.length == 0) {
 			throw new GrepException(EXP_NULL_POINTER);
 		}
 
@@ -175,7 +175,7 @@ public class GrepApplication implements GrepInterface {
 				content.close();
 
 			} catch (IOException e) {
-				throw new GrepException("IOException: " + e);
+				throw new GrepException("IOException");
 			}
 		}
 		return outputStr.trim();
@@ -271,10 +271,6 @@ public class GrepApplication implements GrepInterface {
 	private boolean hasPattern(Boolean isInvert, String pattern, String line) throws GrepException {
 		if (pattern == null || line == null) {
 			throw new GrepException(EXP_NULL_POINTER);
-		}
-
-		if (line.isEmpty() && pattern.isEmpty()) {
-			return !isInvert;
 		}
 
 		Matcher matcher = Pattern.compile(pattern).matcher(line);
