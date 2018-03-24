@@ -16,6 +16,7 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.LsInterface;
 import sg.edu.nus.comp.cs4218.exception.LsException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * The ls command list information about files.
@@ -97,7 +98,7 @@ public class LsApplication implements LsInterface {
 		} else {
 			outputStr += printFiles(files, Environment.currentDirectory);
 			if (!files.isEmpty() && !folders.isEmpty()) {
-				outputStr += "\n";
+				outputStr += OSUtil.NEWLINE;
 			}
 			if (files.isEmpty() && !isRecursive && folders.size() == 1) {
 				outputStr += printFilesInFolder(folders.get(0), isRecursive);
@@ -226,9 +227,9 @@ public class LsApplication implements LsInterface {
 		if (files.isEmpty()) {
 			return "";
 		} else if (files.size() == 1 && files.get(0).equals(".")) {
-			return ".\n";
+			return "." + OSUtil.NEWLINE;
 		}
-		
+
 		String outputStr = "";
 		Collections.sort(files);
 		for (int i = 0; i < files.size(); i++) {
@@ -237,7 +238,7 @@ public class LsApplication implements LsInterface {
 				outputStr += LsExtension.getFormattedDirName(files.get(i)) + "\t";
 			}
 		}
-		outputStr = outputStr.trim() + "\n";
+		outputStr = outputStr.trim() + OSUtil.NEWLINE;
 		return outputStr;
 	}
 
@@ -258,10 +259,10 @@ public class LsApplication implements LsInterface {
 		}
 
 		String outputStr = "";
-		outputStr += LsExtension.getFormattedDirName(folders.get(0)) + ":\n";
+		outputStr += LsExtension.getFormattedDirName(folders.get(0)) + ":" + OSUtil.NEWLINE;
 		outputStr += printFilesInFolder(folders.get(0), isRecursive);
 		for (int i = 1; i < folders.size(); i++) {
-			outputStr += "\n" + LsExtension.getFormattedDirName(folders.get(i)) + ":\n";
+			outputStr += OSUtil.NEWLINE + LsExtension.getFormattedDirName(folders.get(i)) + ":" + OSUtil.NEWLINE;
 			outputStr += printFilesInFolder(folders.get(i), isRecursive);
 		}
 		return outputStr;
@@ -297,7 +298,7 @@ public class LsApplication implements LsInterface {
 				subDirectories.add(folder + "/" + dirInDir[j]);
 			}
 			if (!subDirectories.isEmpty()) {
-				outputStr += "\n";
+				outputStr += OSUtil.NEWLINE;
 				outputStr += printFolders(subDirectories, isRecursive);
 			}
 		}

@@ -5,8 +5,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class LsExtension {
-	private LsExtension() {};
-	
+	private LsExtension() {
+	};
+
 	/**
 	 * Return formatted name of the accessible file/folder regardless of OS for
 	 * display. "''" is added if name contain space or *.
