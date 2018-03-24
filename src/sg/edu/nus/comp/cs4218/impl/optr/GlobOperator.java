@@ -2,6 +2,7 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.Vector;
 
@@ -61,6 +62,8 @@ public class GlobOperator implements Operator {
 				iterIndex = endIndex;
 				continue;
 			}
+			
+			Arrays.sort(globResult);
 			
 			iterIndex = beginIndex;
 			cmd.removeRange(beginIndex, endIndex);

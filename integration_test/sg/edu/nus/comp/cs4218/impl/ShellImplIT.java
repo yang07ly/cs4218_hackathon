@@ -124,7 +124,7 @@ public class ShellImplIT {
 
 	@Test
 	public void testGlobInNoQuote() throws ShellException, AbstractApplicationException {
-		expected = "file file name name `back quote`";
+		expected = "`back quote` file file name name";
 		cmdline = "echo *";
 
 		shell.parseAndEvaluate(cmdline, output);
