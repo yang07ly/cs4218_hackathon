@@ -9,7 +9,7 @@ import sg.edu.nus.comp.cs4218.exception.ExitException;
 public class ExitApplicationTest {
 
 	@Test
-	public void testExit() {
+	public void testExitToRunCorrectly() {
 		Thread thread1 = new Thread() {
 			public void run() {
 				ExitApplication app = new ExitApplication();

@@ -44,7 +44,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRun() throws PasteException {
+	public void testRunToThrowExpUsingDir() throws PasteException {
 		String path = currentDir + OUTPUT2;
 		expected = PASTE + currentDir + OUTPUT_DIR;
 		String args[] = { path };
@@ -54,7 +54,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testInvalidFile() throws PasteException {
+	public void testMergeFileToThrowExpUsingInvalidFile() throws PasteException {
 		expected = FILE_NOT_FOUND;
 		String[] args = { ASDF };
 		thrown.expect(PasteException.class);
@@ -63,7 +63,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testDir() throws PasteException {
+	public void testMergeFileToThrowExpUsingDir() throws PasteException {
 		String path = currentDir + OUTPUT2;
 		expected = PASTE + currentDir + OUTPUT_DIR;
 		thrown.expect(PasteException.class);
@@ -72,7 +72,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testMultipleWithInvalidFile() throws PasteException {
+	public void testMergeFileToThrowExpUsingInvalidFileWithValidFiles() throws PasteException {
 		String[] args = { FILE1_TXT, ASDF, FILE2_TXT };
 		expected = FILE_NOT_FOUND;
 		thrown.expect(PasteException.class);
@@ -81,7 +81,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testMultipleWithDirectory() throws PasteException {
+	public void testMergeFileToThrowExpUsingValidFilesWithDir() throws PasteException {
 		String directory = currentDir + OUTPUT2;
 		String[] args = { FILE1_TXT, directory, FILE2_TXT };
 		expected = PASTE + currentDir + OUTPUT_DIR;
@@ -91,21 +91,21 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testZeroFiles() throws PasteException {
+	public void testMergeFileToRunCorrectlyUsingNoFiles() throws PasteException {
 		expected = "";
 		output = app.mergeFile();
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testOneFile() throws PasteException {
+	public void testMergeFileToRunCorrectlyUsingOneFile() throws PasteException {
 		expected = ASDFGH;
 		output = app.mergeFile(FILE1_TXT);
 		assertEquals(expected, output);
 	}
 
 	@Test
-	public void testOneFileAbsolutePath() throws PasteException {
+	public void testMergeFileToRunCorrectlyUsingAbsPath() throws PasteException {
 		String file = currentDir + FILE1_TXT;
 		expected = ASDFGH;
 		output = app.mergeFile(file);
@@ -113,7 +113,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testMultipleFiles() throws PasteException {
+	public void testMergeFileToRunCorrectlyUsingMultipleFiles() throws PasteException {
 		String file = currentDir + FILE2_TXT;
 		String[] args = { FILE1_TXT, file };
 		expected = "asdfgh\tqwerty";
@@ -125,7 +125,7 @@ public class PasteApplicationTest {
 	 */
 
 	@Test
-	public void testStreamInvalidFile() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToThrowExpUsingInvalidFile() throws FileNotFoundException, PasteException {
 		expected = FILE_NOT_FOUND;
 		String[] args = { ASDF };
 		thrown.expect(PasteException.class);
@@ -136,7 +136,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamDir() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToThrowExpUsingDir() throws FileNotFoundException, PasteException {
 		String path = currentDir + OUTPUT2;
 		expected = PASTE + currentDir + OUTPUT_DIR;
 		thrown.expect(PasteException.class);
@@ -147,7 +147,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamMultipleWithInvalidFile() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToThrowExpUsingInvalidFileWithValidFiles() throws FileNotFoundException, PasteException {
 		String[] args = { FILE1_TXT, ASDF, FILE2_TXT };
 		expected = FILE_NOT_FOUND;
 		thrown.expect(PasteException.class);
@@ -158,7 +158,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamMultipleWithDirectory() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToThrowExpUsingValidFilesWithDir() throws FileNotFoundException, PasteException {
 		String directory = currentDir + OUTPUT2;
 		String[] args = { FILE1_TXT, directory, FILE2_TXT };
 		expected = PASTE + currentDir + OUTPUT_DIR;
@@ -171,7 +171,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamZeroFiles() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToRunCorrectlyUsingZeroFiles() throws FileNotFoundException, PasteException {
 		expected = ASDFGH;
 		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
 		output = app.mergeFileAndStdin(inputStream);
@@ -179,7 +179,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamOneFile() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToRunCorrectlyUsingOneFile() throws FileNotFoundException, PasteException {
 		expected = "asdfgh\tasdfgh";
 		String path = currentDir + FILE1_TXT;
 		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
@@ -188,7 +188,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamOneFileAbsolutePath() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToRunCorrectlyUsingAbsPath() throws FileNotFoundException, PasteException {
 		String file = currentDir + FILE1_TXT;
 		expected = "asdfgh\tasdfgh";
 		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
@@ -197,7 +197,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testStreamMultipleFiles() throws FileNotFoundException, PasteException {
+	public void testMergeStreamToRunCorrectlyUsingMultiFiles() throws FileNotFoundException, PasteException {
 		String file = currentDir + FILE2_TXT;
 		String[] args = { FILE1_TXT, file };
 		expected = "asdfgh\tqwerty\tasdfgh";
@@ -207,7 +207,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRunMultipleFiles() throws FileNotFoundException, PasteException {
+	public void testRunToRunCorrectlyUsingMultiFiles() throws FileNotFoundException, PasteException {
 		String file = currentDir + FILE2_TXT;
 		String[] args = { FILE1_TXT, file };
 		expected = "asdfgh\tqwerty";
@@ -216,7 +216,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRunMultipleFilesStream() throws FileNotFoundException, PasteException {
+	public void testRunToRunCorrectlyUsingFilesAndInputStream() throws FileNotFoundException, PasteException {
 		String file = currentDir + FILE2_TXT;
 		String[] args = { FILE1_TXT, file, "-" };
 		expected = "asdfgh\tqwerty\tasdfgh";
@@ -226,7 +226,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRunMergeStdin() throws FileNotFoundException, PasteException {
+	public void testRunToRunCorrectlyUsingInputStream() throws FileNotFoundException, PasteException {
 		String[] args = {};
 		expected = "asdfgh";
 		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
@@ -235,7 +235,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRunMergeStdin2() throws FileNotFoundException, PasteException {
+	public void testRunToRunCorrectlyUsingInputStream2() throws FileNotFoundException, PasteException {
 		String[] args = { "-" };
 		expected = "asdfgh";
 		FileInputStream inputStream = new FileInputStream(currentDir + FILE1_TXT);
@@ -244,7 +244,7 @@ public class PasteApplicationTest {
 	}
 
 	@Test
-	public void testRunMergeMultipleFiles() throws FileNotFoundException, PasteException {
+	public void testRunToThrowExpUsingEmptyFileName() throws FileNotFoundException, PasteException {
 		String[] args = { "file1.txt", "" };
 		expected = "paste: '': No such file or directory";
 		thrown.expect(PasteException.class);

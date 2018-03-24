@@ -46,7 +46,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testExtraOperand() throws CmpException {
+	public void testCmpFilesToThrowExpUsingMoreThanTwoFiles() throws CmpException {
 		expected = "cmp: requires 2 files to be specified";
 		String[] args = { FILE1_TXT, FILE2_TXT, "-cl", "file3.txt" };
 
@@ -56,7 +56,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testInvalidFlag() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFlags() throws CmpException {
 		expected = CMP_INVALID_FLAGS;
 		String[] args = { FILE1_TXT, FILE2_TXT, "-a" };
 
@@ -66,7 +66,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testInvalidFlag2() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFlags2() throws CmpException {
 		expected = CMP_INVALID_FLAGS;
 		String[] args = { FILE1_TXT, FILE2_TXT, "-c-" };
 
@@ -76,56 +76,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testCombineFlags() {
-		expected = FILES_DIFFER;
-		String[] args = { FILE1_TXT, FILE2_TXT, "-csl" };
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
-	}
-
-	@Test
-	public void testCombineFlags2() {
-		expected = FILES_DIFFER;
-		String[] args = { FILE1_TXT, FILE2_TXT, "-c-s-l" };
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
-	}
-
-	@Test
-	public void testCombineFlags3() {
-		expected = FILES_DIFFER;
-		String[] args = { FILE1_TXT, FILE2_TXT, "-c", "-s", "-l" };
-		try {
-			app.run(args, System.in, outputStream);
-			output = outputStream.toString();
-		} catch (Exception e) {
-			output = e.getMessage();
-		}
-		assertEquals(expected, output);
-	}
-
-	@Test
-	public void testHyphenFlag() throws CmpException {
-		expected = "cmp: requires 2 files to be specified";
-		String[] args = { FILE1_TXT, FILE2_TXT, "-" };
-
-		thrown.expect(CmpException.class);
-		thrown.expectMessage(expected);
-		app.run(args, System.in, outputStream);
-	}
-
-	@Test
-	public void testDoubleHyphen() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFlags3() throws CmpException {
 		expected = CMP_INVALID_FLAGS;
 		String[] args = { FILE1_TXT, FILE2_TXT, "--" };
 
@@ -135,7 +86,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testDoubleHyphen2() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFlags4() throws CmpException {
 		expected = CMP_INVALID_FLAGS;
 		String[] args = { FILE1_TXT, FILE2_TXT, "--s" };
 
@@ -145,7 +96,44 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileEmptyFileA() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingMultiFlags() throws CmpException {
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-csl" };
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCmpFilesToRunCorrectlyUsingMultiFlags2() throws CmpException {
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-c-s-l" };
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCmpFilesToRunCorrectlyUsingMultiFlags3() throws CmpException {
+		expected = FILES_DIFFER;
+		String[] args = { FILE1_TXT, FILE2_TXT, "-c", "-s", "-l" };
+		app.run(args, System.in, outputStream);
+		output = outputStream.toString();
+		assertEquals(expected, output);
+	}
+
+	@Test
+	public void testCmpFilesToThrowExpUsingTwoFilesAndInputStream() throws CmpException {
+		expected = "cmp: requires 2 files to be specified";
+		String[] args = { FILE1_TXT, FILE2_TXT, "-" };
+
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, System.in, outputStream);
+	}
+
+	@Test
+	public void testCmpFilesToThrowExpUsingEmptyFileName() throws CmpException {
 		expected = "cmp: : No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -154,7 +142,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileEmptyFileB() throws CmpException {
+	public void testCmpFilesToThrowExpUsingEmptyFileName2() throws CmpException {
 		expected = "cmp: : No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -163,7 +151,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileSpaceFileA() throws CmpException {
+	public void testCmpFilesToThrowExpUsingSpaceAsFileName() throws CmpException {
 		expected = "cmp:  : No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -172,7 +160,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileSpaceFileB() throws CmpException {
+	public void testCmpFilesToThrowExpUsingSpaceAsFileName2() throws CmpException {
 		expected = "cmp:  : No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -181,7 +169,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileDirectoryFileA() throws CmpException {
+	public void testCmpFilesToThrowExpUsingDir() throws CmpException {
 		Path path = Paths.get(Environment.currentDirectory);
 		expected = "cmp: " + Paths.get(Environment.currentDirectory) + ": Is a directory";
 
@@ -191,7 +179,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileDirectoryFileB() throws CmpException {
+	public void testCmpFilesToThrowExpUsingDir2() throws CmpException {
 		Path path = Paths.get(Environment.currentDirectory);
 		expected = "cmp: " + Paths.get(Environment.currentDirectory) + ": Is a directory";
 
@@ -201,7 +189,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileNonExistentialFileA() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFile() throws CmpException {
 		expected = "cmp: file3.txt: No such file or directory";
 		thrown.expect(CmpException.class);
 		thrown.expectMessage(expected);
@@ -209,7 +197,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileNonExistentialFileb() throws CmpException {
+	public void testCmpFilesToThrowExpUsingInvalidFile2() throws CmpException {
 		expected = "cmp: file4.txt: No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -218,19 +206,19 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileRelRelTrueTrueTrueNoDiff() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingIdenticalFilesAndFlagsCSL() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, "file1_copy.txt", true, true, true);
 		assertEquals("", output);
 	}
 
 	@Test
-	public void testFileFileRelRelTrueTrueTrue() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingDiffFilesAndFlagsCSL() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, true, true);
 		assertEquals(FILES_DIFFER, output);
 	}
 
 	@Test
-	public void testFileFileRelRelTrueFalseFalse() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingDiffFilesAndFlagsC() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, false);
 		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("file1.txt file2.txt differ: char 10, line 2 is 151 i 154 l", output);
@@ -240,13 +228,13 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileFileRelRelFalseTrueFalse() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingDiffFilesAndFlagsS() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, true, false);
 		assertEquals(FILES_DIFFER, output);
 	}
 
 	@Test
-	public void testFileFileRelRelFalseFalseTrue() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingDiffFilesAndFlagsL() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 154" + NEWLINE + "11 154 151", output);
@@ -256,13 +244,13 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileEmptyFileRelRelFalseFalseTrue() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingEmptyFileAndFlagsL() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, EMPTY_FILE_TXT, false, false, true);
 		assertEquals("cmp: EOF on emptyFile.txt", output);
 	}
 
 	@Test
-	public void testFileEmptyFileRelRelTrueFalseTrue() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingDiffFilesAndFlagsCL() throws CmpException {
 		output = app.cmpTwoFiles(FILE1_TXT, FILE2_TXT, true, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
 			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", output);
@@ -272,7 +260,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFilePathFileRelRelFalseFalseTrue() throws CmpException {
+	public void testCmpFilesToRunCorrectlyUsingAbsPathAndFlagsL() throws CmpException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
 		output = app.cmpTwoFiles(path.toString(), FILE2_TXT, false, false, true);
 		if (System.getProperty(OS_NAME).length() > 8) {
@@ -287,7 +275,7 @@ public class CmpApplicationTest {
 	 */
 
 	@Test
-	public void testFileStreamEmptyFileA() throws CmpException, IOException {
+	public void testCmpStreamToThrowExpUsingEmptyFileName() throws CmpException, IOException {
 		expected = "cmp: : No such file or directory";
 
 		thrown.expect(CmpException.class);
@@ -298,7 +286,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamSpaceFileA() throws CmpException, IOException {
+	public void testCmpStreamToThrowExpUsingSpaceAsFileName() throws CmpException, IOException {
 		expected = "cmp:  : No such file or directory";
 		thrown.expect(CmpException.class);
 		thrown.expectMessage(expected);
@@ -308,7 +296,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamDirectoryFileA() throws CmpException, IOException {
+	public void testCmpStreamToThrowExpUsingDir() throws CmpException, IOException {
 		Path path = Paths.get(Environment.currentDirectory);
 		expected = "cmp: " + path.toString() + ": Is a directory";
 		thrown.expect(CmpException.class);
@@ -319,7 +307,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamNonExistentialFileA() throws CmpException, IOException {
+	public void testCmpStreamToThrowExpUsingInvalidFile() throws CmpException, IOException {
 		expected = "cmp: file3.txt: No such file or directory";
 		thrown.expect(CmpException.class);
 		thrown.expectMessage(expected);
@@ -329,7 +317,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamEmptyStreamFalseFalseFalse() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingEmptyInputStream() throws CmpException, IOException {
 		expected = "file1.txt - differ: char 1, line 1";
 		File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 		InputStream inputStream = new FileInputStream(file);
@@ -338,7 +326,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamTrueTrueTrueNoDiff() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingIdenticalFilesAndFlagsCSL() throws CmpException, IOException {
 		expected = "";
 		File file = new File(Environment.currentDirectory + File.separator + FILE1_TXT);
 		InputStream inputStream = new FileInputStream(file);
@@ -347,7 +335,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamRelRelTrueTrueTrue() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingDiffFilesAndFlagsCSL() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, true, true);
@@ -355,7 +343,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamRelRelTrueFalseFalse() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingDiffFilesAndFlagsC() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, false);
@@ -367,7 +355,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamRelRelFalseTrueFalse() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingDiffFilesAndFlagsS() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, true, false);
@@ -375,7 +363,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamRelRelFalseFalseTrue() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingDiffFilesAndFlagsL() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
@@ -387,7 +375,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamFalseFalseTrue() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingEmptyStreamAndFlagsL() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, false, false, true);
@@ -395,7 +383,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFilePathStreamFalseFalseTrue() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingAbsPathAndFlagsL() throws CmpException, IOException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
 		File file = new File(Environment.currentDirectory + File.separator + EMPTY_FILE_TXT);
 		InputStream inputStream = new FileInputStream(file);
@@ -404,7 +392,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testFileStreamTrueFalseTrue() throws CmpException, IOException {
+	public void testCmpStreamToRunCorrectlyUsingDiffFilesAndFlagsCL() throws CmpException, IOException {
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);
 		output = app.cmpFileAndStdin(FILE1_TXT, inputStream, true, false, true);
@@ -416,7 +404,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testNonTextFiles() throws CmpException, IOException {
+	public void testRunToThrowExpUsingNonTextFile() throws CmpException, IOException {
 		String[] args = { "doge.jpg", FILE1_TXT };
 		expected = "cmp: doge.jpg is not a text file";
 		thrown.expect(CmpException.class);
@@ -425,7 +413,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testRunNoArgs() throws CmpException, IOException {
+	public void testRunToThrowExpUsingEmptyArgs() throws CmpException, IOException {
 		String[] args = {};
 		expected = "cmp: requires 2 files to be specified";
 		thrown.expect(CmpException.class);
@@ -434,7 +422,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testRunEmptyArg() throws CmpException, IOException {
+	public void testRunToThrowExpUsingEmptyFileName() throws CmpException, IOException {
 		String[] args = { FILE1_TXT, "" };
 		expected = "cmp: '': No such file or directory";
 		thrown.expect(CmpException.class);
@@ -443,7 +431,7 @@ public class CmpApplicationTest {
 	}
 
 	@Test
-	public void testRunFileAndStdin() throws CmpException, IOException {
+	public void testRunToRunCorrectlyUsingFileAndInputStream() throws CmpException, IOException {
 		String[] args = { FILE1_TXT, "-", "-cl" };
 		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
 		InputStream inputStream = new FileInputStream(file);

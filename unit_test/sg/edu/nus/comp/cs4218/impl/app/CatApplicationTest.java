@@ -41,7 +41,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testInvalidFile() throws CatException {
+	public void testRunToThrowsExpUsingInvalidFile() throws CatException {
 		String[] args = { FILE1_CONTENT };
 		expected = "cat: asdf: No such file or directory";
 
@@ -51,7 +51,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testDirectory() throws CatException {
+	public void testRunToThrowsExpUsingDirectory() throws CatException {
 		expected = "cat: " + Environment.currentDirectory + ": Is a directory";
 		String[] args = { Environment.currentDirectory };
 		thrown.expect(CatException.class);
@@ -60,7 +60,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testOneFile() throws CatException {
+	public void testRunToRunCorrectlyUsingRelPath() throws CatException {
 		expected = FILE1_CONTENT;
 		String[] args = { FILE1_TXT };
 
@@ -70,7 +70,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testAbsolutePath() throws CatException {
+	public void testRunToRunCorrectlyUsingAbsPath() throws CatException {
 		String path = Environment.currentDirectory + File.separator + FILE1_TXT;
 		expected = FILE1_CONTENT;
 		String[] args = { path };
@@ -81,7 +81,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testMultipleFiles() throws CatException {
+	public void testRunToRunCorrectlyUsingMultiFiles() throws CatException {
 		expected = FILE1_CONTENT + NEWLINE + "qwer";
 		String[] args = { FILE1_TXT, "file2.txt" };
 
@@ -91,7 +91,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testMultipleFilesWithInvalidFiles() throws CatException {
+	public void testRunToRunCorrectlyUsingValidAndInvalidFiles() throws CatException {
 		expected = FILE1_CONTENT + NEWLINE + "cat: asdf: No such file or directory" + NEWLINE + "qwer";
 		String[] args = { FILE1_TXT, FILE1_CONTENT, "file2.txt" };
 
@@ -101,7 +101,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testStream() throws CatException, FileNotFoundException {
+	public void testRunToRunCorrectlyUsingInputStream() throws CatException, FileNotFoundException {
 		expected = FILE1_CONTENT;
 		FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
 		app.run(null, fileStream, outputStream);
@@ -110,7 +110,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testNullArgsNullStream() throws CatException {
+	public void testRunToThrowExceptionUsingNullArgs() throws CatException {
 		expected = "cat: Null Pointer Exception";
 		thrown.expect(CatException.class);
 		thrown.expectMessage(expected);
@@ -118,7 +118,7 @@ public class CatApplicationTest {
 	}
 
 	@Test
-	public void testRunFilesAndInputStream() throws CatException, FileNotFoundException {
+	public void testRunToRunCorrectlyUsingFilesAndInputStream() throws CatException, FileNotFoundException {
 		expected = "asdf" + System.lineSeparator() + "asdf";
 		String[] args = { "file1.txt", "-" };
 		InputStream inputStream = new FileInputStream(
