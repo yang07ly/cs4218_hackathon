@@ -101,6 +101,7 @@ public final class DiffExtension {
 			}
 			if (args[i].equals("-")) {
 				hasFilesDirStream[2] = true;
+				files.add(args[i]);
 			} else if (args[i].charAt(0) == ('-')) {
 				char prevChar = '-';
 				for (int j = 1; j < args[i].length(); j++) {

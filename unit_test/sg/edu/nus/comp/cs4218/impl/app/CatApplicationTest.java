@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.junit.Before;
@@ -114,5 +115,15 @@ public class CatApplicationTest {
 		thrown.expect(CatException.class);
 		thrown.expectMessage(expected);
 		app.run(null, null, outputStream);
+	}
+
+	@Test
+	public void testRunFilesAndInputStream() throws CatException, FileNotFoundException {
+		expected = "asdf" + System.lineSeparator() + "asdf";
+		String[] args = { "file1.txt", "-" };
+		InputStream inputStream = new FileInputStream(
+				new File(Environment.currentDirectory + File.separator + "file1.txt"));
+		app.run(args, inputStream, outputStream);
+		assertEquals(expected, outputStream.toString());
 	}
 }

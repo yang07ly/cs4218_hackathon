@@ -46,6 +46,9 @@ public class DiffApplication implements DiffInterface {
 					message = diffTwoFiles(allFiles[0], allFiles[1], flags[0], flags[1], flags[2]);
 				}
 			} else if (hasFilesDirStream[1]) {
+				if(hasFilesDirStream[2]) {
+					throw new DiffException("cannot compare directory and inputstream");
+				}
 				message = diffTwoDir(allDir[0], allDir[1], flags[0], flags[1], flags[2]);
 			}
 			try {

@@ -415,4 +415,44 @@ public class CmpApplicationTest {
 		}
 	}
 
+	@Test
+	public void testNonTextFiles() throws CmpException, IOException {
+		String[] args = { "doge.jpg", FILE1_TXT };
+		expected = "cmp: doge.jpg is not a text file";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunNoArgs() throws CmpException, IOException {
+		String[] args = {};
+		expected = "cmp: requires 2 files to be specified";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunEmptyArg() throws CmpException, IOException {
+		String[] args = { FILE1_TXT, "" };
+		expected = "cmp: '': No such file or directory";
+		thrown.expect(CmpException.class);
+		thrown.expectMessage(expected);
+		app.run(args, null, outputStream);
+	}
+
+	@Test
+	public void testRunFileAndStdin() throws CmpException, IOException {
+		String[] args = { FILE1_TXT, "-", "-cl" };
+		File file = new File(Environment.currentDirectory + File.separator + FILE2_TXT);
+		InputStream inputStream = new FileInputStream(file);
+		app.run(args, inputStream, outputStream);
+		if (System.getProperty(OS_NAME).length() > 8) {
+			assertEquals("10 151 i 154 l" + NEWLINE + "11 154 l 151 i", outputStream.toString());
+		} else {
+			assertEquals("9 151 i 154 l" + NEWLINE + "10 154 l 151 i", outputStream.toString());
+		}
+	}
+
 }

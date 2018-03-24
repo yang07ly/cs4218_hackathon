@@ -19,7 +19,11 @@ public class PasteApplication implements PasteInterface {
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws PasteException {
 		if (args == null || args.length == 0) {
-			throw new PasteException("No files specified");
+			try {
+				stdout.write(mergeStdin(stdin).getBytes());
+			} catch (IOException e) {
+				throw new PasteException(e.getMessage());
+			}
 		} else {
 			Vector<String> files = new Vector<String>();
 			boolean[] flags = new boolean[2];
@@ -32,7 +36,7 @@ public class PasteApplication implements PasteInterface {
 					} else {
 						stdout.write(mergeFile(allFiles).getBytes());
 					}
-				} else {
+				} else if(flags[1]){
 					stdout.write(mergeStdin(stdin).getBytes());
 				}
 			} catch (IOException e) {
