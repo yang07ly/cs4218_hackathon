@@ -95,7 +95,7 @@ public class CatApplication implements Application {
 				} catch (IOException e) {
 					throw new CatException("Could not write to output stream");
 				} catch (InvalidPathException pathE) {
-					throw new CatException(args[i] + ": invalid path");
+					throw new CatException(args[i] + ": No such file or directory");
 				}
 			}
 		}
