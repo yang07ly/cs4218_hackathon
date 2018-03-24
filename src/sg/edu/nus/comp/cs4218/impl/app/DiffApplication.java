@@ -58,12 +58,19 @@ public class DiffApplication implements DiffInterface {
 	}
 
 	/**
-	 * compares two files in the current directory and another directory of the same name
-	 * @param folder directory of the file to compare
-	 * @param fileNameB filename of the files to compare
-	 * @param isShowSame boolean flag for showing if files are identical
-	 * @param isNoBlank boolean flag for skipping blank lines
-	 * @param isSimpleboolean flag for simplifying output if files are different
+	 * compares two files in the current directory and another directory of the same
+	 * name
+	 * 
+	 * @param folder
+	 *            directory of the file to compare
+	 * @param fileNameB
+	 *            filename of the files to compare
+	 * @param isShowSame
+	 *            boolean flag for showing if files are identical
+	 * @param isNoBlank
+	 *            boolean flag for skipping blank lines
+	 * @param isSimpleboolean
+	 *            flag for simplifying output if files are different
 	 * @return message output
 	 * @throws DiffException
 	 */
@@ -103,13 +110,21 @@ public class DiffApplication implements DiffInterface {
 
 	/**
 	 * compares two files and output the difference, if any
-	 * @param fileNameA filename of first file
-	 * @param fileNameB filename of second file
-	 * @param readerA reader of first file
-	 * @param readerB reader of second file
-	 * @param isShowSame boolean flag for showing if files are identical
-	 * @param isNoBlank boolean flag for skipping blank lines
-	 * @param isSimpleboolean flag for simplifying output if files are different
+	 * 
+	 * @param fileNameA
+	 *            filename of first file
+	 * @param fileNameB
+	 *            filename of second file
+	 * @param readerA
+	 *            reader of first file
+	 * @param readerB
+	 *            reader of second file
+	 * @param isShowSame
+	 *            boolean flag for showing if files are identical
+	 * @param isNoBlank
+	 *            boolean flag for skipping blank lines
+	 * @param isSimpleboolean
+	 *            flag for simplifying output if files are different
 	 * @return message output
 	 * @throws DiffException
 	 */
@@ -161,7 +176,8 @@ public class DiffApplication implements DiffInterface {
 			throws DiffException {
 		try {
 			StringBuilder stringBuilder = new StringBuilder();
-			File dirA = FileUtil.getFileOrDirectoryFromPath(folderA), dirB = FileUtil.getFileOrDirectoryFromPath(folderB);
+			File dirA = FileUtil.getFileOrDirectoryFromPath(folderA),
+					dirB = FileUtil.getFileOrDirectoryFromPath(folderB);
 			String[] dirAFiles = dirA.list(), dirBFiles = dirB.list();
 			String pathA = folderA + File.separator, pathB = folderB + File.separator;
 			boolean hasLines = false;
@@ -209,10 +225,15 @@ public class DiffApplication implements DiffInterface {
 
 	/**
 	 * appends the msg for common subdirectories
-	 * @param stringBuilder string builder for message
-	 * @param hasLines boolean variable if there is msg in stringbuilder
-	 * @param filePathA path of first file
-	 * @param filePathB path of second file
+	 * 
+	 * @param stringBuilder
+	 *            string builder for message
+	 * @param hasLines
+	 *            boolean variable if there is msg in stringbuilder
+	 * @param filePathA
+	 *            path of first file
+	 * @param filePathB
+	 *            path of second file
 	 * @return boolean variable if there is msg in in stringbuilder
 	 */
 	private boolean commonSubDir(StringBuilder stringBuilder, boolean hasLines, String filePathA, String filePathB) {

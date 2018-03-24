@@ -24,7 +24,7 @@ public class ShellStub implements Shell {
 	public void runApp(String app, String[] argsArray, InputStream inputStream, OutputStream outputStream)
 			throws AbstractApplicationException, ShellException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ShellStub implements Shell {
 			throw new ShellException("IO Exception");
 		}
 	}
-	
+
 	@Override
 	public void processQuotes(CommandString cmd) {
 		// TODO Auto-generated method stub
@@ -55,7 +55,7 @@ public class ShellStub implements Shell {
 	@Override
 	public void performCmdSub(CommandString cmd) throws AbstractApplicationException, ShellException {
 		Integer[] bqIndices = cmd.getIndicesOfCharNotEscaped('`');
-		for (int i = 0; i < bqIndices.length; i+=2) {
+		for (int i = 0; i < bqIndices.length; i += 2) {
 			cmd.replaceRange(bqIndices[i], bqIndices[i + 1] + 1, CMDSUB_RESULT);
 		}
 	}

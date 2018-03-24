@@ -13,7 +13,6 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
-import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 

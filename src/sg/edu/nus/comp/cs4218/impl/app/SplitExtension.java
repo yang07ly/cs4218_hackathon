@@ -8,7 +8,8 @@ import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.SplitException;
 
 public final class SplitExtension {
-	private SplitExtension() {}
+	private SplitExtension() {
+	}
 
 	/**
 	 * checks if split by bytes or lines

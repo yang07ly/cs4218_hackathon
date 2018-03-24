@@ -1,6 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.cmd;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.Vector;
 
@@ -14,7 +14,6 @@ import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellStub;
-import sg.edu.nus.comp.cs4218.impl.cmd.SeqCommand;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 
 public class SeqCommandTest {

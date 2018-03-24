@@ -10,7 +10,6 @@ import org.junit.rules.ExpectedException;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
-import sg.edu.nus.comp.cs4218.impl.optr.QuoteOperator;
 
 public class QuoteOperatorTest {
 	private static final String NOT_CLOSED_EXP = "shell: Quotes not closed";

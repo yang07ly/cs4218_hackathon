@@ -15,16 +15,18 @@ import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 
 /**
- * A Pipe Command is a left-associative operator consisting of call/pipe and call commands
+ * A Pipe Command is a left-associative operator consisting of call/pipe and
+ * call commands
  * 
  * <p>
- * <b>Command format:</b> <code> <pipe> ::= <call> "|" <call> | <pipe> "|" <call></code>
+ * <b>Command format:</b>
+ * <code> <pipe> ::= <call> "|" <call> | <pipe> "|" <call></code>
  * </p>
  */
 
-public class PipeCommand implements Command{
+public class PipeCommand implements Command {
 	public static final String EXP_INVALID_PIPE = "Invalid pipe operator/s";
-	
+
 	private final Shell shell;
 	private final CommandString cmdline;
 	private CommandString[] argsArray;
@@ -36,9 +38,9 @@ public class PipeCommand implements Command{
 	}
 
 	/**
-	 * Evaluates the separated commands by pipe and pipe the output of the preceding sub command
-	 * to the input of the current sub command. If an exception occurs on a sub command, any sub 
-	 * commands after it will not be processed.
+	 * Evaluates the separated commands by pipe and pipe the output of the preceding
+	 * sub command to the input of the current sub command. If an exception occurs
+	 * on a sub command, any sub commands after it will not be processed.
 	 * 
 	 * @param stdin
 	 *            InputStream to get data from.
@@ -46,16 +48,18 @@ public class PipeCommand implements Command{
 	 *            OutputStream to write resultant data to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while evaluating the sub-command of pipe commands.
+	 *             If an exception happens while evaluating the sub-command of pipe
+	 *             commands.
 	 * @throws ShellException
-	 *             If an exception happens while evaluating the sub-command of pipe commands.
+	 *             If an exception happens while evaluating the sub-command of pipe
+	 *             commands.
 	 */
 	@Override
 	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
 		if (argsArray.length == 0) {
 			return;
 		}
-		
+
 		InputStream inputStream = stdin;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		CommandString command = argsArray[0];
@@ -66,7 +70,7 @@ public class PipeCommand implements Command{
 		for (int i = 1; i < argsArray.length; i++) {
 			inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 			outputStream = new ByteArrayOutputStream();
-			
+
 			callCommand = new CallCommand(shell, argsArray[i]);
 			callCommand.parse();
 			callCommand.evaluate(inputStream, outputStream);
@@ -80,16 +84,16 @@ public class PipeCommand implements Command{
 	 * Parses and splits the commands separated by unescaped pipe operator.
 	 * 
 	 * @throws ShellException
-	 *             If the command starts or ends with a pipe or
-	 *             if there are no command between pipes.
+	 *             If the command starts or ends with a pipe or if there are no
+	 *             command between pipes.
 	 */
 	public void parse() throws ShellException {
 		Integer[] spaceIndices = cmdline.getIndicesOfCharNotEscaped('|');
 		if (spaceIndices.length == 0) {
-			argsArray = new CommandString[] {cmdline};
+			argsArray = new CommandString[] { cmdline };
 			return;
 		}
-		
+
 		Arrays.sort(spaceIndices);
 		Vector<CommandString> cmdArgs = new Vector<CommandString>();
 		int startIndex = 0;
@@ -104,13 +108,13 @@ public class PipeCommand implements Command{
 		if (startIndex >= cmdline.length()) {
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
-		
+
 		CommandString callCmd = cmdline.substring(startIndex, cmdline.length());
 		if (callCmd.trim().length() == 0) {
 			throw new ShellException(EXP_INVALID_PIPE);
 		}
 		cmdArgs.add(callCmd);
-		
+
 		argsArray = cmdArgs.toArray(new CommandString[cmdArgs.size()]);
 	}
 
@@ -119,6 +123,6 @@ public class PipeCommand implements Command{
 	 */
 	@Override
 	public void terminate() {
-		//unused for now
+		// unused for now
 	}
 }

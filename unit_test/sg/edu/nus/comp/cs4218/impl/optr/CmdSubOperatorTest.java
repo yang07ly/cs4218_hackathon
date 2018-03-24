@@ -1,6 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.optr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.OutputStream;
 
@@ -19,7 +19,6 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellStub;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
-import sg.edu.nus.comp.cs4218.impl.optr.CmdSubOperator;
 
 public class CmdSubOperatorTest {
 	private static final String CMD_STR = "cmd";

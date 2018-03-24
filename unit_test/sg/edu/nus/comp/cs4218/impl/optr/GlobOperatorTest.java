@@ -1,6 +1,6 @@
 package sg.edu.nus.comp.cs4218.impl.optr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,11 +12,11 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
-import sg.edu.nus.comp.cs4218.impl.optr.GlobOperator;
 
 public class GlobOperatorTest {
 
-	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system" + OSUtil.SEP + "glob_test_system";
+	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system" + OSUtil.SEP
+			+ "glob_test_system";
 
 	private static final String FILE1 = "file1.txt";
 	private static final String FILE2 = "file2.txt";
@@ -37,7 +37,7 @@ public class GlobOperatorTest {
 	private static final String ABS_FILE1 = TEST_DIR + OSUtil.SEP + FILE1;
 	private static final String ABS_FILE2 = TEST_DIR + OSUtil.SEP + FILE2;
 	private static final String ABS_FOLDER1 = TEST_DIR + OSUtil.SEP + FOLDER1;
-	private static final String ABS_FOLDER2 = TEST_DIR + OSUtil.SEP + FOLDER2;	
+	private static final String ABS_FOLDER2 = TEST_DIR + OSUtil.SEP + FOLDER2;
 
 	private static final String STR_SPACE = " ";
 	private static final String FILE_WILDCARD = "file*";
@@ -143,7 +143,7 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobMutipleWildcard() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
@@ -220,15 +220,15 @@ public class GlobOperatorTest {
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
-	
+
 	@Test
 	public void testGlobValidAndEscapedWildcard() throws AbstractApplicationException, ShellException {
 		expected = new CommandString("**");
 		expected.setCharEscaped(0, true);
-		
+
 		cmd = new CommandString("**");
 		cmd.setCharEscaped(0, true);
-		
+
 		globOptr.evaluate(cmd);
 		assertEquals(expected, cmd);
 	}
