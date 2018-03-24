@@ -52,7 +52,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testRunNullInputs() throws SplitException {
+	public void testRunToThrowExpUsingNullArgs() throws SplitException {
 		expected = "split: Null Pointer Exception";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -60,7 +60,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testRunExtraOperand() throws SplitException {
+	public void testRunToThrowExpUsingInvalidFlags() throws SplitException {
 		String[] splitArgs = { FILE1_TXT, "-s", "-c" };
 		expected = "split: -s: invalid flag";
 		thrown.expect(SplitException.class);
@@ -69,7 +69,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testNegativeLines() throws SplitException {
+	public void testRunToThrowExpUsingNegativeLines() throws SplitException {
 		String[] splitArgs = { FILE1_TXT, "-l", "-2" };
 		expected = "split: -2: invalid number of lines";
 		thrown.expect(SplitException.class);
@@ -78,7 +78,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testRunSplitMoreThanOneWay() throws SplitException {
+	public void testRunToThrowExpWhenSplitMoreThanOneWay() throws SplitException {
 		String[] splitArgs = { FILE1_TXT, "-l", "-2", "-b", "3" };
 		expected = "split: cannot split in more than one way";
 		thrown.expect(SplitException.class);
@@ -87,7 +87,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testRunSplitMoreThanOneWay2() throws SplitException {
+	public void testRunToThrowExpWhenSplitMoreThanOneWay2() throws SplitException {
 		String[] splitArgs = { FILE1_TXT, "-b", "3", "-l", "-2" };
 		expected = "split: cannot split in more than one way";
 		thrown.expect(SplitException.class);
@@ -96,16 +96,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testRunSplit2Ways() throws SplitException {
-		String[] splitArgs = { FILE1_TXT, "-b", "2", "-l", "2" };
-		expected = "split: cannot split in more than one way";
-		thrown.expect(SplitException.class);
-		thrown.expectMessage(expected);
-		app.run(splitArgs, System.in, outputStream);
-	}
-
-	@Test
-	public void testLinesEmptyFileName() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingEmptyFileName() throws SplitException {
 		expected = "split: : No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -113,7 +104,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesSpaceFileName() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingSpaceAsFileName() throws SplitException {
 		expected = "split:  : No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -121,7 +112,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesFileNotFound() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingInvalidFile() throws SplitException {
 		expected = "split: asdf: No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -129,7 +120,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesDirectoryFileNotFound() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingInvalidFile2() throws SplitException {
 		expected = "split: asdf.txt: No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -137,7 +128,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesInvalidOutputPath() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingInvalidFilePath() throws SplitException {
 		String path = currentDir + "asddfaw" + File.separator;
 		expected = "split: '" + path + "': No such file or directory";
 		thrown.expect(SplitException.class);
@@ -146,7 +137,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesInvalidNumberOfLines() throws SplitException {
+	public void testSplitFileLinesToThrowExpUsingInvalidNumberOfLines() throws SplitException {
 		expected = "split: 0: invalid number of lines";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -157,7 +148,7 @@ public class SplitApplicationTest {
 	 * These tests are all valid test cases for splitFileByLines
 	 */
 	@Test
-	public void testSplitStreamByDefaultLines() throws IOException, SplitException {
+	public void testRunToRunCorrectlyUsingDefaultLines() throws IOException, SplitException {
 		FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE1_TXT));
 		app.run(null, fileStream, outputStream);
 		output = outputStream.toString();
@@ -171,7 +162,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testSplitStreamByBytes() throws IOException, SplitException {
+	public void testRunToRunCorrectlyUsingStreamAndBytes() throws IOException, SplitException {
 		String[] myArgs = { "-b", "6" };
 		FileInputStream fileStream = new FileInputStream(new File(currentDir + FILE2_TXT));
 		app.run(myArgs, fileStream, outputStream);
@@ -186,7 +177,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testSplitFileByLines() throws IOException, SplitException {
+	public void testRunToRunCorrectlyUsingFileAndLines() throws IOException, SplitException {
 		String[] myArgs = { currentDir + FILE1_TXT, "-l", "6" };
 		app.run(myArgs, null, outputStream);
 		output = outputStream.toString();
@@ -200,7 +191,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testSplitFileByBytes() throws IOException, SplitException {
+	public void testRunToRunCorrectlyUsingFileAndBytes() throws IOException, SplitException {
 		String[] myArgs = { currentDir + FILE2_TXT, "-b", "6" };
 		app.run(myArgs, null, outputStream);
 		output = outputStream.toString();
@@ -214,7 +205,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesRelativeAny() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingValidLines() throws IOException, SplitException {
 		app.splitFileByLines(FILE1_TXT, "", 2);
 
 		BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
@@ -229,7 +220,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesRelativePath() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingRelPath() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory).resolve(OUTPUT2);
 		String myPath = path.toString() + File.separator;
 		Path outputFile = Paths.get(myPath + "aa");
@@ -248,7 +239,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesRelativeNull() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingDefaultPrefix() throws IOException, SplitException {
 		app.splitFileByLines(FILE1_TXT, null, 2);
 
 		BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
@@ -263,7 +254,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesAbsoluteAny() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingAbsPath() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
 		app.splitFileByLines(path.toString(), "", 2);
 
@@ -279,7 +270,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesAbsolutePath() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingPathInPrefix() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory).resolve(OUTPUT2);
 		Path source = Paths.get(Environment.currentDirectory);
 		String myPath = path.toString() + File.separator;
@@ -299,7 +290,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testLinesAbsoluteNull() throws IOException, SplitException {
+	public void testSplitFileLinesToRunCorrectlyUsingDefaultPrefix2() throws IOException, SplitException {
 		Path source = Paths.get(Environment.currentDirectory);
 		app.splitFileByLines(source.toString() + File.separator + FILE1_TXT, null, 2);
 
@@ -318,7 +309,7 @@ public class SplitApplicationTest {
 	 */
 
 	@Test
-	public void testBytesEmptyFileName() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingEmptyFileName() throws SplitException {
 		expected = "split: : No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -326,7 +317,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesSpaceFileName() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingSpaceAsFileName() throws SplitException {
 		expected = "split:  : No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -334,7 +325,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesFileNotFound() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingInvalidFile() throws SplitException {
 		expected = "split: asdf: No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -342,7 +333,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesDirectoryFileNotFound() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingInvalidFile2() throws SplitException {
 		expected = "split: asdf.txt: No such file or directory";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -350,7 +341,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesInvalidOutputPath() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingInvalidPathInPrefix() throws SplitException {
 		String path = currentDir + "asddfaw" + File.separator;
 		expected = "split: '" + path + "': No such file or directory";
 		thrown.expect(SplitException.class);
@@ -359,7 +350,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesInvalidNumberOfBytes() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingInvalidBytes() throws SplitException {
 		expected = "split: 2s: invalid number of bytes";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -367,7 +358,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesEmptyBytesString() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingEmptyBytesString() throws SplitException {
 		expected = "split: : invalid number of bytes";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -375,7 +366,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesSpaceBytesString() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingSpaceAsByteString() throws SplitException {
 		expected = "split:  : invalid number of bytes";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -383,7 +374,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesZeroBytes() throws SplitException {
+	public void testSplitFileBytesToThrowExpUsingZeroBytes() throws SplitException {
 		expected = "split: 0: invalid number of bytes";
 		thrown.expect(SplitException.class);
 		thrown.expectMessage(expected);
@@ -391,7 +382,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesRelativeAnyInteger() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingValidBytes() throws IOException, SplitException {
 		app.splitFileByBytes(FILE2_TXT, "", "2");
 		BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + "aa")));
 		assertEquals("as", reader.readLine());
@@ -408,7 +399,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesRelativeAnyByte() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingValidBytesWithB() throws IOException, SplitException {
 		app.splitFileByBytes("512bytes.txt", "", "1b");
 		char[] buffer = new char[512];
 		String expected = "";
@@ -430,7 +421,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesAbsoluteAnyKilobyte() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingKiloBytes() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + "1024bytes.txt");
 		app.splitFileByBytes(path.toString(), "", "1k");
 		char[] buffer = new char[1024];
@@ -453,7 +444,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesRelativeAnyMegabyte() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingMegaBytes() throws IOException, SplitException {
 		app.splitFileByBytes("megabytes.txt", "", "1m");
 		char[] buffer = new char[1048576];
 		StringBuilder stringBuilder = new StringBuilder(1048576);
@@ -477,7 +468,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesRelativePathInteger() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingRelPath() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory).resolve(OUTPUT2);
 		String myPath = path.toString() + File.separator;
 		Path outputFile = Paths.get(myPath + "aa");
@@ -503,7 +494,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesRelativePathByte() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingRelPathWithValidBytes() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory).resolve(OUTPUT2);
 		String myPath = path.toString() + File.separator;
 		Path outputFile = Paths.get(myPath + "aa");
@@ -528,7 +519,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesAbsoluteNullInteger() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingDefaultPrefix() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + FILE2_TXT);
 		app.splitFileByBytes(path.toString(), null, "2");
 		BufferedReader reader = new BufferedReader(new FileReader(new File(currentDir + XAA)));
@@ -546,7 +537,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testBytesAbsolutePathKiloByte() throws IOException, SplitException {
+	public void testSplitFileBytesToRunCorrectlyUsingAbsPathWithKiloBytes() throws IOException, SplitException {
 		Path path = Paths.get(Environment.currentDirectory + File.separator + "1024bytes.txt");
 		Path path2 = Paths.get(Environment.currentDirectory + File.separator + OUTPUT2 + File.separator);
 		app.splitFileByBytes(path.toString(), path2.toString(), "1k");
@@ -569,7 +560,7 @@ public class SplitApplicationTest {
 	}
 
 	@Test
-	public void testInvalidLines() throws SplitException {
+	public void testRunToThrowExpUsingInvalidLines() throws SplitException {
 		expected = "split: 43s: invalid number of lines";
 		String[] args = { "file1.txt", "-l", "43s" };
 		thrown.expect(SplitException.class);
