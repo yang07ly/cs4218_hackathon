@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.CdException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class CdApplicationTest {
 
@@ -79,7 +80,7 @@ public class CdApplicationTest {
 	@Test
 	public void testDirChangeMixWithSpecialDir() throws CdException {
 		expected = ABS_DIR_FOLDER2;
-		cdApp.changeToDirectory("folder1/../folder2");
+		cdApp.changeToDirectory("folder1" + OSUtil.SEP + "../folder2");
 		result = Environment.currentDirectory;
 		assertEquals(expected, result);
 	}
