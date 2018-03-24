@@ -13,6 +13,7 @@ import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.LsException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class LsApplicationTest {
 
@@ -139,15 +140,16 @@ public class LsApplicationTest {
 
 	@Test
 	public void testListMultipleFoldersContent() throws LsException {
-		expected = HEAD_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + HEAD_FOLDER2 + "\n" + FOLDER2_CONTENT;
+		expected = HEAD_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2
+				+ OSUtil.NEWLINE + FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, false, FOLDER1, FOLDER2);
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void testListMutipleFilesAndFolders() throws LsException {
-		expected = ABS_FILE1 + STR_TABS + FILE2 + "\n" + "\n" + HEAD_ABS_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n"
-				+ HEAD_FOLDER2 + "\n" + FOLDER2_CONTENT;
+		expected = ABS_FILE1 + STR_TABS + FILE2 + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_ABS_FOLDER1 + OSUtil.NEWLINE
+				+ FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2 + OSUtil.NEWLINE + FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, false, ABS_FILE1, FILE2, ABS_FOLDER1, FOLDER2);
 		assertEquals(expected, result);
 	}
@@ -182,35 +184,39 @@ public class LsApplicationTest {
 
 	@Test
 	public void testRecursiveListCurrentFolder() throws LsException {
-		expected = ".:" + "\n" + CUR_CONTENT + "\n" + "\n" + "'." + File.separator + FOLDER_WITH_SPACE + "':\n"
-				+ FOLDER_WS_CONTENT + "\n" + "\n" + "." + File.separator + FOLDER1 + ":\n" + FOLDER1_CONTENT + "\n"
-				+ "\n" + "." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + ":\n" + FOLDER1_1_CONTENT + "\n"
-				+ "\n" + "." + File.separator + FOLDER2 + ":\n" + FOLDER2_CONTENT;
+		expected = ".:" + OSUtil.NEWLINE + CUR_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + "'." + File.separator
+				+ FOLDER_WITH_SPACE + "':" + OSUtil.NEWLINE + FOLDER_WS_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + "."
+				+ File.separator + FOLDER1 + ":" + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE
+				+ "." + File.separator + FOLDER1 + File.separator + FOLDER1_1 + ":" + OSUtil.NEWLINE + FOLDER1_1_CONTENT
+				+ OSUtil.NEWLINE + OSUtil.NEWLINE + "." + File.separator + FOLDER2 + ":" + OSUtil.NEWLINE
+				+ FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, true);
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void testRecursiveListAbsoluteFolder() throws LsException {
-		expected = HEAD_ABS_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + HEAD_ABS_FOLDER11 + "\n"
-				+ FOLDER1_1_CONTENT;
+		expected = HEAD_ABS_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE
+				+ HEAD_ABS_FOLDER11 + OSUtil.NEWLINE + FOLDER1_1_CONTENT;
 		result = lsApp.listFolderContent(false, true, ABS_FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void testRecursiveListMultipleFolders() throws LsException {
-		expected = HEAD_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + HEAD_FOLDER1_1 + "\n" + FOLDER1_1_CONTENT
-				+ "\n" + "\n" + HEAD_FOLDER2 + "\n" + FOLDER2_CONTENT;
+		expected = HEAD_FOLDER1 + OSUtil.NEWLINE + FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1_1
+				+ OSUtil.NEWLINE + FOLDER1_1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER2 + OSUtil.NEWLINE
+				+ FOLDER2_CONTENT;
 		result = lsApp.listFolderContent(false, true, FOLDER2, FOLDER1);
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void testRecursiveListFilesAndFolders() throws LsException {
-		expected = ABS_FOLDER1_FILE1 + STR_TABS + REL_FOLDER2_FILE1 + "\n" + "\n" + HEAD_ABS_FOLDER2 + "\n"
-				+ FOLDER2_CONTENT + "\n" + "\n" + HEAD_FOLDER1 + "\n" + FOLDER1_CONTENT + "\n" + "\n" + HEAD_FOLDER1_1
-				+ "\n" + FOLDER1_1_CONTENT;
+		expected = ABS_FOLDER1_FILE1 + STR_TABS + REL_FOLDER2_FILE1 + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_ABS_FOLDER2
+				+ OSUtil.NEWLINE + FOLDER2_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1 + OSUtil.NEWLINE
+				+ FOLDER1_CONTENT + OSUtil.NEWLINE + OSUtil.NEWLINE + HEAD_FOLDER1_1 + OSUtil.NEWLINE
+				+ FOLDER1_1_CONTENT;
 		result = lsApp.listFolderContent(false, true, ABS_FOLDER2, REL_FOLDER2_FILE1, FOLDER1, ABS_FOLDER1_FILE1);
 		assertEquals(expected, result);
 	}
