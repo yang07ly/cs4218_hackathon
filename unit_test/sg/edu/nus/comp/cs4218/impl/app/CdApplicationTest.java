@@ -102,6 +102,14 @@ public class CdApplicationTest {
 	}
 
 	@Test
+	public void testEmptyArgs() throws CdException {
+		expected = DIR_USER;
+		cdApp.run(new String[0], null, null);
+		result = Environment.currentDirectory;
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void testEmptyStringInArgs() throws CdException {
 		expected = DIR_USER;
 		cdApp.run(new String[] { "" }, null, null);
@@ -111,14 +119,9 @@ public class CdApplicationTest {
 
 	@Test
 	public void testInvalidNonExistentChange() throws CdException {
-		expected = "cd: unknownDir: No such file or directory";
-		try {
-			cdApp.changeToDirectory("unknownDir");
-			result = Environment.currentDirectory;
-		} catch (CdException e) {
-			result = e.getMessage();
-		}
-		assertEquals(expected, result);
+		thrown.expect(CdException.class);
+		thrown.expectMessage("cd: unknownDir: No such file or directory");
+		cdApp.changeToDirectory("unknownDir");
 	}
 
 	@Test
