@@ -3,7 +3,6 @@ package sg.edu.nus.comp.cs4218.impl.optr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +20,7 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellStub;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class IoRedirOperatorTest {
 
@@ -37,22 +37,22 @@ public class IoRedirOperatorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Environment.currentDirectory = System.getProperty("user.dir") + File.separator + "test_system" + File.separator
+		Environment.currentDirectory = System.getProperty("user.dir") + OSUtil.SEP + "test_system" + OSUtil.SEP
 				+ "ioRedir_test_system";
 		ioRedirOp = new IoRedirOperator(new ShellStub());
 		input = new CommandString();
 		expected = new CommandString();
 		inputStream = null;
 		outputStream = null;
-		currentDir = Environment.currentDirectory + File.separator;
+		currentDir = Environment.currentDirectory + OSUtil.SEP;
 	}
-	
+
 	@After
 	public void tearDown() throws IOException {
-		if(outputStream != null) {
+		if (outputStream != null) {
 			outputStream.close();
 		}
-		if(inputStream != null) {
+		if (inputStream != null) {
 			inputStream.close();
 		}
 	}

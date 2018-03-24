@@ -26,6 +26,7 @@ import sg.edu.nus.comp.cs4218.exception.CatException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.ShellImpl;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class CallCommandIT {
 	private static final String QWERTY = "qwerty";
@@ -35,19 +36,19 @@ public class CallCommandIT {
 	private static final String OUTPUT_STREAM = "outputStream";
 	private static final String FILEFILE = "filefile";
 	private static final String NEWLINE = System.lineSeparator();
-	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system";
-	private static final String LS_TEST_DIR = TEST_DIR + File.separator + "ls_test_system";
-	private static final String CAT_TEST_DIR = TEST_DIR + File.separator + "cat_test_system";
-	private static final String MKDIR_TEST_DIR = TEST_DIR + File.separator + "mkdir_test_system";
-	private static final String PASTE_TEST_DIR = TEST_DIR + File.separator + "paste_test_system";
-	private static final String DIFF_TEST_DIR = TEST_DIR + File.separator + "diff_test_system";
-	private static final String CD_TEST_DIR = TEST_DIR + File.separator + "cd_test_system";
-	private static final String SPLIT_TEST_DIR = TEST_DIR + File.separator + "split_test_system";
-	private static final String CMP_TEST_DIR = TEST_DIR + File.separator + "cmp_test_system";
-	private static final String GREP_TEST_DIR = TEST_DIR + File.separator + "grep_test_system";
-	private static final String SED_TEST_DIR = TEST_DIR + File.separator + "sed_test_system";
-	private static final String GLOB_TEST_DIR = TEST_DIR + File.separator + "glob_test_system";
-	private static final String IO_TEST_DIR = TEST_DIR + File.separator + "ioRedir_test_system";
+	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system";
+	private static final String LS_TEST_DIR = TEST_DIR + OSUtil.SEP + "ls_test_system";
+	private static final String CAT_TEST_DIR = TEST_DIR + OSUtil.SEP + "cat_test_system";
+	private static final String MKDIR_TEST_DIR = TEST_DIR + OSUtil.SEP + "mkdir_test_system";
+	private static final String PASTE_TEST_DIR = TEST_DIR + OSUtil.SEP + "paste_test_system";
+	private static final String DIFF_TEST_DIR = TEST_DIR + OSUtil.SEP + "diff_test_system";
+	private static final String CD_TEST_DIR = TEST_DIR + OSUtil.SEP + "cd_test_system";
+	private static final String SPLIT_TEST_DIR = TEST_DIR + OSUtil.SEP + "split_test_system";
+	private static final String CMP_TEST_DIR = TEST_DIR + OSUtil.SEP + "cmp_test_system";
+	private static final String GREP_TEST_DIR = TEST_DIR + OSUtil.SEP + "grep_test_system";
+	private static final String SED_TEST_DIR = TEST_DIR + OSUtil.SEP + "sed_test_system";
+	private static final String GLOB_TEST_DIR = TEST_DIR + OSUtil.SEP + "glob_test_system";
+	private static final String IO_TEST_DIR = TEST_DIR + OSUtil.SEP + "ioRedir_test_system";
 
 	private CallCommand callCmd;
 	private CommandString cmdLine;
@@ -224,7 +225,7 @@ public class CallCommandIT {
 	public void testEvaluateCd() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CD_TEST_DIR;
 		cmdLine = new CommandString("cd folder1");
-		String directory = CD_TEST_DIR + File.separator + "folder1";
+		String directory = CD_TEST_DIR + OSUtil.SEP + "folder1";
 
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
@@ -244,12 +245,12 @@ public class CallCommandIT {
 		callCmd.evaluate(System.in, output);
 
 		BufferedReader reader = new BufferedReader(
-				new FileReader(new File(Environment.currentDirectory + File.separator + "xaa")));
+				new FileReader(new File(Environment.currentDirectory + OSUtil.SEP + "xaa")));
 		assertEquals("asdfgh", reader.readLine());
 		assertEquals(QWERTY, reader.readLine());
 		assertEquals("zxcvbn", reader.readLine());
 		reader.close();
-		Files.delete(Paths.get(Environment.currentDirectory + File.separator + "xaa"));
+		Files.delete(Paths.get(Environment.currentDirectory + OSUtil.SEP + "xaa"));
 
 		assertEquals(expected, output.toString());
 	}
@@ -372,10 +373,10 @@ public class CallCommandIT {
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
 
-		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT)));
+		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + OSUtil.SEP + FILE1_TXT)));
 		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, OUTPUT_STREAM);
 		outputStream.close();
-		Path filePath = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
+		Path filePath = Paths.get(Environment.currentDirectory + OSUtil.SEP + FILE1_TXT);
 
 		assertEquals(ABC, new String(Files.readAllBytes(filePath)));
 		assertEquals(expected, output.toString());
@@ -404,10 +405,10 @@ public class CallCommandIT {
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
 
-		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT)));
+		assertTrue(Files.exists(Paths.get(Environment.currentDirectory + OSUtil.SEP + FILE1_TXT)));
 		OutputStream outputStream = (OutputStream) Whitebox.getInternalState(callCmd, OUTPUT_STREAM);
 		outputStream.close();
-		Path filePath = Paths.get(Environment.currentDirectory + File.separator + FILE1_TXT);
+		Path filePath = Paths.get(Environment.currentDirectory + OSUtil.SEP + FILE1_TXT);
 
 		assertEquals(FILEFILE, new String(Files.readAllBytes(filePath)));
 		assertEquals(expected, output.toString());
@@ -450,7 +451,7 @@ public class CallCommandIT {
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
 
-		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "globOut.txt");
+		Path filePath = Paths.get(Environment.currentDirectory + OSUtil.SEP + "globOut.txt");
 		assertTrue(Files.exists(filePath));
 
 		assertEquals(FILEFILE, new String(Files.readAllBytes(filePath)));
@@ -473,7 +474,7 @@ public class CallCommandIT {
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
 
-		Path filePath = Paths.get(Environment.currentDirectory + File.separator + "globOut.txt");
+		Path filePath = Paths.get(Environment.currentDirectory + OSUtil.SEP + "globOut.txt");
 		assertTrue(Files.exists(filePath));
 
 		assertEquals(FILEFILE, new String(Files.readAllBytes(filePath)));

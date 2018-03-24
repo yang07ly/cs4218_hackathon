@@ -3,7 +3,6 @@ package sg.edu.nus.comp.cs4218.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -18,8 +17,8 @@ import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class ShellImplIT {
-	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system"
-			+ File.separator + "quote_test_system";
+	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system" + OSUtil.SEP
+			+ "quote_test_system";
 	private static final String NEW_LINE = OSUtil.NEWLINE;
 	private static final String FILE_CONTENT = "This file is named \"file\" in quote_test_system.";
 	private static final String NAME_CONTENT = "This file is named \"name\" in quote_test_system.";
@@ -255,19 +254,19 @@ public class ShellImplIT {
 	 */
 	private void createFileForTest() throws IOException {
 		PrintWriter writer;
-		writer = new PrintWriter(TEST_DIR + File.separator + "file");
+		writer = new PrintWriter(TEST_DIR + OSUtil.SEP + "file");
 		writer.print(FILE_CONTENT);
 		writer.close();
 
-		writer = new PrintWriter(TEST_DIR + File.separator + "name");
+		writer = new PrintWriter(TEST_DIR + OSUtil.SEP + "name");
 		writer.print(NAME_CONTENT);
 		writer.close();
 
-		writer = new PrintWriter(TEST_DIR + File.separator + "file name");
+		writer = new PrintWriter(TEST_DIR + OSUtil.SEP + "file name");
 		writer.print(FILE_NAME_CONTENT);
 		writer.close();
 
-		writer = new PrintWriter(TEST_DIR + File.separator + "`back quote`");
+		writer = new PrintWriter(TEST_DIR + OSUtil.SEP + "`back quote`");
 		writer.print(BQ_CONTENT);
 		writer.close();
 	}

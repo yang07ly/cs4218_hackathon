@@ -3,7 +3,6 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,7 +18,7 @@ import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class SeqCommandIT {
-	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system";
+	private static final String TEST_DIR = System.getProperty("user.dir") + OSUtil.SEP + "test_system";
 	private static final String NEW_LINE = OSUtil.NEWLINE;
 	private static final String TAB = "\t";
 

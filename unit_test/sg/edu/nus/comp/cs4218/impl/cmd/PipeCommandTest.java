@@ -18,14 +18,14 @@ import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 public class PipeCommandTest {
 	private final static String EMPTY = "";
 	private final static String SPACES = "    ";
-	
+
 	private final static String ARGS_VAR = "argsArray";
 	private final static String CMD = "cmd";
-	
+
 	private final static char PIPE = '|';
-	
+
 	private static final String EXP_INVALID_PIPE = "shell: Invalid pipe operator/s";
-	
+
 	private PipeCommand pipeCmd;
 	private CommandString[] expected;
 	private CommandString cmdLine;
@@ -38,12 +38,12 @@ public class PipeCommandTest {
 		expected = new CommandString[0];
 		cmdLine = new CommandString();
 	}
-	
+
 	@Test
 	public void testParseEmpty() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(EMPTY);
 		expected = getExpectedCmdStrArr(EMPTY);
-		
+
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 		assertArrayEquals(expected, (CommandString[]) Whitebox.getInternalState(pipeCmd, ARGS_VAR));
@@ -63,7 +63,7 @@ public class PipeCommandTest {
 	public void testParseOnePipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD);
 		expected = getExpectedCmdStrArr(CMD, CMD);
-		
+
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 		assertArrayEquals(expected, (CommandString[]) Whitebox.getInternalState(pipeCmd, ARGS_VAR));
@@ -83,7 +83,7 @@ public class PipeCommandTest {
 	public void testParsePipeWithLeadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(SPACES + CMD + PIPE + CMD + SPACES);
 		expected = getExpectedCmdStrArr(CMD, CMD);
-		
+
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 		assertArrayEquals(expected, (CommandString[]) Whitebox.getInternalState(pipeCmd, ARGS_VAR));
@@ -93,28 +93,28 @@ public class PipeCommandTest {
 	public void testParseEscapedPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD);
 		cmdLine.setCharEscaped(3, true);
-		
+
 		expected = getExpectedCmdStrArr(CMD + PIPE + CMD);
 		expected[0].setCharEscaped(3, true);
-		
+
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 		assertArrayEquals(expected, (CommandString[]) Whitebox.getInternalState(pipeCmd, ARGS_VAR));
 	}
-	
+
 	@Test
 	public void testParseSeqEscapedWithValidPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD + PIPE + CMD);
 		cmdLine.setCharEscaped(3, true);
-		
+
 		expected = getExpectedCmdStrArr(CMD + PIPE + CMD, CMD);
 		expected[0].setCharEscaped(3, true);
-		
+
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 		assertArrayEquals(expected, (CommandString[]) Whitebox.getInternalState(pipeCmd, ARGS_VAR));
 	}
-	
+
 	@Test
 	public void testInvalidParsePipeAtFront() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(PIPE + CMD);
@@ -134,7 +134,7 @@ public class PipeCommandTest {
 		pipeCmd = new PipeCommand(new ShellStub(), cmdLine);
 		pipeCmd.parse();
 	}
-	
+
 	@Test
 	public void testInvalidParsePipeEmptyCmdBetweenPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + PIPE + CMD);
@@ -146,13 +146,12 @@ public class PipeCommandTest {
 	}
 
 	/**
-	 * Return the CommandString array by creating new CommandString for each
-	 * inputed String. Escape states for the new CommandStrings is by default false.
+	 * Return the CommandString array by creating new CommandString for each inputed
+	 * String. Escape states for the new CommandStrings is by default false.
 	 * 
 	 * @param strings
-	 * 				String of the new CommandString to be added to the array.
-	 * @return CommandString Array
-	 * 				List of CommandString with the inputed Strings.
+	 *            String of the new CommandString to be added to the array.
+	 * @return CommandString Array List of CommandString with the inputed Strings.
 	 */
 	private CommandString[] getExpectedCmdStrArr(String... strings) {
 		Vector<CommandString> cmdStrs = new Vector<CommandString>(strings.length);
