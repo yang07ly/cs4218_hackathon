@@ -226,11 +226,15 @@ public class LsApplication implements LsInterface {
 	 */
 	private String printFiles(Vector<String> files, String folder) {
 		String outputStr = "";
+		if (files.size() == 1 && files.get(0).equals(".")) {
+			return ".\n";
+		}
+		
 		Collections.sort(files);
 		for (int i = 0; i < files.size(); i++) {
 			File dir = getFileFromPath(files.get(i), folder);
 			if (!dir.isHidden()) {
-				outputStr += getFormattedDirName(files.get(i)) + "  ";
+				outputStr += getFormattedDirName(files.get(i)) + "\t";
 			}
 		}
 		outputStr = outputStr.trim();
