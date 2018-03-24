@@ -129,8 +129,8 @@ public class GrepApplication implements GrepInterface {
 	 * @param pattern
 	 *            String specifying a regular expression in JAVA format.
 	 * @param isInvert
-	 *            Boolean option to filter the output that doesn't match. the
-	 *            pattern
+	 *            Boolean option to filter the output that doesn't match the
+	 *            pattern.
 	 * @param fileNames
 	 *            Array of file names.
 	 * @throws GrepException
