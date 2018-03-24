@@ -2,7 +2,9 @@ package sg.edu.nus.comp.cs4218.impl.cmd;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Vector;
+import java.util.stream.Stream;
 
 import sg.edu.nus.comp.cs4218.Command;
 import sg.edu.nus.comp.cs4218.Shell;
@@ -23,7 +25,7 @@ import sg.edu.nus.comp.cs4218.impl.commons.StreamUtil;
 public class CallCommand implements Command {
 	private final Shell shell;
 	private final CommandString cmdline;
-	
+
 	private String app;
 	private String[] argsArray;
 	private InputStream inputStream;
@@ -32,7 +34,7 @@ public class CallCommand implements Command {
 	public CallCommand(Shell shell, CommandString cmdline) {
 		this.shell = shell;
 		this.cmdline = cmdline.trim();
-		
+
 		app = "";
 		argsArray = new String[0];
 		inputStream = null;
@@ -40,8 +42,8 @@ public class CallCommand implements Command {
 	}
 
 	/**
-	 * Evaluates sub-command using data provided through stdin stream. Writes
-	 * result to stdout stream.
+	 * Evaluates sub-command using data provided through stdin stream. Writes result
+	 * to stdout stream.
 	 * 
 	 * @param stdin
 	 *            InputStream to get data from.
@@ -55,14 +57,13 @@ public class CallCommand implements Command {
 	 *             quoting or command substitution.
 	 */
 	@Override
-	public void evaluate(InputStream stdin, OutputStream stdout)
-			throws AbstractApplicationException, ShellException {
+	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
 		if (inputStream == null) { // empty
 			inputStream = stdin;
 		}
 		if (outputStream == null) { // empty
 			outputStream = stdout;
-		}		
+		}
 		shell.runApp(app, argsArray, inputStream, outputStream);
 		StreamUtil.closeInputStream(stdin);
 		StreamUtil.closeOutputStream(stdout);
@@ -73,33 +74,37 @@ public class CallCommand implements Command {
 	 * components, namely the application name and the arguments (if any).
 	 * 
 	 * @throws ShellException
-	 *             If an exception happens while parsing the sub-command where
-	 *             the quotes are not closed properly.
+	 *             If an exception happens while parsing the sub-command where the
+	 *             quotes are not closed properly.
 	 */
 	public void parse() throws AbstractApplicationException, ShellException {
-		//remove IO args from cmdline. Cmdsub and glob have to be done within IORedir.
+		// remove IO args from cmdline. Cmdsub and glob have to be done within IORedir.
 		inputStream = shell.getInputStream(cmdline);
 		outputStream = shell.getOutputStream(cmdline);
 		shell.performCmdSub(cmdline);
 		shell.performGlob(cmdline);
 		extractArgs();
 	}
-	
+
 	/**
-	 * Parses the sub-command's arguments to the call command and splits it into
-	 * its different components, namely the application name and the arguments
-	 * (if any) separated by an unescaped space. All operations that manipulates
-	 * the arguments, such as removing quotes, extracting IO redirection, command 
+	 * Parses the sub-command's arguments to the call command and splits it into its
+	 * different components, namely the application name and the arguments (if any)
+	 * separated by an unescaped space. All operations that manipulates the
+	 * arguments, such as removing quotes, extracting IO redirection, command
 	 * subtitution and globbing, are assumed to be processed.
 	 */
 	private void extractArgs() {
-		Integer[] sepIndices = cmdline.getIndicesOfCharNotEscaped(' ');
+		Integer[] spaceIndices = cmdline.getIndicesOfCharNotEscaped(' ');
+		Integer[] tabIndices = cmdline.getIndicesOfCharNotEscaped('\t');
+		Integer[] sepIndices = Stream.of(spaceIndices, tabIndices).flatMap(Stream::of).toArray(Integer[]::new);
+		Arrays.sort(sepIndices);
+
 		if (sepIndices.length == 0) {
 			app = cmdline.toString();
 			return;
 		}
 		app = cmdline.substring(0, sepIndices[0]).toString();
-		
+
 		Vector<String> cmdArgs = new Vector<String>();
 		int startIndex = sepIndices[0] + 1;
 		for (int i = 1; i < sepIndices.length; i++) {
@@ -119,6 +124,6 @@ public class CallCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		//unused for now
+		// unused for now
 	}
 }
