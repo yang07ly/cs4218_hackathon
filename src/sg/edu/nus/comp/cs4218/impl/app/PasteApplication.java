@@ -12,9 +12,9 @@ import java.util.Vector;
 import sg.edu.nus.comp.cs4218.app.PasteInterface;
 import sg.edu.nus.comp.cs4218.exception.PasteException;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class PasteApplication implements PasteInterface {
-	private final String NEWLINE = System.lineSeparator();
 
 	@Override
 	public void run(String[] args, InputStream stdin, OutputStream stdout) throws PasteException {
@@ -44,9 +44,13 @@ public class PasteApplication implements PasteInterface {
 
 	/**
 	 * extracts flags and arguments from cmd string
-	 * @param args string array of arguments
-	 * @param flags boolean array to store the flags
-	 * @param files Vector of string to store the files
+	 * 
+	 * @param args
+	 *            string array of arguments
+	 * @param flags
+	 *            boolean array to store the flags
+	 * @param files
+	 *            Vector of string to store the files
 	 * @return Vector of string for the files
 	 * @throws PasteException
 	 */
@@ -102,7 +106,9 @@ public class PasteApplication implements PasteInterface {
 
 	/**
 	 * merge all contents from all buffered readers
-	 * @param readers buffered readers to merge content of
+	 * 
+	 * @param readers
+	 *            buffered readers to merge content of
 	 * @return the merged string
 	 * @throws PasteException
 	 */
@@ -126,8 +132,8 @@ public class PasteApplication implements PasteInterface {
 						}
 					}
 				}
-				if(numLines != 0 && hasLines) {
-					stringBuilder.append(new String(NEWLINE));
+				if (numLines != 0 && hasLines) {
+					stringBuilder.append(OSUtil.NEWLINE);
 				}
 				numLines++;
 				stringBuilder.append(new String(lineBuilder));

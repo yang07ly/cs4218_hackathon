@@ -12,7 +12,7 @@ import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 import sg.edu.nus.comp.cs4218.impl.commons.FileUtil;
-import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * A glob operator is used to evaluate wildcards specified in the path to a 
@@ -142,7 +142,7 @@ public class GlobOperator implements Operator {
 
 		//get file separator
 		String separatorRegex;
-		if (OSValidator.isWindows()) {
+		if (OSUtil.isWindows()) {
 			separatorRegex = "/|\\\\";
 		} else {
 			separatorRegex = "/";
@@ -153,7 +153,7 @@ public class GlobOperator implements Operator {
 
 		//set first directory
 		if (FileUtil.isAbsolute(fileName)) {
-			if(OSValidator.isWindows()) {
+			if(OSUtil.isWindows()) {
 				dirList.add(splitedDir[0]);
 			} else {
 				dirList.add("");

@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import sg.edu.nus.comp.cs4218.Application;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.CatException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * The cat command concatenates the content of given files and prints on the
@@ -25,7 +26,6 @@ import sg.edu.nus.comp.cs4218.exception.CatException;
  * </p>
  */
 public class CatApplication implements Application {
-	private final String NEWLINE = System.lineSeparator();
 
 	/**
 	 * Runs the cat application with the specified arguments.
@@ -71,7 +71,7 @@ public class CatApplication implements Application {
 			for (int i = 0; i < numOfFiles; i++) {
 				try {
 					if (i > 0) {
-						stdout.write(NEWLINE.getBytes());
+						stdout.write(OSUtil.NEWLINE.getBytes());
 					}
 					if (args[i].equals("-")) {
 						if (!hasInputStream) {

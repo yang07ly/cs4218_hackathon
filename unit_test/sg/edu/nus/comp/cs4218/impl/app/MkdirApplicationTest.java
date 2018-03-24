@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.MkdirException;
-import sg.edu.nus.comp.cs4218.impl.commons.OSValidator;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class MkdirApplicationTest {
 	
@@ -108,7 +108,7 @@ public class MkdirApplicationTest {
 	
 	@Test
 	public void testMkDirOfExistingDirWithDiffCaseInUnix() throws MkdirException {
-		Assume.assumeTrue(OSValidator.isUnix());
+		Assume.assumeTrue(OSUtil.isUnix());
 		mkdirApp.createFolder(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
 		dirPath = Paths.get(Environment.currentDirectory).resolve(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
 		assertTrue(Files.exists(dirPath));
@@ -117,7 +117,7 @@ public class MkdirApplicationTest {
 	
 	@Test
 	public void testInvalidMkDirOfExistingDirWithDiffCaseInWindows() throws MkdirException {
-		Assume.assumeTrue(OSValidator.isWindows());
+		Assume.assumeTrue(OSUtil.isWindows());
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory ‘" + DIR_EXISTING.toUpperCase(Locale.ENGLISH) + "’: File exists");
 		mkdirApp.createFolder(DIR_EXISTING.toUpperCase(Locale.ENGLISH));
@@ -125,7 +125,7 @@ public class MkdirApplicationTest {
 	
 	@Test
 	public void testMkDirOnlySpacesNameInUnix() throws MkdirException {
-		Assume.assumeTrue(OSValidator.isUnix());
+		Assume.assumeTrue(OSUtil.isUnix());
 		mkdirApp.createFolder("   ");
 		dirPath = Paths.get(Environment.currentDirectory).resolve("   ");
 		assertTrue(Files.exists(dirPath));
@@ -134,7 +134,7 @@ public class MkdirApplicationTest {
 	
 	@Test
 	public void testInvalidMkDirOnlySpacesNameInWindows() throws MkdirException {
-		Assume.assumeTrue(OSValidator.isWindows());
+		Assume.assumeTrue(OSUtil.isWindows());
 		thrown.expect(MkdirException.class);
 		thrown.expectMessage("mkdir: cannot create directory ‘   ’: No such file or directory");
 		mkdirApp.createFolder("   ");

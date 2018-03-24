@@ -33,6 +33,7 @@ public class CallCommandIT {
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT_STREAM = "outputStream";
 	private static final String FILEFILE = "filefile";
+	private static final String NEWLINE = System.lineSeparator();
 	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system";
 	private static final String LS_TEST_DIR = TEST_DIR + File.separator + "ls_test_system";
 	private static final String CAT_TEST_DIR = TEST_DIR + File.separator + "cat_test_system";
@@ -426,7 +427,7 @@ public class CallCommandIT {
 	public void testInputStreamWithCmdSub() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat `echo file.txt` < file.txt -");
-		expected = "filefile\nfilefile";
+		expected = "filefile" + NEWLINE + "filefile";
 
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();

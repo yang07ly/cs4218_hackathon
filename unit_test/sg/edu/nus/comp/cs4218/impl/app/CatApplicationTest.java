@@ -41,7 +41,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testInvalidFile() throws CatException {
-		String[] args = { "asdf" };
+		String[] args = { FILE1_CONTENT };
 		expected = "cat: asdf: No such file or directory";
 
 		thrown.expect(CatException.class);
@@ -81,7 +81,7 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFiles() throws CatException {
-		expected = "asdf" + NEWLINE + "qwer";
+		expected = FILE1_CONTENT + NEWLINE + "qwer";
 		String[] args = { FILE1_TXT, "file2.txt" };
 
 		app.run(args, System.in, outputStream);
@@ -91,8 +91,8 @@ public class CatApplicationTest {
 
 	@Test
 	public void testMultipleFilesWithInvalidFiles() throws CatException {
-		expected = "asdf" + NEWLINE + "cat: asdf: No such file or directory" + NEWLINE + "qwer";
-		String[] args = { FILE1_TXT, "asdf", "file2.txt" };
+		expected = FILE1_CONTENT + NEWLINE + "cat: asdf: No such file or directory" + NEWLINE + "qwer";
+		String[] args = { FILE1_TXT, FILE1_CONTENT, "file2.txt" };
 
 		app.run(args, System.in, outputStream);
 		output = outputStream.toString();
