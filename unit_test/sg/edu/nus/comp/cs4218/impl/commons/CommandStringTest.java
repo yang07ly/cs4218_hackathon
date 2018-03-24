@@ -2,6 +2,9 @@ package sg.edu.nus.comp.cs4218.impl.commons;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +95,10 @@ public class CommandStringTest {
 
 	@Test
 	public void testSetCharEscaped() {
-		fail("Not yet implemented");
+		ArrayList<Boolean> BoolArray = new ArrayList<Boolean>();
+		BoolArray.add(true);
+		BoolArray.add(true);
+		BoolArray.add(true);
 	}
 
 	@Test
