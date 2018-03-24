@@ -30,6 +30,7 @@ import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
 public class CallCommandIT {
 	private static final String QWERTY = "qwerty";
 	private static final String ABC = "abc";
+	private static final String TAB = "\t";
 	private static final String FILE1_TXT = "file1.txt";
 	private static final String OUTPUT_STREAM = "outputStream";
 	private static final String FILEFILE = "filefile";
@@ -168,7 +169,8 @@ public class CallCommandIT {
 	public void testEvaluateLs() throws ShellException, AbstractApplicationException {
 		Environment.currentDirectory = LS_TEST_DIR;
 		cmdLine = new CommandString("ls");
-		expected = "'file name with space.txt'  file1.txt  file2.txt  'folder name with space'  folder1  folder2";
+		expected = "'file name with space.txt'" + TAB + "file1.txt" + TAB + "file2.txt" + TAB
+				+ "'folder name with space'" + TAB + "folder1" + TAB + "folder2";
 
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
@@ -270,7 +272,7 @@ public class CallCommandIT {
 		Environment.currentDirectory = GREP_TEST_DIR;
 		cmdLine = new CommandString("grep file file1.txt");
 
-		expected = "line 1: This file is named 'file1'.\n" + "line 2: It is a Text file.";
+		expected = "line 1: This file is named 'file1'." + NEWLINE + "line 2: It is a Text file.";
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -283,8 +285,9 @@ public class CallCommandIT {
 		Environment.currentDirectory = SED_TEST_DIR;
 		cmdLine = new CommandString("sed s/test/replaced/ sedTestFile1.txt");
 
-		expected = "This is Sed Test File 1.\n" + "1. replaced\n" + "2. replaced test\n" + "3. replaced test test\n"
-				+ "4. replaced test test test\n" + "5. replacedestestest\n" + "6. replacedestestestestest";
+		expected = "This is Sed Test File 1." + NEWLINE + "1. replaced" + NEWLINE + "2. replaced test" + NEWLINE
+				+ "3. replaced test test" + NEWLINE + "4. replaced test test test" + NEWLINE + "5. replacedestestest"
+				+ NEWLINE + "6. replacedestestestestest";
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -300,7 +303,7 @@ public class CallCommandIT {
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: eco: Invalid app");
-		
+
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -311,7 +314,8 @@ public class CallCommandIT {
 		cmdLine = new CommandString("echo *");
 		expected = "cat_test_system cd_test_system cmd_test_system cmp_test_system "
 				+ "diff_test_system glob_test_system grep_test_system ioRedir_test_system "
-				+ "ls_test_system mkdir_test_system paste_test_system quote_test_system sed_test_system " + "split_test_system";
+				+ "ls_test_system mkdir_test_system paste_test_system quote_test_system sed_test_system "
+				+ "split_test_system";
 
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
@@ -517,7 +521,7 @@ public class CallCommandIT {
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Back Quotes not closed");
-		
+
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -531,7 +535,7 @@ public class CallCommandIT {
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: asdf: No such file or directory");
-		
+
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -545,7 +549,7 @@ public class CallCommandIT {
 
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: only 1 outputstream can be specified");
-		
+
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);
@@ -559,7 +563,7 @@ public class CallCommandIT {
 
 		thrown.expect(CatException.class);
 		thrown.expectMessage("cat:  : No such file or directory");
-		
+
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 		callCmd.parse();
 		callCmd.evaluate(System.in, output);

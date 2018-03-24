@@ -11,6 +11,7 @@ import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * A Sequence Command is a semicolon operator consisting of commands
@@ -44,13 +45,14 @@ public class SeqCommand implements Command {
 	 *            OutputStream to write resultant data to.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             If an exception happens while evaluating the sub-command of sequence commands.
+	 *             If an exception happens while evaluating the sub-command of
+	 *             sequence commands.
 	 * @throws ShellException
-	 *             If an exception happens while evaluating the sub-command of sequence commands.
+	 *             If an exception happens while evaluating the sub-command of
+	 *             sequence commands.
 	 */
 	@Override
-	public void evaluate(InputStream stdin, OutputStream stdout)
-			throws AbstractApplicationException, ShellException {
+	public void evaluate(InputStream stdin, OutputStream stdout) throws AbstractApplicationException, ShellException {
 		if (argsArray.length == 0) {
 			return;
 		}
@@ -62,7 +64,7 @@ public class SeqCommand implements Command {
 
 			if (i < argsArray.length - 1) {
 				try {
-					stdout.write("\n".getBytes());
+					stdout.write(OSUtil.NEWLINE.getBytes());
 				} catch (IOException e1) {
 					throw new ShellException("IO Exception");
 				}
@@ -74,13 +76,13 @@ public class SeqCommand implements Command {
 	 * Parses and splits the commands separated by unescaped semicolon.
 	 * 
 	 * @throws ShellException
-	 *             If the command starts with a semicolon or
-	 *             if there are no command between semicolons.
+	 *             If the command starts with a semicolon or if there are no command
+	 *             between semicolons.
 	 */
 	public void parse() throws ShellException {
 		Integer[] spaceIndices = cmdline.getIndicesOfCharNotEscaped(';');
 		if (spaceIndices.length == 0) {
-			argsArray = new CommandString[] {cmdline};
+			argsArray = new CommandString[] { cmdline };
 			return;
 		}
 
@@ -110,6 +112,6 @@ public class SeqCommand implements Command {
 	 */
 	@Override
 	public void terminate() {
-		//unused for now
+		// unused for now
 	}
 }

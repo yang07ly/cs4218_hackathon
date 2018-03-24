@@ -8,6 +8,7 @@ import sg.edu.nus.comp.cs4218.Shell;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
 import sg.edu.nus.comp.cs4218.impl.commons.CommandString;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 /**
  * A Command Substitution is a call-command surrounded by backquotes (`) if the backquotes are not surrounded by 
@@ -68,17 +69,16 @@ public class CmdSubOperator implements Operator {
 	 * Returns the result of processing the command specified in a single line.
 	 * 
 	 * @param cmd
-	 *            	String of the specified command.
+	 *            String of the specified command.
 	 * 
-	 * @return String
-	 * 				Result of processing the command appended into a single line.
+	 * @return String Result of processing the command appended into a single line.
 	 * 
 	 * @throws AbstractApplicationException
-	 *             	If an exception happens while processing the application in the
-	 *             	back quotes.
+	 *             If an exception happens while processing the application in the
+	 *             back quotes.
 	 * @throws ShellException
-	 *             	If an exception happens while processing the content in the
-	 *             	back quotes.
+	 *             If an exception happens while processing the content in the back
+	 *             quotes.
 	 */
 	private String performCmdSub(String cmd) throws AbstractApplicationException, ShellException {
 		ByteArrayOutputStream bqOutputStream = new ByteArrayOutputStream();
@@ -86,6 +86,6 @@ public class CmdSubOperator implements Operator {
 		newShell.parseAndEvaluate(cmd, bqOutputStream);
 
 		byte[] byteArray = bqOutputStream.toByteArray();
-		return new String(byteArray).replace("\n", " ").replace("\r", " ").trim();
+		return new String(byteArray).replace(OSUtil.NEWLINE, " ").replace("\r", " ").trim();
 	}
 }

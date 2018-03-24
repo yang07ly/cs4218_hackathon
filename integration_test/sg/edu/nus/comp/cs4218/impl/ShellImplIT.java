@@ -15,10 +15,12 @@ import org.junit.rules.ExpectedException;
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.exception.AbstractApplicationException;
 import sg.edu.nus.comp.cs4218.exception.ShellException;
+import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
 
 public class ShellImplIT {
-	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system" + File.separator + "quote_test_system";
-	private static final String NEW_LINE = "\n";
+	private static final String TEST_DIR = System.getProperty("user.dir") + File.separator + "test_system"
+			+ File.separator + "quote_test_system";
+	private static final String NEW_LINE = OSUtil.NEWLINE;
 	private static final String FILE_CONTENT = "This file is named \"file\" in quote_test_system.";
 	private static final String NAME_CONTENT = "This file is named \"name\" in quote_test_system.";
 	private static final String FILE_NAME_CONTENT = "This file is named \"file name\" in quote_test_system.";
@@ -229,7 +231,7 @@ public class ShellImplIT {
 		shell.parseAndEvaluate(cmdline, output);
 		assertEquals(expected, output.toString());
 	}
-	
+
 	@Test
 	public void testDoubleQuoteInSingleQuote() throws ShellException, AbstractApplicationException {
 		expected = "double \"in\" single";
@@ -238,7 +240,7 @@ public class ShellImplIT {
 		shell.parseAndEvaluate(cmdline, output);
 		assertEquals(expected, output.toString());
 	}
-	
+
 	@Test
 	public void testSingleQuoteInDoubleQuote() throws ShellException, AbstractApplicationException {
 		expected = "single 'in' double";
@@ -264,7 +266,7 @@ public class ShellImplIT {
 		writer = new PrintWriter(TEST_DIR + File.separator + "file name");
 		writer.print(FILE_NAME_CONTENT);
 		writer.close();
-		
+
 		writer = new PrintWriter(TEST_DIR + File.separator + "`back quote`");
 		writer.print(BQ_CONTENT);
 		writer.close();
