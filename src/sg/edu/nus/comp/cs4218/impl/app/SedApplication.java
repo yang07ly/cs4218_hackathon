@@ -211,8 +211,9 @@ public class SedApplication implements SedInterface {
 			throw new SedException("char 1: unterminated: '" + option.charAt(0) + "'");
 		}
 
-		char sepChar = option.charAt(1);
-		if (!option.matches("s" + sepChar + ".*" + sepChar + ".*" + sepChar + ".*")) {
+		String sepChar = String.valueOf(option.charAt(1));
+		sepChar = sepChar.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0");
+		if (!option.matches("^s" + sepChar + "[^/]*" + sepChar + "[^/]*" + sepChar + ".*")) {
 			throw new SedException("char " + option.length() + ": unterminated: '" + option.charAt(0) + "'");
 		}
 	}
@@ -276,7 +277,11 @@ public class SedApplication implements SedInterface {
 	 *             If the Nth value is not an integer or is 0.
 	 */
 	private int getNthValue(String option, char sepChar) throws SedException {
-		int beginIndex = option.lastIndexOf(sepChar);
+		int beginIndex = option.indexOf(sepChar, 0);
+		for (int i = 0; i < 2; i++) {
+			beginIndex = option.indexOf(sepChar, beginIndex + 1);
+		}
+
 		String nthStr = option.substring(beginIndex + 1);
 
 		int matchIndex;
