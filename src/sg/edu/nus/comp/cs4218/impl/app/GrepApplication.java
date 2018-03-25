@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import sg.edu.nus.comp.cs4218.app.GrepInterface;
 import sg.edu.nus.comp.cs4218.exception.GrepException;
@@ -269,8 +270,12 @@ public class GrepApplication implements GrepInterface {
 			throw new GrepException(EXP_NULL_POINTER);
 		}
 
-		Matcher matcher = Pattern.compile(pattern).matcher(line);
-		boolean hasMatched = matcher.find();
-		return (hasMatched && !isInvert) || (!hasMatched && isInvert);
+		try {
+			Matcher matcher = Pattern.compile(pattern).matcher(line);
+			boolean hasMatched = matcher.find();
+			return (hasMatched && !isInvert) || (!hasMatched && isInvert);
+		} catch (PatternSyntaxException e) {
+			throw new GrepException(e.getMessage());
+		}
 	}
 }

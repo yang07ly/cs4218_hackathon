@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import sg.edu.nus.comp.cs4218.Environment;
 import sg.edu.nus.comp.cs4218.app.SedInterface;
@@ -27,13 +28,13 @@ import sg.edu.nus.comp.cs4218.impl.commons.OSUtil;
  * <b>Command format:</b> <code>sed REPLACEMENT [FILE]</code>
  * <dl>
  * <dt>REPLACEMENT</dt>
- * <dd><code>s/regexp/replacement/</code> – replace the first (in each line)
+ * <dd><code>s/regexp/replacement/</code> ï¿½ replace the first (in each line)
  * substring matched by regexp with the string replacement. <br />
- * <code>s/regexp/replacement/X</code> – X is a number. Only replace the Xth
+ * <code>s/regexp/replacement/X</code> ï¿½ X is a number. Only replace the Xth
  * match of the regexp. <br />
  * <br />
- * Note that the symbols “/” used to separate regexp and replacement string can
- * be substituted by any other symbols. For example, “s/a/b/” and “s|a|b|” are
+ * Note that the symbols ï¿½/ï¿½ used to separate regexp and replacement string can
+ * be substituted by any other symbols. For example, ï¿½s/a/b/ï¿½ and ï¿½s|a|b|ï¿½ are
  * the same replacement rules. However, this separation symbol should not be
  * used inside the regexp and the replacement string.</dd>
  * <dt>FILE</dt>
@@ -335,18 +336,24 @@ public class SedApplication implements SedInterface {
 			throw new SedException("command may not be negative");
 		}
 
-		Matcher matcher = Pattern.compile(pattern).matcher(line);
-		for (int i = 0; i < replacementIndex; i++) {
-			matcher.find();
+		try {
+			Matcher matcher = Pattern.compile(pattern).matcher(line);
+			for (int i = 0; i < replacementIndex; i++) {
+				matcher.find();
+			}
+
+			int matchedIndex;
+			try {
+				matchedIndex = matcher.start();
+			} catch (IllegalStateException e) {
+				return line + OSUtil.NEWLINE;
+			}
+
+			return line.substring(0, matchedIndex) + line.substring(matchedIndex).replaceFirst(pattern, replacement)
+					+ OSUtil.NEWLINE;
+		} catch (PatternSyntaxException e) {
+			throw new SedException(e.getMessage());
 		}
 
-		int matchedIndex;
-		try {
-			matchedIndex = matcher.start();
-		} catch (IllegalStateException e) {
-			return line + OSUtil.NEWLINE;
-		}
-		return line.substring(0, matchedIndex) + line.substring(matchedIndex).replaceFirst(pattern, replacement)
-				+ OSUtil.NEWLINE;
 	}
 }
