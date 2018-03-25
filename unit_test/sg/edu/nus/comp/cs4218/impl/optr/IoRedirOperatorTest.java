@@ -58,50 +58,43 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testNoIO() throws ShellException, AbstractApplicationException {
+	public void testInputToRunCorrectlyUsingNoInputStream() throws ShellException, AbstractApplicationException {
 		expected = new CommandString(ASD);
 		input = new CommandString(ASD);
 
 		inputStream = ioRedirOp.getInputStream(input);
-		outputStream = ioRedirOp.getOutputStream(input);
 
 		assertTrue(outputStream == null);
 	}
 
 	@Test
-	public void testNoIO2() throws ShellException, AbstractApplicationException {
+	public void testOutputToRunCorrectlyUsingNoOutputStream() throws ShellException, AbstractApplicationException {
 		expected = new CommandString(ASD);
 		input = new CommandString(ASD);
-
-		inputStream = ioRedirOp.getInputStream(input);
 		outputStream = ioRedirOp.getOutputStream(input);
-
-		assertTrue(inputStream == null);
+		assertTrue(outputStream == null);
 	}
 
 	@Test
-	public void testInputInvalidFile() throws ShellException, AbstractApplicationException {
+	public void testInputToThrowExpUsingUsingInvalidFile() throws ShellException, AbstractApplicationException {
 		input = new CommandString("< asd");
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: asd: No such file or directory");
-
 		inputStream = ioRedirOp.getInputStream(input);
-		outputStream = ioRedirOp.getOutputStream(input);
 	}
 
 	@Test
-	public void testOneInput() throws ShellException, AbstractApplicationException, IOException {
+	public void testInputToRunCorrectlyUsingUsingValidFile()
+			throws ShellException, AbstractApplicationException, IOException {
 		input = new CommandString("< file.txt");
-
 		inputStream = ioRedirOp.getInputStream(input);
-		outputStream = ioRedirOp.getOutputStream(input);
 
 		assertTrue(inputStream != null);
 		inputStream.close();
 	}
 
 	@Test
-	public void testMultipleInputs() throws ShellException, AbstractApplicationException {
+	public void testInputToThrowExpUsingUsingMultiInputStreams() throws ShellException, AbstractApplicationException {
 		input = new CommandString("< file.txt < file.txt");
 
 		thrown.expect(ShellException.class);
@@ -112,7 +105,7 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testInputWithoutArg() throws ShellException, AbstractApplicationException {
+	public void testInputToThrowExpUsingWhenNoFile() throws ShellException, AbstractApplicationException {
 		input = new CommandString("<");
 
 		thrown.expect(ShellException.class);
@@ -123,7 +116,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOutputFileNoExists() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToThrowExpUsingUsingInvalidFile()
+			throws ShellException, AbstractApplicationException, IOException {
 		expected = new CommandString("");
 		input = new CommandString("> asd");
 
@@ -138,7 +132,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOutputFileExists() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToRunCorrectlyUsingUsingExistingFile()
+			throws ShellException, AbstractApplicationException, IOException {
 		expected = new CommandString("");
 		input = new CommandString("> output.txt");
 
@@ -152,7 +147,7 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testMultipleOutputs() throws ShellException, AbstractApplicationException {
+	public void testOutputToThrowExpUsingUsingMultiOutputStreams() throws ShellException, AbstractApplicationException {
 		input = new CommandString("> file.txt > file.txt");
 
 		thrown.expect(ShellException.class);
@@ -163,7 +158,7 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOutputWithoutArg() throws ShellException, AbstractApplicationException {
+	public void testOutputToThrowExpUsingWhenNoFile() throws ShellException, AbstractApplicationException {
 		input = new CommandString(">");
 
 		thrown.expect(ShellException.class);
@@ -174,10 +169,10 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOneInputAndOneOutput() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputRunCorrectlyExpUsingUsingInputAndOutput()
+			throws ShellException, AbstractApplicationException, IOException {
 		expected = new CommandString("hi  > asd");
 		input = new CommandString("hi < file.txt > asd");
-
 		inputStream = ioRedirOp.getInputStream(input);
 
 		assertEquals(expected, input);
@@ -187,7 +182,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOneInputAndOneOutput2() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToRunCorrectlyUsingUsingInputAndNonExistingOutputFile()
+			throws ShellException, AbstractApplicationException, IOException {
 		expected = new CommandString("hi < file.txt ");
 		input = new CommandString("hi < file.txt > asd");
 
@@ -202,7 +198,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testMultipleInputAndOneOutput() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToThrowExpUsingUsingMultiInputsAndOneOutput()
+			throws ShellException, AbstractApplicationException, IOException {
 		input = new CommandString("hi < file.txt > asd < output.txt");
 
 		thrown.expect(ShellException.class);
@@ -213,7 +210,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testOneInputAndMultipleOutput() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToThrowExpUsingUsingMultiOutputsAndOneInput()
+			throws ShellException, AbstractApplicationException, IOException {
 		input = new CommandString("hi < file.txt > asd > output.txt");
 
 		thrown.expect(ShellException.class);
@@ -224,7 +222,8 @@ public class IoRedirOperatorTest {
 	}
 
 	@Test
-	public void testMultipleInputAndMultipleOutput() throws ShellException, AbstractApplicationException, IOException {
+	public void testOutputToThrowExpUsingUsingMultiOutputsAndMultiInputs()
+			throws ShellException, AbstractApplicationException, IOException {
 		input = new CommandString("hi < file.txt > asd < output.txt > afe");
 
 		thrown.expect(ShellException.class);

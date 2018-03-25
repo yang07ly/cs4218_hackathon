@@ -142,7 +142,7 @@ public class GrepApplicationTest {
 
 	@Test
 	public void testMutiFileToGrepEmptyFromMutiFilesUsingEmptyPatternAndMutiEmptyFiles() throws GrepException {
-		expected = FILE_EMPTY + STR_COLON + STR_EMPTY + OSUtil.NEWLINE + FILE_EMPTY + STR_COLON + STR_EMPTY;
+		expected = STR_EMPTY;
 		result = grepApp.grepFromMultipleFiles(PATTERN_EMPTY, false, FILE_EMPTY, FILE_EMPTY);
 		assertEquals(expected.trim(), result);
 	}

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+<meta charset="utf-8">  
+<title>AutoTester Alpha</title>  
+<meta name="viewport" content="width=device-width,initial-scale=1">  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
+<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+</head>  
+<body>  
+<div class="container">
+<h3>CS4218 - Analysis of the Testing of query-pair-test.txt</h3>
+<div class="panel-group">
+
+<div a data-toggle="collapse" href="#collapse0" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1-sequence, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>split -l 2 multiple_line.txt ; cat xaa | grep -v CS4218</p></a></div>
+<div id="collapse0" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is the module called software testing,
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is the module called software testing,
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse1" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1-pipe, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt multiple_line.txt| split -l 2 ; diff xaa xab</p></a></div>
+<div id="collapse1" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+< 1	this is the module called software testing,
+< 2	the module code for software testing is CS4218!
+> 3	I am going to do well for this module.
+> 4	This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+< 1	this is the module called software testing,
+< 2	the module code for software testing is CS4218!
+> 3	I am going to do well for this module.
+> 4	This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse2" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2-sequence, single quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>cd folderA ; cat 'file with space.txt'  </p></a></div>
+<div id="collapse2" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this file has spaces
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this file has spaces
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse3" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2-single quoted, sequence </h4>
+<p class="list-group-item-text"><b>Command: </b>cd 'folder with space'; ls -R </p></a></div>
+<div id="collapse3" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+.:
+folderA	folderB
+
+./folderA:
+A-1	A-1.txt	A-2.txt
+
+./folderA/A-1:
+
+./folderB:
+'B 1.txt'	'folderB 2'
+
+'./folderB/folderB 2':
+B-2.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+.:
+folderA	folderB
+
+./folderA:
+A-1	A-1.txt	A-2.txt
+
+./folderA/A-1:
+
+./folderB:
+'B 1.txt'	'folderB 2'
+
+'./folderB/folderB 2':
+B-2.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse4" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3-sequence, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>cd folderA; cat "file with space.txt"</p></a></div>
+<div id="collapse4" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this file has spaces
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this file has spaces
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse5" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3-double quoted, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir "folder    multiple    spaces" ; ls -d </p></a></div>
+<div id="collapse5" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse6" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4-sequence, cmd sub</h4>
+<p class="list-group-item-text"><b>Command: </b>cd folderA; cat `echo A-1.txt`</p></a></div>
+<div id="collapse6" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is A-1 txt file.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is A-1 txt file.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse7" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4-cmd sub, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>split -b 16 `cat input.txt` ; cat xaa</p></a></div>
+<div id="collapse7" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this file has on
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this file has on
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse8" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4-cmd sub, sequence (between)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo a b c; echo xyz`</p></a></div>
+<div id="collapse8" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+a b c xyz
+</pre><pre class="list-group-item"><b>Actual:</b>
+a b c xyz
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse9" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5-sequence, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>split -l 2 multiple_line.txt; cat < xaa</p></a></div>
+<div id="collapse9" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse10" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5-input redir, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < number.txt ; ls number.txt</p></a></div>
+<div id="collapse10" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1
+2
+3
+4
+number.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+1
+2
+3
+4
+number.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse11" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6-sequence, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>cd folderA; paste A-1.txt A-2.txt > A-1-2.txt </p></a></div>
+<div id="collapse11" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse12" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6-sequence, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cd folderA; cat A-1-2.txt </p></a></div>
+<div id="collapse12" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is A-1 txt file.	this is A-2 txt file.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is A-1 txt file.	this is A-2 txt file.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse13" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6-output redir, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>cmp multiple_line.txt multiple_line_2.txt > "folder    multiple    spaces"/cmp_multiple_line.txt ; cat "folder    multiple    spaces"/cmp_multiple_line.txt</p></a></div>
+<div id="collapse13" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+multiple_line.txt multiple_line_2.txt differ: char 119, line 3
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+multiple_line.txt multiple_line_2.txt differ: char 119, line 3
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse14" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">7-sequence, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>split -l 1 multiple_line.txt; cat xa*</p></a></div>
+<div id="collapse14" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse15" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">7-globing, sequence </h4>
+<p class="list-group-item-text"><b>Command: </b>cd folder* ; cat file</p></a></div>
+<div id="collapse15" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+cd: too many arguments
+</pre><pre class="list-group-item"><b>Actual:</b>
+cd: too many arguments
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse16" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">8-pipe, single quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>diff multiple_line.txt multiple_line_2.txt| grep 'software testing'</p></a></div>
+<div id="collapse16" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+> I am going to do well for software testing.
+</pre><pre class="list-group-item"><b>Actual:</b>
+> I am going to do well for software testing.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse17" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">8-single quoted, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>cmp -l 'file with space.txt' single_line.txt | grep -v 163</p></a></div>
+<div id="collapse17" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+16 160 156
+17 141 154
+18 143 171
+19 145 40
+</pre><pre class="list-group-item"><b>Actual:</b>
+16 160 156
+17 141 154
+18 143 171
+19 145 40
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse18" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">9-pipe, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>diff multiple_line.txt multiple_line_2.txt | sed s/"testing"/pattern/ </p></a></div>
+<div id="collapse18" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+< I am going to do well for this module.
+> I am going to do well for software pattern.
+</pre><pre class="list-group-item"><b>Actual:</b>
+< I am going to do well for this module.
+> I am going to do well for software pattern.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse19" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">9-double quoted, pipe </h4>
+<p class="list-group-item-text"><b>Command: </b>grep "best module ever" multiple_line.txt | sed s/This/That/</p></a></div>
+<div id="collapse19" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+That module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+That module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse20" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">10-pipe, cmd sub</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt multiple_line_2.txt | grep `echo [02468]` </p></a></div>
+<div id="collapse20" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+2	the module code for software testing is CS4218!
+4	This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+2	the module code for software testing is CS4218!
+4	This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse21" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">10-cmd sub, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>paste `cat input.txt` | grep moment </p></a></div>
+<div id="collapse21" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this file has only one line if you think for a moment
+</pre><pre class="list-group-item"><b>Actual:</b>
+this file has only one line if you think for a moment
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse22" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">10-cmd sub, pipe (between)</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt `cat input.txt | grep single_line.txt`  </p></a></div>
+<div id="collapse22" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1	this file has only one line if you think for a moment
+2	
+3	
+4	
+</pre><pre class="list-group-item"><b>Actual:</b>
+1	this file has only one line if you think for a moment
+2	
+3	
+4	
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse23" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">11-pipe, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>grep -v software multiple_line.txt | cat < multiple_line.txt</p></a></div>
+<div id="collapse23" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse24" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">11-input redir, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>grep -v software < multiple_line.txt | sed s/This/That/</p></a></div>
+<div id="collapse24" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+I am going to do well for this module.
+That module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+I am going to do well for this module.
+That module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse25" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">12-pipe, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>grep -v software multiple_line.txt| sed s/This/That/ > "folder    multiple    spaces"/multiple_line_edited.txt</p></a></div>
+<div id="collapse25" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse26" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">12-pipe, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat "folder    multiple    spaces"/multiple_line_edited.txt</p></a></div>
+<div id="collapse26" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+I am going to do well for this module.
+That module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+I am going to do well for this module.
+That module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse27" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">12-output redir, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>echo hello there > "folder    multiple    spaces"/hello.txt | cat "folder    multiple    spaces"/hello.txt</p></a></div>
+<div id="collapse27" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+hello there
+</pre><pre class="list-group-item"><b>Actual:</b>
+hello there
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse28" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">13-pipe, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt multiple_line.txt| grep software*</p></a></div>
+<div id="collapse28" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1	this is the module called software testing,
+2	the module code for software testing is CS4218!
+</pre><pre class="list-group-item"><b>Actual:</b>
+1	this is the module called software testing,
+2	the module code for software testing is CS4218!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse29" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">13-globing, pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>ls multiple_line*.txt | sed s/line/lines/2</p></a></div>
+<div id="collapse29" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+multiple_line.txt	multiple_lines_2.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+multiple_line.txt	multiple_lines_2.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse30" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">14-single quoted, double quoted (1)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo "'this is single quote in double quote'"</p></a></div>
+<div id="collapse30" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+'this is single quote in double quote'
+</pre><pre class="list-group-item"><b>Actual:</b>
+'this is single quote in double quote'
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse31" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">14-single quoted, double quoted (2)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo '"this is double quote in single quote"'</p></a></div>
+<div id="collapse31" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+"this is double quote in single quote"
+</pre><pre class="list-group-item"><b>Actual:</b>
+"this is double quote in single quote"
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse32" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">14-single quoted, double quoted (3)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo 'this is single quote' "this is double quote"</p></a></div>
+<div id="collapse32" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is single quote this is double quote
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is single quote this is double quote
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse33" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">15-single quoted, cmd sub (1)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo ' `echo this is backquoted` '</p></a></div>
+<div id="collapse33" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+ `echo this is backquoted` 
+</pre><pre class="list-group-item"><b>Actual:</b>
+ `echo this is backquoted` 
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse34" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">15-single quoted, cmd sub (2)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo 'this is backquoted' `</p></a></div>
+<div id="collapse34" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is backquoted
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is backquoted
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse35" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">15-single quoted, cmd sub (3)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo 'this is single quote' `echo this is backquoted` </p></a></div>
+<div id="collapse35" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is single quote this is backquoted
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is single quote this is backquoted
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse36" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">16-single quoted, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>grep 'software testing'  < multiple_line.txt</p></a></div>
+<div id="collapse36" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse37" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">16-input redir, single quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < 'file with space.txt'</p></a></div>
+<div id="collapse37" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this file has spaces
+</pre><pre class="list-group-item"><b>Actual:</b>
+this file has spaces
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse38" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">17-single quoted, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>echo '      this     is    a     line    with    many      spaces       '  > "folder    multiple    spaces"/spaces.txt</p></a></div>
+<div id="collapse38" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse39" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">17-single quoted, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat "folder    multiple    spaces"/spaces.txt</p></a></div>
+<div id="collapse39" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+      this     is    a     line    with    many      spaces       
+</pre><pre class="list-group-item"><b>Actual:</b>
+      this     is    a     line    with    many      spaces       
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse40" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">17-output redir, single quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>echo a 	 	 	 	b 	 	 	c > "folder    multiple    spaces"/'this file has spaces'</p></a></div>
+<div id="collapse40" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse41" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">17-output redir, single quoted [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < "folder    multiple    spaces"/'this file has spaces'</p></a></div>
+<div id="collapse41" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+a b c
+</pre><pre class="list-group-item"><b>Actual:</b>
+a b c
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse42" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">18-single quoted, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>grep 'software testing' *.txt</p></a></div>
+<div id="collapse42" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+multiple_line.txt: this is the module called software testing,
+multiple_line.txt: the module code for software testing is CS4218!
+multiple_line_2.txt: this is the module called software testing,
+multiple_line_2.txt: the module code for software testing is CS4218!
+multiple_line_2.txt: I am going to do well for software testing.
+</pre><pre class="list-group-item"><b>Actual:</b>
+multiple_line.txt: this is the module called software testing,
+multiple_line.txt: the module code for software testing is CS4218!
+multiple_line_2.txt: this is the module called software testing,
+multiple_line_2.txt: the module code for software testing is CS4218!
+multiple_line_2.txt: I am going to do well for software testing.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse43" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">18-globing, single quoted, </h4>
+<p class="list-group-item-text"><b>Command: </b>paste number*.txt "folder    multiple    spaces"/'this file has spaces'</p></a></div>
+<div id="collapse43" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1	a b c
+2	
+3	
+4	
+</pre><pre class="list-group-item"><b>Actual:</b>
+1	a b c
+2	
+3	
+4	
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse44" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">19-double quoted, cmd sub (1)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo "`echo this is backquoted`"</p></a></div>
+<div id="collapse44" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is backquoted
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is backquoted
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse45" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">19-double quoted, cmd sub (2)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo "this is backquoted" `</p></a></div>
+<div id="collapse45" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is backquoted
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is backquoted
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse46" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">19-double quoted, cmd sub (3)</h4>
+<p class="list-group-item-text"><b>Command: </b>echo "this is double quote" `echo this is backquoted` </p></a></div>
+<div id="collapse46" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is double quote this is backquoted
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is double quote this is backquoted
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse47" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">20-double quoted, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>sed s/"software testing"/"software pattern"/ < multiple_line.txt</p></a></div>
+<div id="collapse47" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is the module called software pattern,
+the module code for software pattern is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is the module called software pattern,
+the module code for software pattern is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse48" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">20-input redir, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < "file with space.txt"</p></a></div>
+<div id="collapse48" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this file has spaces
+</pre><pre class="list-group-item"><b>Actual:</b>
+this file has spaces
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse49" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">21-double quoted, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt "file with space.txt" > "folder    multiple    spaces"/number_space.txt</p></a></div>
+<div id="collapse49" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse50" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">21-double quoted, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat "folder    multiple    spaces"/number_space.txt</p></a></div>
+<div id="collapse50" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1	this file has spaces
+2	
+3	
+4	
+</pre><pre class="list-group-item"><b>Actual:</b>
+1	this file has spaces
+2	
+3	
+4	
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse51" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">21-output redir, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>echo double quotes > "folder    multiple    spaces"/"double_quoted"</p></a></div>
+<div id="collapse51" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse52" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">21-output redir, double quoted [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < "folder    multiple    spaces"/"double_quoted"</p></a></div>
+<div id="collapse52" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+double quotes
+</pre><pre class="list-group-item"><b>Actual:</b>
+double quotes
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse53" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">22- double quoted, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>grep "software testing"  *</p></a></div>
+<div id="collapse53" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+grep: folder    multiple    spaces: Is a directory
+</pre><pre class="list-group-item"><b>Actual:</b>
+grep: folder    multiple    spaces: Is a directory
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse54" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">22- globing, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>grep this multiple_line*.txt "file with space.txt"</p></a></div>
+<div id="collapse54" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+multiple_line.txt: this is the module called software testing,
+multiple_line.txt: I am going to do well for this module.
+multiple_line_2.txt: this is the module called software testing,
+file with space.txt: this file has spaces
+</pre><pre class="list-group-item"><b>Actual:</b>
+multiple_line.txt: this is the module called software testing,
+multiple_line.txt: I am going to do well for this module.
+multiple_line_2.txt: this is the module called software testing,
+file with space.txt: this file has spaces
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse55" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">23-cmd sub, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>grep `echo -v software` < multiple_line.txt</p></a></div>
+<div id="collapse55" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+I am going to do well for this module.
+This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+I am going to do well for this module.
+This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse56" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">23-input redir, cmd sub</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < `echo empty.txt`</p></a></div>
+<div id="collapse56" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse57" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">24-cmd sub, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo echo echo`  > "folder    multiple    spaces"/echo.txt</p></a></div>
+<div id="collapse57" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse58" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">24-output redir, cmd sub</h4>
+<p class="list-group-item-text"><b>Command: </b>echo output to a file > "folder    multiple    spaces"/`echo files.txt`</p></a></div>
+<div id="collapse58" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse59" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">25-cmd sub, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>ls `echo -d` *.txt</p></a></div>
+<div id="collapse59" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+empty.txt	'file with space.txt'	input.txt	multiple_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+empty.txt	'file with space.txt'	input.txt	multiple_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse60" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">25-globing, cmd sub</h4>
+<p class="list-group-item-text"><b>Command: </b>paste number*.txt `echo multiple_line_2.txt`</p></a></div>
+<div id="collapse60" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1	this is the module called software testing,
+2	the module code for software testing is CS4218!
+3	I am going to do well for software testing.
+4	This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+1	this is the module called software testing,
+2	the module code for software testing is CS4218!
+3	I am going to do well for software testing.
+4	This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse61" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">26-input redir, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < multiple_line.txt > "folder    multiple    spaces"/multiple_line_clone.txt</p></a></div>
+<div id="collapse61" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse62" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">26-input redir, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < "folder    multiple    spaces"/multiple_line_clone.txt</p></a></div>
+<div id="collapse62" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is the module called software testing,
+the module code for software testing is CS4218!
+I am going to do well for this module.
+This module is the best module ever.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse63" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">26-output redir, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>echo hello there > "folder    multiple    spaces"/hello.txt < empty.txt</p></a></div>
+<div id="collapse63" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse64" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">26-output redir, input redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat "folder    multiple    spaces"/hello.txt </p></a></div>
+<div id="collapse64" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+hello there
+</pre><pre class="list-group-item"><b>Actual:</b>
+hello there
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse65" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">27-input redir, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < multiple_line.txt number*.txt</p></a></div>
+<div id="collapse65" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1
+2
+3
+4
+</pre><pre class="list-group-item"><b>Actual:</b>
+1
+2
+3
+4
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse66" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">27-globing, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>cat number*.txt < multiple_line.txt</p></a></div>
+<div id="collapse66" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1
+2
+3
+4
+</pre><pre class="list-group-item"><b>Actual:</b>
+1
+2
+3
+4
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse67" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">28-output redir, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>echo hello > "folder    multiple    spaces"/hello_world*.txt</p></a></div>
+<div id="collapse67" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse68" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">28-output redir, globing [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < "folder    multiple    spaces"/hello_world*.txt</p></a></div>
+<div id="collapse68" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+hello
+</pre><pre class="list-group-item"><b>Actual:</b>
+hello
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse69" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">28-globing, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>ls *.txt > "folder    multiple    spaces"/ls_files.txt</p></a></div>
+<div id="collapse69" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse70" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">28-globing, output redir [Check contents]</h4>
+<p class="list-group-item-text"><b>Command: </b>cat "folder    multiple    spaces"/ls_files.txt</p></a></div>
+<div id="collapse70" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+empty.txt	'file with space.txt'	input.txt	multiple_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+empty.txt	'file with space.txt'	input.txt	multiple_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse71" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">29-sequence, sequence</h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir new_folder; echo new* ;cd new_folder</p></a></div>
+<div id="collapse71" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+new_folder
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+new_folder
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse72" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">30- pipe,pipe</h4>
+<p class="list-group-item-text"><b>Command: </b>cat multiple_line.txt | grep software | sed s/testing/pattern/</p></a></div>
+<div id="collapse72" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is the module called software pattern,
+the module code for software pattern is CS4218!
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is the module called software pattern,
+the module code for software pattern is CS4218!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse73" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">31- single quoted, single quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>echo 'left' hello there 'right'</p></a></div>
+<div id="collapse73" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+left hello there right
+</pre><pre class="list-group-item"><b>Actual:</b>
+left hello there right
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse74" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">32- double quoted, double quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>echo "left" hello there "right"</p></a></div>
+<div id="collapse74" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+left hello there right
+</pre><pre class="list-group-item"><b>Actual:</b>
+left hello there right
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse75" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">33- backquoted, back quoted</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo file name is` `cat input.txt`</p></a></div>
+<div id="collapse75" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+file name is single_line.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+file name is single_line.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse76" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">34- input redir, input redir</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < xaa < xab</p></a></div>
+<div id="collapse76" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+shell: only 1 inputstream can be specified
+</pre><pre class="list-group-item"><b>Actual:</b>
+shell: only 1 inputstream can be specified
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse77" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">35- output redir, output redir</h4>
+<p class="list-group-item-text"><b>Command: </b>echo hello there > hello.txt > hello2.txt</p></a></div>
+<div id="collapse77" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+shell: only 1 outputstream can be specified
+</pre><pre class="list-group-item"><b>Actual:</b>
+shell: only 1 outputstream can be specified
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse78" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">36- globing, globing</h4>
+<p class="list-group-item-text"><b>Command: </b>cat */A*.txt</p></a></div>
+<div id="collapse78" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+this is A-1 txt file.	this is A-2 txt file.
+this is A-1 txt file.
+this is A-2 txt file.
+</pre><pre class="list-group-item"><b>Actual:</b>
+this is A-1 txt file.	this is A-2 txt file.
+this is A-1 txt file.
+this is A-2 txt file.
+</pre></ul></div>
+
+</div></div></div></body></html>

@@ -43,7 +43,7 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testSeqInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalSeqOfCmdUsingSeqInNoQuotes() throws ShellException, AbstractApplicationException {
 		expected = "seq1" + NEW_LINE + "seq2";
 		cmdline = "echo seq1; echo seq2";
 
@@ -52,7 +52,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testSeqInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalSeqUsingSeqInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "double ; echo quote";
 		cmdline = "echo double \"; echo quote\"";
 
@@ -61,7 +62,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testSeqInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalSeqUsingSeqInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "single ; echo quote";
 		cmdline = "echo single '; echo quote'";
 
@@ -70,7 +72,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testPipeInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalPipeOfCmdUsingPipeInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "Pipe";
 		cmdline = "echo pipe| sed s/pipe/Pipe/";
 
@@ -79,7 +82,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testPipeInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalPipeUsingPipeInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "double quote| sed s/pipe/Pipe/";
 		cmdline = "echo double quote\"| sed s/pipe/Pipe/\"";
 
@@ -88,7 +92,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testPipeInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalPipeUsingPipeInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "single quote| sed s/pipe/Pipe/";
 		cmdline = "echo single quote'| sed s/pipe/Pipe/'";
 
@@ -97,7 +102,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testArgsInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalArgsOfCmdUsingArgsInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = FILE_CONTENT + NEW_LINE + NAME_CONTENT;
 		cmdline = "cat file name";
 
@@ -106,7 +112,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testArgsInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalArgsUsingArgsInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = FILE_NAME_CONTENT;
 		cmdline = "cat \"file name\"";
 
@@ -115,7 +122,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testArgsInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalArgsUsingArgsInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = FILE_NAME_CONTENT;
 		cmdline = "cat 'file name'";
 
@@ -124,7 +132,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testGlobInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalGlobOfArgUsingGlobInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "`back quote` file file name name";
 		cmdline = "echo *";
 
@@ -133,7 +142,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testGlobInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalGlobUsingGlobInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "*";
 		cmdline = "echo \"*\"";
 
@@ -142,7 +152,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testGlobInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalGlobUsingGlobInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "*";
 		cmdline = "echo '*'";
 
@@ -151,7 +162,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testCmdSubInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalCmdSubUsingCmdSubInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = FILE_CONTENT;
 		cmdline = "`echo cat` file";
 
@@ -160,7 +172,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testCmdSubInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalCmdSubUsingCmdSubInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = NAME_CONTENT;
 		cmdline = "\"`echo cat`\" name";
 
@@ -169,7 +182,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testCmdSubInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalCmdSubUsingCmdSubInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = BQ_CONTENT;
 		cmdline = "cat '`back quote`'";
 
@@ -178,7 +192,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testInputRedirInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalInputRedirOfCmdUsingInputRedirInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "";
 		cmdline = "echo < file";
 
@@ -187,7 +202,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testInputRedirInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalInputRedirUsingInputRedirInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "< name";
 		cmdline = "echo \"< name\"";
 
@@ -196,7 +212,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testInputRedirInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalInputRedirUsingInputRedirInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "< file name";
 		cmdline = "echo '< file name'";
 
@@ -205,7 +222,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testOutputRedirInNoQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToEvalOutputRedirOfCmdUsingOutputRedirInNoQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "";
 		cmdline = "echo text > file";
 
@@ -214,7 +232,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testOutputRedirInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalOutputRedirUsingOutputRedirInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "text > name";
 		cmdline = "echo text \"> name\"";
 
@@ -223,7 +242,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testOutputRedirInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToNotEvalOutputRedirUsingOutputRedirInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "text > file name";
 		cmdline = "echo text '> file name'";
 
@@ -232,7 +252,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testDoubleQuoteInSingleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToPrintDoubleQuotesUsingDoubleQuotesInSingleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "double \"in\" single";
 		cmdline = "echo 'double \"in\" single'";
 
@@ -241,7 +262,8 @@ public class ShellImplIT {
 	}
 
 	@Test
-	public void testSingleQuoteInDoubleQuote() throws ShellException, AbstractApplicationException {
+	public void testParseAndEvalToPrintSingleQuotesUsingSingleQuotesInDoubleQuotes()
+			throws ShellException, AbstractApplicationException {
 		expected = "single 'in' double";
 		cmdline = "echo \"single 'in' double\"";
 

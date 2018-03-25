@@ -1,0 +1,58 @@
+//1-sequence, pipe
+split -l 2 multiple_line.txt; cat xae | grep -v CS4218
+
+cat: xae: No such file or directory
+//1-pipe, sequence
+paste number.txt multiple_line.txt| split -l 2 ; diff xaa xab xac xad xae
+
+diff: requires 2 files to be specified
+//2-sequence, single quoted
+cd folderA ; cat 'file with space.txt''  
+shell: Quotes not closed
+//2-single quoted, sequence 
+cd 'folder with space'; ls -RST 
+
+ls: invalid option -- 'S'
+//3-sequence, double quoted
+cd folderA; cat ""file with space.txt"
+shell: Quotes not closed
+//3-double quoted, sequence
+mkdir ""folder    multiple    spaces" ; ls -d 
+shell: Quotes not closed
+//4-cmd sub, sequence (between)
+echo `echo a b c;``;echo xyz`
+shell: Invalid semicolon operator/s
+//4-cmd sub, sequence
+split -b -16 `cat input.txt` ; cat xaa
+split: -16: invalid number of bytes
+//4-cmd sub, sequence
+split -b -16m `cat input.txt` ; cat xaa
+split: -16m: invalid number of bytes
+//5-sequence, input redir
+split -l 2 multiple_line.txt; cat << xaa
+
+shell: only 1 inputstream can be specified
+//5-input redir, sequence
+cat <> number.txt ; ls number.txt
+shell: >: No such file or directory
+//6-output redir, sequence
+cmp multiple_line.txt, multiple_line_2.txt > cmp_multiple_line.txt ; cat cmp_multiple_line.txt
+cmp: multiple_line.txt,: No such file or directory
+//7-globing, sequence 
+cd* folder* ; cat file
+shell: cd*: Invalid app.
+//8-pipe, single quoted
+diff multiple_line.txt multiple_line_2.txt grep | 'software testing'
+diff: requires 2 files to be specified
+//8-single quoted, pipe
+cmp -l 'file with space.txt'' single_line.txt | grep -v 163
+shell: Quotes not closed
+//9-pipe, double quoted
+diff multiple_line.txt multiple_line_2.txt | sed s//"testing"/pattern/ 
+sed: char 0: no previous regular expression
+//9-double quoted, pipe 
+grep "best module ever" multiple_line.txt | sed s/This/That//
+sed: char 11: unknown options to 's'
+//10-pipe, cmd sub
+paste number.txt multiple_line_2.txt | grep echo `[02468]` 
+shell: [02468]: Invalid app.

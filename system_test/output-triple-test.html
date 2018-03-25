@@ -1,0 +1,314 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+<meta charset="utf-8">  
+<title>AutoTester Alpha</title>  
+<meta name="viewport" content="width=device-width,initial-scale=1">  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>  
+<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">  
+</head>  
+<body>  
+<div class="container">
+<h3>CS4218 - Analysis of the Testing of query-triple-test.txt</h3>
+<div class="panel-group">
+
+<div a data-toggle="collapse" href="#collapse0" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1) ; | ''</h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir hello; cd hello | echo 'hello world'</p></a></div>
+<div id="collapse0" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+hello world
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+hello world
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse1" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2) ; | " "</h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir triplet_folder; cat multiple_line.txt  | grep "software " </p></a></div>
+<div id="collapse1" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+this is the module called software testing,
+the module code for software testing is CS4218!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse2" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3) ; | ``</h4>
+<p class="list-group-item-text"><b>Command: </b>cmp -s multiple_line.txt multiple_line_2.txt | grep `echo -v "nothing"`</p></a></div>
+<div id="collapse2" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+Files differ
+</pre><pre class="list-group-item"><b>Actual:</b>
+Files differ
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse3" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4) ; | <</h4>
+<p class="list-group-item-text"><b>Command: </b>cat < number.txt | grep [13579] ; cat number.txt</p></a></div>
+<div id="collapse3" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1
+3
+1
+2
+3
+4
+</pre><pre class="list-group-item"><b>Actual:</b>
+1
+3
+1
+2
+3
+4
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse4" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5) ; | ></h4>
+<p class="list-group-item-text"><b>Command: </b>paste number.txt multiple_line.txt > triplet_folder/number_multiple_line.txt ; cat triplet_folder/number_multiple_line.txt | grep -v [02468]</p></a></div>
+<div id="collapse4" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+1	this is the module called software testing,
+3	I am going to do well for this module.
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+1	this is the module called software testing,
+3	I am going to do well for this module.
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse5" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6) ; | *</h4>
+<p class="list-group-item-text"><b>Command: </b>ls *.txt | sed s/multiple/multiply/ ; echo multiplier</p></a></div>
+<div id="collapse5" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+empty.txt	'file with space.txt'	input.txt	multiply_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+multiplier
+</pre><pre class="list-group-item"><b>Actual:</b>
+empty.txt	'file with space.txt'	input.txt	multiply_line.txt	multiple_line_2.txt	number.txt	single_line.txt
+multiplier
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse6" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1) '' "" ``</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `cat 'abc!@#$%^&*()' "abc!@#$%^&*()"`</p></a></div>
+<div id="collapse6" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+cat: abc!@#$%^&*(): No such file or directory cat: abc!@#$%^&*(): No such file or directory
+</pre><pre class="list-group-item"><b>Actual:</b>
+cat: abc!@#$%^&*(): No such file or directory cat: abc!@#$%^&*(): No such file or directory
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse7" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2) '' "" <</h4>
+<p class="list-group-item-text"><b>Command: </b>cat 'abc!@#$%^&*()' "abc!@#$%^&*()" < ")(*&^%$#@!"</p></a></div>
+<div id="collapse7" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+shell: )(*&^%$#@!: No such file or directory
+</pre><pre class="list-group-item"><b>Actual:</b>
+shell: )(*&^%$#@!: No such file or directory
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse8" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3) '' "" ></h4>
+<p class="list-group-item-text"><b>Command: </b>echo '"1234567890"' > "'!@#$%^&*()[]{}'"</p></a></div>
+<div id="collapse8" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse9" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4) '' "" *</h4>
+<p class="list-group-item-text"><b>Command: </b>echo "'*123*'*'" '!@#$%&*()' ')(*&^%$#@!'</p></a></div>
+<div id="collapse9" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+'*123*'*' !@#$%&*() )(*&^%$#@!
+</pre><pre class="list-group-item"><b>Actual:</b>
+'*123*'*' !@#$%&*() )(*&^%$#@!
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse10" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5)'' "" ;</h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir "'{[)(*&^%$#@!!@#$%^&*()]}'" ; cd "'{[)(*&^%$#@!!@#$%^&*()]}'"</p></a></div>
+<div id="collapse10" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse11" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6)'' "" |</h4>
+<p class="list-group-item-text"><b>Command: </b>cat '!@#$%^&*()[]{}' | grep -v "')(*&^%$#@!'" </p></a></div>
+<div id="collapse11" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+cat: !@#$%^&*()[]{}: No such file or directory
+</pre><pre class="list-group-item"><b>Actual:</b>
+cat: !@#$%^&*()[]{}: No such file or directory
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse12" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1) < > ; </h4>
+<p class="list-group-item-text"><b>Command: </b>mkdir dirTest; echo dir* > dirTest/output.txt</p></a></div>
+<div id="collapse12" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse13" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2) < > |</h4>
+<p class="list-group-item-text"><b>Command: </b>echo this is it | cat < single_line.txt > dirTest/output.txt</p></a></div>
+<div id="collapse13" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse14" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3) < > ''</h4>
+<p class="list-group-item-text"><b>Command: </b>grep 'is' < dirTest/output.txt > dirTest/output2.txt</p></a></div>
+<div id="collapse14" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse15" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4) < > ``</h4>
+<p class="list-group-item-text"><b>Command: </b>diff -s multiple_line.txt < multiple_line.txt `echo - ` > dirTest/output3.txt</p></a></div>
+<div id="collapse15" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse16" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5) < > ""</h4>
+<p class="list-group-item-text"><b>Command: </b>cmp -s "single_line.txt" < single_line.txt - > dirTest/glob.txt</p></a></div>
+<div id="collapse16" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse17" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6) < > *</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `cat < dirTest/g*` ">"</p></a></div>
+<div id="collapse17" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+>
+</pre><pre class="list-group-item"><b>Actual:</b>
+>
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse18" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">1) `` * ;</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `cat number.txt ; echo multiple* `</p></a></div>
+<div id="collapse18" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+1 2 3 4 multiple_line.txt multiple_line_2.txt
+</pre><pre class="list-group-item"><b>Actual:</b>
+1 2 3 4 multiple_line.txt multiple_line_2.txt
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse19" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">2) `` * |</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `ls * | grep folder`</p></a></div>
+<div id="collapse19" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+'folder with space': folderA folderB folderA: triplet_folder:
+</pre><pre class="list-group-item"><b>Actual:</b>
+'folder with space': folderA folderB folderA: triplet_folder:
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse20" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">3) `` * ''</h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo abc` 'ls multiple*'</p></a></div>
+<div id="collapse20" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+abc ls multiple*
+</pre><pre class="list-group-item"><b>Actual:</b>
+abc ls multiple*
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse21" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">4) `` * ""</h4>
+<p class="list-group-item-text"><b>Command: </b>cat `echo input*.txt` "number.txt"</p></a></div>
+<div id="collapse21" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+single_line.txt
+1
+2
+3
+4
+</pre><pre class="list-group-item"><b>Actual:</b>
+single_line.txt
+1
+2
+3
+4
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse22" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">5) `` * <</h4>
+<p class="list-group-item-text"><b>Command: </b>echo number*.txt `cat < single_line.txt`</p></a></div>
+<div id="collapse22" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+number.txt this file has only one line if you think for a moment
+</pre><pre class="list-group-item"><b>Actual:</b>
+number.txt this file has only one line if you think for a moment
+</pre></ul></div>
+
+<div a data-toggle="collapse" href="#collapse23" class="list-group-item list-group-item-success">
+<h4 class="list-group-item-heading">6) `` * ></h4>
+<p class="list-group-item-text"><b>Command: </b>echo `echo ls* > triplet_folder/ls_list.txt`</p></a></div>
+<div id="collapse23" class="panel-collapse collapse">
+<ul class="list-group"><pre class="list-group-item">
+<b>Expected:</b>
+
+</pre><pre class="list-group-item"><b>Actual:</b>
+
+</pre></ul></div>
+
+</div></div></div></body></html>

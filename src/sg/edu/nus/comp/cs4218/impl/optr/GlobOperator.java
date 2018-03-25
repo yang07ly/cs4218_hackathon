@@ -171,6 +171,7 @@ public class GlobOperator implements Operator {
 		}
 
 		// check for directory only
+		separatorRegex = separatorRegex.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0");
 		if (fileName.matches(".*" + separatorRegex + "$")) {
 			removeFilesFromList(dirList);
 		}
@@ -232,7 +233,8 @@ public class GlobOperator implements Operator {
 	 *            String of file or folder in the parent directory.
 	 */
 	private void appendMatchedPath(Vector<String> paths, String parent, String wildCardName) {
-		String regex = wildCardName.replace("*", "\\*").replace(".\\*?", REGEX_WILDCARD);
+		String regex = wildCardName.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0");
+		regex = regex.replace("\\.\\*\\?", REGEX_WILDCARD);
 		String[] filesInDir;
 		try {
 			filesInDir = FileUtil.getFolderContent(parent);
