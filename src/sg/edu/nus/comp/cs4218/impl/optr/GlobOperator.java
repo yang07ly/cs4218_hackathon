@@ -170,13 +170,27 @@ public class GlobOperator implements Operator {
 			dirList = getMatchedDirs(dirList, splitedDir[i]);
 		}
 
-		// check for directory only
-		separatorRegex = separatorRegex.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0");
-		if (fileName.matches(".*" + separatorRegex + "$")) {
-			removeFilesFromList(dirList);
-		}
-
+		removeFilesFromList(fileName, dirList);
 		return dirList.toArray(new String[dirList.size()]);
+	}
+
+	/**
+	 * Remove all paths in the list that is not a folder depending on the OS.
+	 * 
+	 * @param dirList
+	 *            Vector of string containing the file paths.
+	 */
+	private void removeFilesFromList(String fileName, Vector<String> dirList) {
+		// check for directory only
+		if (OSUtil.isWindows()) {
+			if (fileName.trim().endsWith("/") || fileName.trim().endsWith("\\")) {
+				removeFilesFromList(dirList);
+			}
+		} else {
+			if (fileName.trim().endsWith("/")) {
+				removeFilesFromList(dirList);
+			}
+		}
 	}
 
 	/**
@@ -233,7 +247,8 @@ public class GlobOperator implements Operator {
 	 *            String of file or folder in the parent directory.
 	 */
 	private void appendMatchedPath(Vector<String> paths, String parent, String wildCardName) {
-		String regex = wildCardName.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0");
+		String regex = wildCardName.replaceAll("[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]",
+				"\\\\$0");
 		regex = regex.replace("\\.\\*\\?", REGEX_WILDCARD);
 		String[] filesInDir;
 		try {
