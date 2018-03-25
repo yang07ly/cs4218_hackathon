@@ -36,7 +36,7 @@ public class PasteApplication implements PasteInterface {
 					} else {
 						stdout.write(mergeFile(allFiles).getBytes());
 					}
-				} else if(flags[1]){
+				} else if (flags[1]) {
 					stdout.write(mergeStdin(stdin).getBytes());
 				}
 			} catch (IOException e) {
@@ -126,14 +126,27 @@ public class PasteApplication implements PasteInterface {
 				StringBuilder lineBuilder = new StringBuilder();
 				for (int i = 0; i < readers.length; i++) {
 					String line = readers[i].readLine();
-					if (line != null) {
-						hasLines = true;
-						if (i == 0) {
-							lineBuilder.append(line);
-						} else {
-							line = "\t" + line;
+					if (line == null) {
+						if (i > 0 && hasLines) {
+							line = "\t";
 							lineBuilder.append(line);
 						}
+					} else {
+						if (hasLines) {
+							if (i == 0) {
+								lineBuilder.append(line);
+							} else {
+								line = "\t" + line;
+								lineBuilder.append(line);
+							}
+						} else {
+							for (int j = 0; j < i; j++) {
+								String tab = "\t";
+								lineBuilder.append(tab);
+							}
+							lineBuilder.append(line);
+						}
+						hasLines = true;
 					}
 				}
 				if (numLines != 0 && hasLines) {

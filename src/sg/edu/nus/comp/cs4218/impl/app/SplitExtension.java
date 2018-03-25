@@ -130,7 +130,7 @@ public final class SplitExtension {
 			}
 		}
 
-		if (numBytes == 0) {
+		if (numBytes < 1) {
 			throw new SplitException(bytes + ": invalid number of bytes");
 		}
 		return numBytes;

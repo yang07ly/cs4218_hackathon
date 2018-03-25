@@ -27,7 +27,7 @@ public class CallCommandTest {
 	}
 
 	@Test
-	public void testParseAppName() throws ShellException, AbstractApplicationException {
+	public void testParseToRunCorrectlyWhenParsingApp() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc";
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), new CommandString(cmdLine));
@@ -36,7 +36,7 @@ public class CallCommandTest {
 	}
 
 	@Test
-	public void testParseAppNameWithOneSpace() throws ShellException, AbstractApplicationException {
+	public void testParseToRunCorrectlyUsingSpaceBeforeAppName() throws ShellException, AbstractApplicationException {
 		cmdLine = " echo abc";
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), new CommandString(cmdLine));
@@ -45,7 +45,8 @@ public class CallCommandTest {
 	}
 
 	@Test
-	public void testParseAppNameWithMultipleSpaces() throws ShellException, AbstractApplicationException {
+	public void testParseToRunCorrectlyUsingMultiSpacesBeforeAppName()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = "    echo abc";
 		expected = ECHO;
 		CallCommand callCommand = new CallCommand(new ShellImpl(), new CommandString(cmdLine));
@@ -54,7 +55,7 @@ public class CallCommandTest {
 	}
 
 	@Test
-	public void testParseArgs() throws ShellException, AbstractApplicationException {
+	public void testParseToRunCorrectlyWhenParsingArgs() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo abc def";
 		String[] expectedArgs = { ABC, DEF };
 
@@ -65,7 +66,7 @@ public class CallCommandTest {
 	}
 
 	@Test
-	public void testParseArgsWithMultipleSpace() throws ShellException, AbstractApplicationException {
+	public void testParseToRunCorrectlyWhenMultiSpaceBtwArgs() throws ShellException, AbstractApplicationException {
 		cmdLine = "echo  abc     def";
 		String[] expectedArgs = { ABC, DEF };
 

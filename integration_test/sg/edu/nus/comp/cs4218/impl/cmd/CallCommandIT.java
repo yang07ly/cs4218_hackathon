@@ -67,7 +67,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidEmptyCmd() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToThrowExpUsingUsingEmptyCmdString() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");
 		callCmd = new CallCommand(new ShellImpl(), cmdLine);
 
@@ -79,7 +79,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testAppNameWithOneSpace() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingSpaceBeforeAppName()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(" echo abc");
 		expected = ABC;
 
@@ -91,7 +92,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testAppNameWithMultipleSpaces() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingMultiSpacesBeforeAppName()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("    echo abc");
 		expected = ABC;
 
@@ -103,7 +105,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testArgs() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingMultiArgs() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo abc def");
 		expected = "abc def";
 
@@ -115,7 +117,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testArgsWithMultipleSpace() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingMultiSpaceBtwArgs() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo  abc     def");
 		expected = "abc def";
 
@@ -127,7 +129,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateEcho() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingEcho() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo abc");
 		expected = ABC;
 
@@ -139,7 +141,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateCat() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingCat() throws ShellException, AbstractApplicationException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("cat file1.txt");
 		expected = "asdf";
@@ -152,7 +154,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateExit() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingExit() throws ShellException, AbstractApplicationException {
 		Thread thread1 = new Thread() {
 			public void run() {
 				CallCommand newCallCmd = new CallCommand(new ShellImpl(), new CommandString("exit"));
@@ -167,7 +169,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateLs() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingLs() throws ShellException, AbstractApplicationException {
 		Environment.currentDirectory = LS_TEST_DIR;
 		cmdLine = new CommandString("ls");
 		expected = "'file name with space.txt'" + TAB + "file1.txt" + TAB + "file2.txt" + TAB
@@ -180,7 +182,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateMkDir() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingMkDir()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = MKDIR_TEST_DIR;
 		cmdLine = new CommandString("mkdir folder1");
 
@@ -196,7 +199,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluatePaste() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingPaste()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = PASTE_TEST_DIR;
 		cmdLine = new CommandString("paste file1.txt file2.txt");
 		expected = "asdfgh\tqwerty";
@@ -209,7 +213,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateDiff() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingDiff() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = DIFF_TEST_DIR;
 		cmdLine = new CommandString("diff file1.txt file2.txt");
 		expected = "< line2" + System.getProperty("line.separator") + "> line6";
@@ -222,7 +226,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateCd() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingCd() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CD_TEST_DIR;
 		cmdLine = new CommandString("cd folder1");
 		String directory = CD_TEST_DIR + OSUtil.SEP + "folder1";
@@ -236,7 +240,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateSplit() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingSplit()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = SPLIT_TEST_DIR;
 		cmdLine = new CommandString("split file1.txt -l 6");
 
@@ -256,7 +261,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateCmp() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingCmp() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CMP_TEST_DIR;
 		cmdLine = new CommandString("cmp file1.txt file2.txt -csl");
 
@@ -269,7 +274,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateGrep() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingGrep() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = GREP_TEST_DIR;
 		cmdLine = new CommandString("grep file file1.txt");
 
@@ -282,7 +287,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateSed() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingSed() throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = SED_TEST_DIR;
 		cmdLine = new CommandString("sed s/test/replaced/ sedTestFile1.txt");
 
@@ -297,7 +302,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidApp() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToThrowExpUsingInvalidApp()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("eco abc");
 		expected = QWERTY;
@@ -311,7 +317,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateWithGlob() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingGlob() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo *");
 		expected = "cat_test_system cd_test_system cmd_test_system cmp_test_system "
 				+ "diff_test_system glob_test_system grep_test_system ioRedir_test_system "
@@ -326,7 +332,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEvaluateWithCmdSub() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingCmdSub() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo `echo test command substitution`");
 		expected = "test command substitution";
 
@@ -338,7 +344,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testGlob() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingGlobWithText() throws ShellException, AbstractApplicationException {
 		Environment.currentDirectory = GLOB_TEST_DIR;
 		cmdLine = new CommandString("echo file*");
 		expected = "file name with spaces.txt file1.txt file2.txt";
@@ -351,7 +357,7 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInputStream() throws ShellException, AbstractApplicationException {
+	public void testEvaluateToRunCorrectlyUsingInputStream() throws ShellException, AbstractApplicationException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat < file.txt");
 		expected = FILEFILE;
@@ -364,7 +370,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testOutputStream() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingOutputStream()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("echo abc > file1.txt");
 		expected = "";
@@ -384,7 +391,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testCmdSub() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingCmdSub2()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat `echo file.txt`");
 		expected = FILEFILE;
@@ -396,7 +404,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInputStreamWithOutputStream() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingInputStreamWithOutputStream()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat < file.txt > file1.txt");
 		expected = "";
@@ -416,7 +425,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInputStreamWithGlob() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingInputStreamWithGlob()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat < f*");
 		expected = FILEFILE;
@@ -429,7 +439,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInputStreamWithCmdSub() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingInputStreamWithCmdSub()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat `echo file.txt` < file.txt -");
 		expected = "filefile" + NEWLINE + "filefile";
@@ -442,7 +453,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testOutputStreamWithGlob() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingOutputStreamWithGlob()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat file.txt > glob*");
 		expected = "";
@@ -464,7 +476,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testOutputStreamWithCmdSub() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingOutputStreamWithCmdSub()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("cat file.txt > `echo globOut.txt`");
 		cmdLine.setCharEscapedRange(16, 32, true);
@@ -487,7 +500,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testCmdSubWithGlob() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingCmdSubWithGlob()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = IO_TEST_DIR;
 		cmdLine = new CommandString("echo `cat containsStar.txt`");
 		cmdLine.setCharEscapedRange(6, 26, true);
@@ -501,7 +515,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testEscapedChars() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToRunCorrectlyUsingEscapedChars()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("cat file with space.txt");
 		cmdLine.setCharEscapedRange(4, 23, true);
@@ -515,7 +530,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidCmdSub() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToThrowExpUsingInvalidCmdSub()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("echo `cat file.txt");
 		expected = QWERTY;
@@ -529,7 +545,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidInputStream() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToThrowExpUsingInvalidInputStream()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("cat < asdf");
 		expected = QWERTY;
@@ -543,7 +560,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidOutputStream() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToThrowExpUsingInvalidOutputStream()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("cat > abc > asdf");
 		expected = QWERTY;
@@ -557,7 +575,8 @@ public class CallCommandIT {
 	}
 
 	@Test
-	public void testInvalidAppError() throws ShellException, AbstractApplicationException, IOException {
+	public void testEvaluateToThrowExpUsingInvalidAppError()
+			throws ShellException, AbstractApplicationException, IOException {
 		Environment.currentDirectory = CAT_TEST_DIR;
 		cmdLine = new CommandString("cat  ");
 		cmdLine.setCharEscapedRange(4, 5, true);
