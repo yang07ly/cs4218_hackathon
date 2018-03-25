@@ -156,10 +156,6 @@ public class GrepApplication implements GrepInterface {
 				BufferedReader content = new BufferedReader(new FileReader(file));
 				String line = content.readLine();
 				if (line == null) {
-					if (printFileName) {
-						outputStr += fileNames[i] + ": ";
-					}
-					outputStr += OSUtil.NEWLINE;
 					content.close();
 					continue;
 				}
