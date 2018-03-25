@@ -179,6 +179,7 @@ public class CommandString {
 			}
 		}
 		return -1;
+		
 	}
 
 	/**

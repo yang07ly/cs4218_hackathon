@@ -31,7 +31,6 @@ public final class FileUtil {
 		File folder = getFolderFromPath(folderName);
 		return folder.list();
 	}
-
 	/**
 	 * Returns the File class of the specified path and throws exception if the file
 	 * cannot be found or is a directory.
@@ -107,7 +106,7 @@ public final class FileUtil {
 		File file = new File(fileName);
 		return file.isAbsolute();
 	}
-
+	
 	/**
 	 * Returns true if the path specified is a folder.
 	 * 
@@ -123,7 +122,7 @@ public final class FileUtil {
 		}
 		return file.isDirectory();
 	}
-
+	
 	/**
 	 * Reads contents of a file
 	 * 
