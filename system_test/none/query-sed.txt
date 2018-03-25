@@ -1,0 +1,54 @@
+//1. replace 'test' with 'replaced' in file
+sed s/test/replaced/ sedTestfile1.txt
+This is Sed Test File 1.
+1. replaced
+2. replaced test
+3. replaced test test
+4. replaced test test test
+5. replacedestestest
+6. replacedestestestestest
+//2. replace 3rd occurrence of 'test' with 'replaced' in file
+sed s/test/replaced/3 sedTestfile2.txt
+This is Sed Test File 2.
+1. testestestesreplacedest
+2. testestestest
+3. test test replaced test
+4. test test replaced
+5. test test
+6. test
+//3. add lead angle bracket to file
+sed s/^/'<'/ sedTestfile1.txt
+<This is Sed Test File 1.
+<1. test
+<2. test test
+<3. test test test
+<4. test test test test
+<5. testestestest
+<6. testestestestestest
+//4. remove lead number from file
+sed s/[0-9].\s+// sedTestfile1.txt
+This is Sed Test File 1.
+test
+test test
+test test test
+test test test test
+testestestest
+testestestestestest
+//5. replace nothing with no matched pattern
+sed s/noMatched/replaced/ sedTestfile2.txt
+This is Sed Test File 2.
+1. testestestestestest
+2. testestestest
+3. test test test test
+4. test test test
+5. test test
+6. test
+//6. replace empty pattern
+sed s//replaced/ sedTestfile1.txt
+sed: char 0: no previous regular expression
+//7. replace at 0th index
+sed s/test/replaced/0 sedTestfile1.txt
+sed: char 15: number option to 's' command may not be zero
+//8. replace text from non-existing file
+sed s/test/replaced/ nonExistentFile.txt
+sed: can't read nonExistentFile.txt: No such file or directory

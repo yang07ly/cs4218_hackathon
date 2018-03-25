@@ -1,0 +1,21 @@
+//1. change to folder1
+cd folder1; ls
+file1_in_folder1.txt	file2_in_folder1.txt	folder1_1
+//2. change to current directory
+cd .; ls
+'file name with space.txt'	file1.txt	file2.txt	'folder name with space'	folder1	folder2
+//3. change to parent directory
+cd ..; ls
+cat_test_system	cd_test_system	cmd_test_system	cmp_test_system	diff_test_system	glob_test_system	grep_test_system	ioRedir_test_system	ls_test_system	mkdir_test_system	paste_test_system	quote_test_system	sed_test_system	split_test_system
+//4. change directory back and forth
+cd folder1/../folder2; ls
+file1_in_folder2.txt	file2_in_folder2.txt
+//5. change to unknown directory
+cd unknownDir
+cd: unknownDir: No such file or directory
+//6. change to file
+cd file1.txt
+cd: file1.txt: Not a directory
+//7. change to multiple folders
+cd folder1 folder2
+cd: too many arguments

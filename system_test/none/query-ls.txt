@@ -1,0 +1,59 @@
+//1. ls current directory
+ls
+'file name with space.txt'	file1.txt	file2.txt	'folder name with space'	folder1	folder2
+//2. ls file
+ls file1.txt
+file1.txt
+//3. ls folder
+ls folder1
+file1_in_folder1.txt	file2_in_folder1.txt	folder1_1
+//4. ls multiple files
+ls file1.txt file2.txt
+file1.txt	file2.txt
+//5. ls multiple folders
+ls folder1 folder2
+folder1:
+file1_in_folder1.txt	file2_in_folder1.txt	folder1_1
+
+folder2:
+file1_in_folder2.txt	file2_in_folder2.txt
+//6. ls multiple files and folders
+ls file1.txt folder1 file2.txt folder2
+file1.txt	file2.txt
+
+folder1:
+file1_in_folder1.txt	file2_in_folder1.txt	folder1_1
+
+folder2:
+file1_in_folder2.txt	file2_in_folder2.txt
+//7. ls directory only
+ls -d folder1 folder2
+folder1	folder2
+//8. ls recursive on current directory
+ls -R
+.:
+'file name with space.txt'	file1.txt	file2.txt	'folder name with space'	folder1	folder2
+
+'.\folder name with space':
+file1_in_folder_spaces.txt	file2_in_folder_spaces.txt
+
+.\folder1:
+file1_in_folder1.txt	file2_in_folder1.txt	folder1_1
+
+.\folder1\folder1_1:
+file1_in_folder1_1.txt	file2_in_folder1_1.txt
+
+.\folder2:
+file1_in_folder2.txt	file2_in_folder2.txt
+//9. ls recursive on current directory for directory only
+ls -d -R
+.
+//10. ls recursive on directory for directory only
+ls -d -R folder1
+folder1
+//11. ls non-existing file
+ls nonExistentFile
+ls: cannot access 'nonExistentFile': No such file or directory
+//12. ls existing and non-existing file
+ls folder1 nonExistentFile
+ls: cannot access 'nonExistentFile': No such file or directory

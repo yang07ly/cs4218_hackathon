@@ -1,0 +1,37 @@
+//1. grep file from file1
+grep file file1.txt
+line 1: This file is named 'file1'.
+line 2: It is a Text file.
+//2. grep regex pattern from file1
+grep [0-9] file1.txt
+line 1: This file is named 'file1'.
+line 2: It is a Text file.
+line 3: It has a total of 6 lines.
+line4:ThisLineContainNoSpaces.
+line  5:  This  line  always  has  two  spaces.
+//3. grep nothing from no matched
+grep noMatched file1.txt
+//4. grep 'a' from multiple files
+grep \sa\s file1.txt file2.txt
+file1.txt: line 2: It is a Text file.
+file1.txt: line 3: It has a total of 6 lines.
+file2.txt: line B: It is a Text file.
+file2.txt: line C: It has a total of six lines.
+file2.txt: line 1: This line contain a numeric
+//5. invert grep numeric from file1
+grep [0-9] -v file1.txt
+line a: This line has no numeric.
+//6. grep no pattern
+grep
+grep: pattern is not specified
+//7. grep regex special character
+grep ) file1.txt
+grep: Unmatched closing ')' near index 0
+/)
+^
+//8. grep invalid flag used
+grep -i pattern file1.txt
+grep: invalid option -- 'i'
+//9. grep pattern after file
+grep file1.txt file
+grep: file: No such file or directory

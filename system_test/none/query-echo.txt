@@ -1,0 +1,11 @@
+//1. echo text
+echo text
+text
+//2. echo multile texts
+echo text1 text2 text3
+text1 text2 text3
+//3. echo empty
+echo
+//4. echo tabs
+echo text1	text2
+text1	text2

@@ -1,0 +1,21 @@
+//1. split file
+split file1.txt; ls
+1024bytes.txt	512bytes.txt	file1.txt	file2.txt	megabytes.txt	output	xaa
+//2. split file by lines
+split file1.txt -l 2; ls
+1024bytes.txt	512bytes.txt	file1.txt	file2.txt	megabytes.txt	output	xaa	xab
+//3. split file by MegaBytes
+split file1.txt -b 2m; ls
+1024bytes.txt	512bytes.txt	file1.txt	file2.txt	megabytes.txt	output	xaa
+//4. split file by kiloBytes
+split file1.txt -b 2k; ls
+1024bytes.txt	512bytes.txt	file1.txt	file2.txt	megabytes.txt	output	xaa
+//5. split file by bytes
+split file1.txt -b 2; ls
+1024bytes.txt	512bytes.txt	file1.txt	file2.txt	megabytes.txt	output	xaa	xab	xac	xad	xae	xaf	xag	xah	xai	xaj	xak
+//6. split file with negative lines
+split file1.txt -2
+split: -2: invalid flag
+//7. split file with negative 
+split file1.txt -b -2; ls
+split: -2: invalid number of bytes

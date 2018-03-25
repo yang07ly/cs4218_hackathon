@@ -1,0 +1,45 @@
+//1. compare files using flag 1
+cmp file1.txt file2.txt -csl
+Files differ
+//2. compare files using flag 1
+cmp file1.txt file2.txt -c-s-l
+Files differ
+//3. compare files using flag 1
+cmp file1.txt file2.txt -c -s -l
+Files differ
+//4. compare files no difference
+cmp file1.txt file1_copy.txt -csl
+//5. compare files print differ character
+cmp file1.txt file2.txt -c
+file1.txt file2.txt differ: char 9, line 2 is 151 i 154 l
+//6. compare files print differ simplify
+cmp file1.txt file2.txt -s
+Files differ
+//7. compare files print differ offset
+cmp file1.txt file2.txt -l
+9 151 154
+10 154 151
+//8. compare more than 2 files
+cmp -cl file1.txt file2.txt file3.txt
+cmp: requires 2 files to be specified
+//9. compare 2 files and input stream
+cmp file1.txt file2.txt -
+cmp: requires 2 files to be specified
+//10. compare directory
+cmp folder1 file1.txt
+cmp: folder1: Is a directory
+//11. compare unknown file
+cmp file1.txt file3.txt
+cmp: file3.txt: No such file or directory
+//12. compare using invalid flag1
+cmp file1.txt file2.txt -a
+cmp: Invalid flags
+//13. compare using invalid flag2
+cmp file1.txt file2.txt -c-
+cmp: Invalid flags
+//14. compare using invalid flag3
+cmp file1.txt file2.txt --
+cmp: Invalid flags
+//15. compare using invalid flag4
+cmp file1.txt file2.txt --s
+cmp: Invalid flags

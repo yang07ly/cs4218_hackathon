@@ -1,0 +1,6 @@
+line 1: This file is named 'file1'.
+line 2: It is a Text file.
+line 3: It has a total of 6 lines.
+line4:ThisLineContainNoSpaces.
+line  5:  This  line  always  has  two  spaces.
+line a: This line has no numeric.

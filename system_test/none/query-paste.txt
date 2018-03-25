@@ -1,0 +1,27 @@
+//1. Merge one file
+paste file1.txt
+asdfgh
+//2. Merge one file with multiple lines
+paste file3.txt
+asdf
+fdsa
+asdf
+//3. Merge 2 files
+paste file1.txt file2.txt
+asdfgh	qwerty
+//4. Merge 2 files with multiple lines
+paste file1.txt file2.txt
+asdfgh	asdf
+	fdsa
+	asdf
+//5. Merge 3 files
+paste file1.txt file2.txt file3.txt
+asdfgh	qwerty	asdf
+		fdsa
+		asdf
+//6. Merge directory
+paste file1.txt output
+paste: output: Is a directory
+//7. Merge non-existing file
+paste file1.txt file10.txt
+paste: file10.txt: No such file or directory

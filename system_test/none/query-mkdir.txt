@@ -1,0 +1,30 @@
+//1. create one folder
+mkdir folder1; ls
+folder1
+//2. create multiple folders
+mkdir folder2 folder3 folder4; ls
+folder1	folder2	folder3	folder4
+//3. sequentially create folder in folder
+mkdir folder5 folder5/folder51; ls -R
+.:
+folder1	folder2	folder3	folder4 folder5
+
+./folder1:
+
+./folder2:
+
+./folder3:
+
+./folder4:
+
+./folder5:
+folder51
+//4. create existing folder
+mkdir folder1
+mkdir: cannot create directory 'folder1': File exists
+//5. create folder in non-existing folder
+mkdir folder6/folder61
+mkdir: cannot create directory 'folder6/folder61': No such file or directory
+//6. create directory without name
+mkdir
+mkdir: missing operand

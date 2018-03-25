@@ -1,0 +1,48 @@
+//1. compare files using flag 1
+diff file1.txt file2.txt -sBq
+Files file1.txt and file2.txt differ
+//2. compare files using flag 1
+diff file1.txt file2.txt -s-B-q
+Files file1.txt and file2.txt differ
+//3. compare files using flag 1
+diff file1.txt file2.txt -s -B -q
+Files file1.txt and file2.txt differ
+//4. compare files no difference
+diff file1.txt file1_copy.txt -sBq
+Files file1.txt and file1_copy.txt are identical
+//5. compare files print differ ignore changes with blank line
+diff file1.txt file2.txt -B
+< line2
+> line6
+//6. compare files print differ with message if identical
+diff file1.txt file1_copy.txt -s
+Files file1.txt and file1_copy.txt are identical
+Files differ
+//7. compare files print differ with message if differ
+diff file1.txt file2.txt -q
+Files file1.txt and file2.txt differ
+//8. compare more than 2 files
+diff file1.txt file2.txt file3.txt
+diff: requires 2 files to be specified
+//9. compare 2 files and input stream
+diff file1.txt file2.txt -
+diff: requires 2 files to be specified
+//10. compare directory
+diff dir1 dir2
+Only in dir1: emptyFile.txt
+Only in dir2: file2.txt
+//11. compare unknown file
+diff file10.txt file3.txt
+diff: file10.txt: No such file or directory
+//12. compare using invalid flag1
+diff file1.txt file2.txt -a
+diff: Invalid flags
+//13. compare using invalid flag2
+diff file1.txt file2.txt -B-
+diff: Invalid flags
+//14. compare using invalid flag3
+diff file1.txt file2.txt --
+diff: Invalid flags
+//15. compare using invalid flag4
+diff file1.txt file2.txt --s
+diff: Invalid flags
