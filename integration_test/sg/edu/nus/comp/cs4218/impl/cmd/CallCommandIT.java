@@ -320,7 +320,7 @@ public class CallCommandIT {
 	public void testEvaluateToRunCorrectlyUsingGlob() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo *");
 		expected = "cat_test_system cd_test_system cmd_test_system cmp_test_system "
-				+ "diff_test_system glob_test_system grep_test_system ioRedir_test_system "
+				+ "diff_test_system fileutil_test_system glob_test_system grep_test_system ioRedir_test_system "
 				+ "ls_test_system mkdir_test_system paste_test_system quote_test_system sed_test_system "
 				+ "split_test_system";
 
