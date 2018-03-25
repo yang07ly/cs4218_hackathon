@@ -40,7 +40,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseEmpty() throws ShellException, AbstractApplicationException {
+	public void testParseToDoNothingUsingEmptyStr() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(EMPTY);
 		expected = getExpectedCmdStrArr(EMPTY);
 
@@ -50,7 +50,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseNoPipe() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsByPipeUsingStrWithNoPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD);
 		expected = getExpectedCmdStrArr(CMD);
 
@@ -60,7 +60,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseOnePipe() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsByPipeUsingStrWithOnePipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD);
 		expected = getExpectedCmdStrArr(CMD, CMD);
 
@@ -70,7 +70,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseMultiplePipe() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsByPipeUsingStrWithMultiPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD + PIPE + CMD);
 		expected = getExpectedCmdStrArr(CMD, CMD, CMD);
 
@@ -80,7 +80,8 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParsePipeWithLeadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsByPipeUsingStrWithLeadAndTrailSpaces()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(SPACES + CMD + PIPE + CMD + SPACES);
 		expected = getExpectedCmdStrArr(CMD, CMD);
 
@@ -90,7 +91,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseEscapedPipe() throws ShellException, AbstractApplicationException {
+	public void testParseToIgnorePipeUsingStrWithEscapedPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD);
 		cmdLine.setCharEscaped(3, true);
 
@@ -103,7 +104,8 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testParseSeqEscapedWithValidPipe() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdAndIgnorePipeUsingStrWithEscapedAndValidPipe()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + CMD + PIPE + CMD);
 		cmdLine.setCharEscaped(3, true);
 
@@ -116,7 +118,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testInvalidParsePipeAtFront() throws ShellException, AbstractApplicationException {
+	public void testParseToThrowsShellExpUsingStrWithPipeAtFront() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(PIPE + CMD);
 
 		thrown.expect(ShellException.class);
@@ -126,7 +128,7 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testInvalidParsePipeAtBack() throws ShellException, AbstractApplicationException {
+	public void testParseToThrowsShellExpUsingStrWithPipeAtEnd() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE);
 
 		thrown.expect(ShellException.class);
@@ -136,7 +138,8 @@ public class PipeCommandTest {
 	}
 
 	@Test
-	public void testInvalidParsePipeEmptyCmdBetweenPipe() throws ShellException, AbstractApplicationException {
+	public void testParseToThrowsShellExpUsingStrWithEmptyCmdBtwPipe()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + PIPE + PIPE + CMD);
 
 		thrown.expect(ShellException.class);

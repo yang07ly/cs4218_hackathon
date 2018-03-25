@@ -38,7 +38,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testEvalSeqWithoutParse() throws ShellException, AbstractApplicationException {
+	public void testEvalToDoNothingUsingEmptyArgsWithoutRunParse() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo no parse");
 		expected = "";
 
@@ -48,7 +48,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidSeqEmpty() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingEmptyStr() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");
 
 		thrown.expect(ShellException.class);
@@ -60,7 +60,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testNoSeq() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdUsingStrWithNoSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo no sequence");
 		expected = "no sequence";
 
@@ -71,7 +71,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testOneSeq() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithOneSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo one; echo sequence");
 		expected = "one" + NEW_LINE + "sequence";
 
@@ -82,7 +82,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testMultiSeq() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithMultiSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo seq1; echo seq2; echo seq3; echo seq4");
 		expected = "seq1" + NEW_LINE + "seq2" + NEW_LINE + "seq3" + NEW_LINE + "seq4";
 
@@ -93,7 +93,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testSeqWithinText() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithSeqBtwText() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo within;echo text");
 		expected = "within" + NEW_LINE + "text";
 
@@ -104,7 +104,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidSeqAtStart() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingStrWithSeqAtFront() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("; echo semicolon at front");
 
 		thrown.expect(ShellException.class);
@@ -116,7 +116,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testSeqAtEnd() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithSeqAtEnd() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo semicolon; echo at end;");
 		expected = "semicolon" + NEW_LINE + "at end";
 
@@ -127,7 +127,8 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidSeqAtStartAndEnd() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingStrWithSeqAtFrontAndEnd()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("; echo front; echo end;");
 
 		thrown.expect(ShellException.class);
@@ -139,7 +140,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testSeqWithleadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithLeadAndTrailSpaces() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("    echo leading spaces; echo trailing spaces    ");
 		expected = "leading spaces" + NEW_LINE + "trailing spaces";
 
@@ -149,7 +150,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testSeqEscapedSemicolon() throws ShellException, AbstractApplicationException {
+	public void testEvalToIgnoreSeqUsingStrWithEscapedSemicolon() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo escaped; echo sequence");
 		cmdLine.setCharEscaped(12, true);
 		expected = "escaped; echo sequence";
@@ -161,7 +162,8 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testSeqEscapedWithValidSemicolon() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalAndIgnoreSeqUsingStrWithEscapedAndValidSemicolon()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo escaped; echo sequence; echo sequence 2");
 		cmdLine.setCharEscaped(12, true);
 		expected = "escaped; echo sequence" + NEW_LINE + "sequence 2";
@@ -173,7 +175,8 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testMultiSeqWithFrontAffectingBack() throws ShellException, AbstractApplicationException {
+	public void testEvalToChgEvalBehavOfCmdAtEndUsingStrWithCmdThatAffectOtherCmdEval()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("cd ls_test_system; ls");
 		expected = NEW_LINE + "'file name with space.txt'" + TAB + "file1.txt" + TAB + "file2.txt" + TAB
 				+ "'folder name with space'" + TAB + "folder1" + TAB + "folder2";
@@ -185,7 +188,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testNoSeqWithPipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalPipeUsingStrWithNoSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo no seq with pipe | sed s/pipe/Pipe/");
 		expected = "no seq with Pipe";
 
@@ -196,7 +199,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testOneSeqWithPipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalPipesUsingStrWithOneSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo one seq | sed s/seq/Seq/; echo with pipe | sed s/pipe/Pipe/");
 		expected = "one Seq" + NEW_LINE + "with Pipe";
 
@@ -207,7 +210,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testMultiSeqWithPipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalPipesUsingStrWithMultiSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo seq1 | sed s/seq/Seq/; echo seq2; echo seq3 | sed s/seq/Seq/");
 		expected = "Seq1" + NEW_LINE + "seq2" + NEW_LINE + "Seq3";
 
@@ -218,7 +221,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidSeqAppException() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsAppExpUsingCmdWithAppExp() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("cat nonExistentFile");
 
 		thrown.expect(AbstractApplicationException.class);
@@ -230,7 +233,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidSeqShellException() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingCmdWithShellExp() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo seq1; echo seq2 |");
 
 		thrown.expect(ShellException.class);
@@ -242,7 +245,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiSeqWithExceptionAtStart() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtStartOfSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("eco seq1; echo seq2; echo seq3; echo seq4");
 
 		thrown.expect(ShellException.class);
@@ -254,7 +257,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiSeqWithExceptionAtMiddle() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtMiddleOfSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo seq1; echo seq2; eco seq3; echo seq4");
 
 		thrown.expect(ShellException.class);
@@ -266,7 +269,7 @@ public class SeqCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiSeqWithExceptionAtEnd() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtEndOfSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo seq1; echo seq2; eco seq3; echo seq4");
 
 		thrown.expect(ShellException.class);

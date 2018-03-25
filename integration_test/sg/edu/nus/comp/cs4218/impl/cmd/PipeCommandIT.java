@@ -31,7 +31,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testEvalPipeWithoutParse() throws ShellException, AbstractApplicationException {
+	public void testEvalToDoNothingUsingEmptyArgsWithoutRunParse() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo no parse");
 		expected = "";
 
@@ -41,7 +41,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidPipeEmpty() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingEmptyStr() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("");
 
 		thrown.expect(ShellException.class);
@@ -53,7 +53,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testNoPipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdUsingStrWithNoPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo no pipe");
 		expected = "no pipe";
 
@@ -64,7 +64,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testOnePipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithOnePipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo one pipe | cat");
 		expected = "one pipe";
 
@@ -75,7 +75,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testMultiplePipe() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithMultiPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo mutiple pipes | cat | sed s/pipes/Pipes/");
 		expected = "mutiple Pipes";
 
@@ -86,7 +86,17 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidPipeAtFront() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithPipeBtwText() throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("echo pipeWithinText|cat");
+		expected = "pipeWithinText";
+
+		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
+		pipeCmd.parse();
+		pipeCmd.evaluate(System.in, output);
+	}
+
+	@Test
+	public void testEvalToThrowsShellExpUsingStrWithPipeAtFront() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("| echo pipe front");
 
 		thrown.expect(ShellException.class);
@@ -98,7 +108,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidPipeAtBack() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingStrWithPipeAtBack() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo pipe back |");
 
 		thrown.expect(ShellException.class);
@@ -110,9 +120,12 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testPipeWithinText() throws ShellException, AbstractApplicationException {
-		cmdLine = new CommandString("echo pipeWithinText|cat");
-		expected = "pipeWithinText";
+	public void testEvalToThrowsShellExpUsingStrWithPipeAtFrontAndEnd()
+			throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString("| echo pipe back |");
+
+		thrown.expect(ShellException.class);
+		thrown.expectMessage("shell: Invalid pipe operator/s");
 
 		pipeCmd = new PipeCommand(new ShellImpl(), cmdLine);
 		pipeCmd.parse();
@@ -120,7 +133,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testPipeWithleadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+	public void testEvalToEvalCmdsUsingStrWithLeadAndTrailSpaces() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("     echo leading and trailing spaces |cat      ");
 		expected = "leading and trailing spaces";
 
@@ -130,7 +143,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testPipeEscaped() throws ShellException, AbstractApplicationException {
+	public void testEvalToIgnorePipeUsingStrWithEscapedPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo escaped |pipe");
 		cmdLine.setCharEscaped(13, true);
 		expected = "escaped |pipe";
@@ -142,7 +155,8 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testPipeEscapedWithNotEscaped() throws ShellException, AbstractApplicationException {
+	public void testPipeEscapedWithtestEvalToEvalAndIgnorePipeUsingStrWithEscapedAndValidPipeNotEscaped()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo escaped |pipe | sed s/pipe/pipe_with_valid_pipe/");
 		cmdLine.setCharEscaped(13, true);
 		expected = "escaped |pipe_with_valid_pipe";
@@ -154,7 +168,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidPipeAppException() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsAppExpUsingCmdWithAppExp() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("cat nonExistentFile");
 
 		thrown.expect(AbstractApplicationException.class);
@@ -166,7 +180,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidPipeShellException() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingCmdWithShellExp() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("invalidApp");
 
 		thrown.expect(ShellException.class);
@@ -178,7 +192,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiPipeWithExceptionAtStart() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtStartOfPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("ec pipe1 | cat | sed s/pipe1/sed-replacement/");
 
 		thrown.expect(ShellException.class);
@@ -190,7 +204,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiPipeWithExceptionAtMiddle() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtMiddleOfPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo pipe1 | ct | sed s/pipe1/sed-replacement/");
 
 		thrown.expect(ShellException.class);
@@ -202,7 +216,7 @@ public class PipeCommandIT {
 	}
 
 	@Test
-	public void testInvalidMultiSeqWithExceptionAtEnd() throws ShellException, AbstractApplicationException {
+	public void testEvalToThrowsShellExpUsingExpAtEndOfPipe() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString("echo pipe1 | cat | sd s/pipe1/sed-replacement/");
 
 		thrown.expect(ShellException.class);

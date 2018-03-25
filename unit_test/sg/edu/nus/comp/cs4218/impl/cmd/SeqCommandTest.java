@@ -44,7 +44,7 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseEmpty() throws ShellException, AbstractApplicationException {
+	public void testParseToDoNothingUsingEmptyStr() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(EMPTY);
 		expectedArgs = getExpectedCmdStrArr(EMPTY);
 
@@ -54,7 +54,7 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseNoSeq() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsBySemicolonUsingStrWithNoSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD);
 		expectedArgs = getExpectedCmdStrArr(CMD);
 
@@ -64,7 +64,7 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseOneSeq() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsBySemicolonUsingStrWithOneSeq() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + CMD);
 		expectedArgs = getExpectedCmdStrArr(CMD, CMD);
 
@@ -74,7 +74,8 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseMultipleSeq() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsBySemicolonUsingStrWithMultiSeq()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + CMD + SEMICOLON + CMD);
 		expectedArgs = getExpectedCmdStrArr(CMD, CMD, CMD);
 
@@ -84,7 +85,8 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseSeqAtEnd() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsBySemicolonUsingStrWithSemiColonAtEnd()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + CMD + SEMICOLON);
 		expectedArgs = getExpectedCmdStrArr(CMD, CMD);
 
@@ -94,7 +96,8 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseSeqWithLeadingAndTrailingSpaces() throws ShellException, AbstractApplicationException {
+	public void testParseToSepCmdsBySemicolonUsingStrWithLeadAndTrailSpaces()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(SPACES + CMD + SEMICOLON + CMD + SPACES);
 		expectedArgs = getExpectedCmdStrArr(CMD, CMD);
 
@@ -104,7 +107,7 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testParseSeqEscapedSemiColon() throws ShellException, AbstractApplicationException {
+	public void testParseToIgnoreSeqUsingStrWithEscapedSemicolon() throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + CMD);
 		cmdLine.setCharEscaped(3, true);
 
@@ -117,7 +120,22 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testInvalidParseSeqAtFront() throws ShellException, AbstractApplicationException {
+	public void testParseToParseAndIgnoreSeqUsingStrWithEscapedAndValidSemicolon()
+			throws ShellException, AbstractApplicationException {
+		cmdLine = new CommandString(CMD + SEMICOLON + CMD + SEMICOLON + CMD);
+		cmdLine.setCharEscaped(3, true);
+
+		expectedArgs = getExpectedCmdStrArr(CMD + SEMICOLON + CMD, CMD);
+		expectedArgs[0].setCharEscaped(3, true);
+
+		seqCmd = new SeqCommand(shell, cmdLine);
+		seqCmd.parse();
+		assertArrayEquals(expectedArgs, (CommandString[]) Whitebox.getInternalState(seqCmd, ARGS_VAR));
+	}
+
+	@Test
+	public void testParseToThrowsShellExpUsingStrWithSemicolonAtFront()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(SEMICOLON + CMD);
 
 		thrown.expect(ShellException.class);
@@ -127,7 +145,8 @@ public class SeqCommandTest {
 	}
 
 	@Test
-	public void testInvalidParseEmptyCmdBetweenSeq() throws ShellException, AbstractApplicationException {
+	public void testParseToThrowsShellExpUsingStrWithEmptyCmdBtwSemicolon()
+			throws ShellException, AbstractApplicationException {
 		cmdLine = new CommandString(CMD + SEMICOLON + SPACES + SEMICOLON + CMD);
 
 		thrown.expect(ShellException.class);
