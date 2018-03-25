@@ -25,7 +25,7 @@ public final class StreamUtil {
 	 */
 	public static void closeInputStream(InputStream inputStream) throws ShellException {
 		if (inputStream == null) {
-			throw new NullPointerException();
+			throw new ShellException("NullPointer Exception");
 			
 		}
 		if (inputStream != System.in) {
@@ -34,7 +34,7 @@ public final class StreamUtil {
 			} catch (IOException e) {
 				throw new ShellException(e.getMessage());
 			}
-		}
+		} 
 	}
 
 	/**
@@ -49,7 +49,7 @@ public final class StreamUtil {
 	 */
 	public static void closeOutputStream(OutputStream outputStream) throws ShellException {
 		if (outputStream == null) {
-			throw new NullPointerException();
+			throw new ShellException("NullPointer Exception");
 		}
 		if (outputStream != System.out) {
 			try {
@@ -57,7 +57,7 @@ public final class StreamUtil {
 			} catch (IOException e) {
 				throw new ShellException(e.getMessage());
 			}
-		}
+		} 
 	}
 
 	/**
