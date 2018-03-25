@@ -57,7 +57,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEmpty() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingEmptyStr() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(FILE_EMPTY);
 		cmd = new CommandString(FILE_EMPTY);
 		globOptr.evaluate(cmd);
@@ -65,7 +65,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMutipleSpaces() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingSpacesStr() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(FILE_SPACES);
 		cmd = new CommandString(FILE_SPACES);
 		globOptr.evaluate(cmd);
@@ -73,7 +73,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobExistingFile() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingExistingFile() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(FILE1);
 		cmd = new CommandString(FILE1);
 		globOptr.evaluate(cmd);
@@ -81,7 +81,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobNonExistingFile() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingNonExistentFile() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(FILE_NONEXISTENT);
 		cmd = new CommandString(FILE_NONEXISTENT);
 		globOptr.evaluate(cmd);
@@ -89,7 +89,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEverythingRelative() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobEverythingInCurDirUsingWildcardOnly()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2);
 		cmd = new CommandString("*");
 		globOptr.evaluate(cmd);
@@ -97,7 +98,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEverythingAbsolute() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobEverythingInDirUsingAbsDirWithWildcard()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2);
 		cmd = new CommandString(Environment.currentDirectory + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
@@ -105,7 +107,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEverythingWithEmptyParent() throws AbstractApplicationException, ShellException {
+	public void testEvalToIgnoreEmptyDirBtwFileSepUsingPathWithEmptyDirBtwFileSep()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(ABS_FILE_W_SPACES, ABS_FILE1, ABS_FILE2, ABS_FOLDER1, ABS_FOLDER2);
 		cmd = new CommandString(Environment.currentDirectory + OSUtil.SEP + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
@@ -113,7 +116,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobAllFolders() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobDirOnlySepUsingPathEndWithFileSep() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1, FOLDER2);
 		cmd = new CommandString("*/");
 		globOptr.evaluate(cmd);
@@ -121,7 +124,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobAtFront() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFilesUsingWildcardAtFront() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
 		cmd = new CommandString("*.txt");
 		globOptr.evaluate(cmd);
@@ -129,7 +132,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobAtEnd() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFilesUsingWildcardAtEnd() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2, FOLDER1, FOLDER2);
 		cmd = new CommandString("f*");
 		globOptr.evaluate(cmd);
@@ -137,7 +140,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobAtMiddle() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFilesUsingWildcardBtwTest() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
 		cmd = new CommandString("f*.txt");
 		globOptr.evaluate(cmd);
@@ -145,7 +148,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMutipleWildcard() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFilesUsingMultiWildcardWithTest() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2);
 		cmd = new CommandString("file*.*");
 		globOptr.evaluate(cmd);
@@ -153,7 +156,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobParentDirectory() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFilesInDiffDirsUsingWildcardInParentDir()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER2_FILE1);
 		cmd = new CommandString("*" + OSUtil.SEP + FILE1);
 		globOptr.evaluate(cmd);
@@ -161,7 +165,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMultipleFileInSingleFolder() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobBothFileAndDirUsingWildCardMatchBothFileAndDirName()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE1, FOLDER1);
 		cmd = new CommandString("*1*");
 		globOptr.evaluate(cmd);
@@ -169,7 +174,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMultipleFileInMutipleFolder() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobAllFilesInMultiDirUsingWildCardInParentDirAndFileName()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER2_FILE1, FOLDER2_FILE2);
 		cmd = new CommandString("*" + OSUtil.SEP + FILE_WILDCARD);
 		globOptr.evaluate(cmd);
@@ -177,7 +183,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobMutiplePath() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobMultiPathsUsingWildCardInTwoPath() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FOLDER1_FILE1, FOLDER1_FILE2, FOLDER1_FOLDER_WS, FOLDER2_FILE1, FOLDER2_FILE2);
 		cmd = new CommandString(FOLDER1 + OSUtil.SEP + "*" + STR_SPACE + FOLDER2 + OSUtil.SEP + "*");
 		globOptr.evaluate(cmd);
@@ -185,7 +191,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobExistingAndNonExistingFile() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobMultiPathsUsingExistingAndNonExistentFile()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES, FILE1, FILE2, FILE_NONEXISTENT);
 		expected.setCharEscapedRange(expected.length() - FILE_NONEXISTENT.length(), expected.length(), false);
 		cmd = new CommandString(FILE_WILDCARD + STR_SPACE + FILE_NONEXISTENT);
@@ -194,7 +201,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobFileNameWithSpaces() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFileNameWithSpaceUsingWildcardWithEscapedSpaces()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES);
 		cmd = new CommandString("file name with*");
 		cmd.setCharEscapedRange(0, 13, true);
@@ -203,7 +211,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobFileNameWithSpacesWithMutipleWildcard() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobFileNameWithSpaceUsingMultiWildcardWithEscapedSpaces()
+			throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_W_SPACES);
 		cmd = new CommandString("file name* with*");
 		cmd.setCharEscapedRange(0, 9, true);
@@ -213,7 +222,7 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobEscapedWildcard() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingEscapedWildcard() throws AbstractApplicationException, ShellException {
 		expected = getExpectedCmdStr(FILE_WILDCARD);
 		cmd = new CommandString(FILE_WILDCARD);
 		cmd.setCharEscapedRange(0, cmd.length(), true);
@@ -222,7 +231,8 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testGlobValidAndEscapedWildcard() throws AbstractApplicationException, ShellException {
+	public void testEvalToGlobNothingUsingEscapedAndValidWildcard()
+			throws AbstractApplicationException, ShellException {
 		expected = new CommandString("**");
 		expected.setCharEscaped(0, true);
 
@@ -234,12 +244,21 @@ public class GlobOperatorTest {
 	}
 
 	@Test
-	public void testInvalidGlobNull() throws AbstractApplicationException, ShellException {
+	public void testEvalToThrowsShellExpUsingNullStr() throws AbstractApplicationException, ShellException {
 		thrown.expect(ShellException.class);
 		thrown.expectMessage("shell: Null Pointer Exception");
 		globOptr.evaluate(null);
 	}
 
+	/**
+	 * Return the CommandString array by creating new CommandString by appending
+	 * each inputed String with its characters state set to true, separated by a
+	 * space with a false state.
+	 * 
+	 * @param strings
+	 *            String of the new CommandString to be added to the array.
+	 * @return CommandString with the appended inputed Strings.
+	 */
 	private CommandString getExpectedCmdStr(String... strings) {
 		CommandString cmdStr = new CommandString();
 		int startIndex = 0;

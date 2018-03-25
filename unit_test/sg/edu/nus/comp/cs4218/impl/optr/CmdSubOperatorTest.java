@@ -42,7 +42,7 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testNoCmdSub() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingStrWithNoCmdSub() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(CMD_STR);
 		cmd = new CommandString(CMD_STR);
 		cmdSubOptr.evaluate(cmd);
@@ -50,7 +50,7 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testCmdSub() throws AbstractApplicationException, ShellException {
+	public void testEvalToReplStrWithCmdSubUsingStrWithCmdSub() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(ShellStub.SHELL_RESULT);
 		cmd = new CommandString(CMDSUB_STR);
 		cmdSubOptr.evaluate(cmd);
@@ -58,7 +58,8 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testCmdSubEmpty() throws AbstractApplicationException, ShellException {
+	public void testEvalToRemoveBackQuoteSubUsingEmptyStrInCmdSub()
+			throws AbstractApplicationException, ShellException {
 		expected = new CommandString();
 		cmd = new CommandString("``");
 		cmdSubOptr.evaluate(cmd);
@@ -66,7 +67,8 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testCmdSubWithinChars() throws AbstractApplicationException, ShellException {
+	public void testEvalToMergeStrWithCmdSubSubUsingCmdSubBtwText()
+			throws AbstractApplicationException, ShellException {
 		expected = new CommandString("F" + ShellStub.SHELL_RESULT + "E");
 
 		cmd = new CommandString("F" + CMDSUB_STR + "E");
@@ -77,7 +79,8 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testMutipleCmdSub() throws AbstractApplicationException, ShellException {
+	public void testEvalToMergeMultiCmdSubSubUsingMultiCmdSubInStr()
+			throws AbstractApplicationException, ShellException {
 		expected = new CommandString(ShellStub.SHELL_RESULT + ShellStub.SHELL_RESULT);
 
 		cmd = new CommandString(CMDSUB_STR + CMDSUB_STR);
@@ -89,7 +92,7 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testCmdSubEscaped() throws AbstractApplicationException, ShellException {
+	public void testEvalToDoNothingUsingEscapedBackQuotes() throws AbstractApplicationException, ShellException {
 		expected = new CommandString(CMDSUB_STR);
 		expected.setCharEscapedRange(0, CMDSUB_STR.length(), true);
 
@@ -101,7 +104,8 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testCmdSubAppReturnMultipleLines() throws AbstractApplicationException, ShellException {
+	public void testEvalToReplNewLineWithSpaceUsingMutiLineReturnFromCmdSub()
+			throws AbstractApplicationException, ShellException {
 		expected = new CommandString("Rline1. Rline2.");
 
 		Shell mockShell = Mockito.mock(Shell.class);
@@ -123,14 +127,14 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testInvalidCmdSubNull() throws AbstractApplicationException, ShellException {
+	public void testEvalToThrowsShellExpUsingNullStr() throws AbstractApplicationException, ShellException {
 		thrown.expect(ShellException.class);
 		thrown.expectMessage(NULL_EXP);
 		cmdSubOptr.evaluate(null);
 	}
 
 	@Test
-	public void testInvalidCmdSubQuoteNotClosed() throws AbstractApplicationException, ShellException {
+	public void testEvalToThrowsShellExpUsingUnclosedBackQuote() throws AbstractApplicationException, ShellException {
 		cmd = new CommandString("`" + CMD_STR);
 		cmd.setCharEscaped(0, false, true, true, true);
 		thrown.expect(ShellException.class);
@@ -139,7 +143,8 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testInvalidCmdSubCmd() throws AbstractApplicationException, ShellException {
+	public void testEvalToThrowsShellExpUsingShellExpInCmdSubResult()
+			throws AbstractApplicationException, ShellException {
 		Shell mockShell = Mockito.mock(Shell.class);
 		Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
 		Mockito.doThrow(ShellException.class).when(mockShell).parseAndEvaluate(Mockito.anyString(),
@@ -151,7 +156,7 @@ public class CmdSubOperatorTest {
 	}
 
 	@Test
-	public void testInvalidCmdSubApp() throws AbstractApplicationException, ShellException {
+	public void testEvalToThrowsAppExpUsingAppExpInCmdSubResult() throws AbstractApplicationException, ShellException {
 		Shell mockShell = Mockito.mock(Shell.class);
 		Mockito.when(spyShell.newInstance()).thenReturn(mockShell);
 		Mockito.doThrow(LsException.class).when(mockShell).parseAndEvaluate(Mockito.anyString(),
