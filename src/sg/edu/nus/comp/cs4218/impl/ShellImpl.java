@@ -127,7 +127,7 @@ public class ShellImpl implements Shell {
 	@Override
 	public void parseAndEvaluate(String cmdline, OutputStream stdout)
 			throws AbstractApplicationException, ShellException {
-		CommandString cmd = new CommandString(cmdline);
+		CommandString cmd = new CommandString(cmdline.replace("\t", "    "));
 		processQuotes(cmd);
 
 		SeqCommand seqCmd = new SeqCommand(this, cmd);

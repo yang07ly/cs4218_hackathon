@@ -1,0 +1,252 @@
+// 1 test echo with globe
+echo *
+app_special_char.txt dir1
+// 2 test echo with >
+echo abc > file1.txt
+
+// 3 echo with <
+echo abc < file1.txt
+abc
+// 4 test echo with single quotes
+echo 'abc'
+abc
+// 5 test echo with double quotes
+echo "abc"
+abc
+// 6 test echo with ;
+echo abc; echo def;
+abc
+def
+// 7 test echo with backquotes
+`echo def`
+shell: def: Invalid app.
+// 8 test echo with |
+echo abc | echo
+
+// 9 test cat with globe
+cat f*
+abc
+// 10 test cat with >
+cat file1.txt > file2.txt
+
+// 11 test cat with <
+cat < file1.txt
+abc
+//12 test cat with single quotes
+cat 'file1.txt'
+abc
+// 13 test cat with double quotes
+cat "file1.txt"
+abc
+//14 test cat with ;
+cat file1.txt; cat file2.txt
+abc
+abc
+// 15 test cat with backquotes
+`cat file1.txt`
+shell: abc: Invalid app.
+// 16 test cat with |
+echo abc | cat
+abc
+// 17 test ls with globe
+ls d*
+file2.txt
+// 18 test ls with >
+ls dir1 > output3.txt
+
+// 19 test ls with <
+ls < dir1
+shell: dir1: Is a directory
+// 20 test ls with single quotes
+ls 'dir1'
+file2.txt
+// 21 test ls with double quotes
+ls "dir1"
+file2.txt
+// 22 test ls with ;
+ls dir1; ls
+file2.txt
+app_special_char.txt	dir1	file1.txt	file2.txt	output3.txt
+// 23 test ls with backquotes
+`ls`
+shell: app_special_char.txt: Invalid app.
+// 24 test ls with |
+echo dir1 | ls
+app_special_char.txt	dir1	file1.txt	file2.txt	output3.txt
+// 27 test mkdir with glob
+mkdir dir*
+mkdir: cannot create directory 'dir1': File exists
+// 28 test mkdir with |
+echo abc | mkdir
+mkdir: missing operand
+// 29 test mkdir with ;
+mkdir dir2; mkdir dir1
+
+mkdir: cannot create directory 'dir1': File exists
+// 30 test mkdir with <
+mkdir < file1.txt
+mkdir: missing operand
+// 31 test mkdir with >
+mkdir dir1 > output4.txt
+mkdir: cannot create directory 'dir1': File exists
+// 31 test mkdir with backquotes
+`mkdir dir1`
+mkdir: cannot create directory 'dir1': File exists
+// 32 test mkdir with single quotes
+mkdir 'dir1'
+mkdir: cannot create directory 'dir1': File exists
+// 33 test mkdir with double quotes
+mkdir "dir1"
+mkdir: cannot create directory 'dir1': File exists
+// 34 test paste with glob
+paste o*
+file2.txt	
+//35 test paste with pipe
+echo abc | paste
+abc
+// 36 test paste with Inputstream
+paste < file1.txt
+abc
+//37 test paste with output stream
+paste file1.txt > output5.txt
+
+//38 test paste with single quotes
+paste 'file1.txt'
+abc
+// 39 test paste with double quotes
+paste "file1.txt"
+abc
+//40 test paste with ;
+echo abc; paste file1.txt
+abc
+abc
+//41 test paste with backquotes
+`paste file1.txt`
+shell: abc: Invalid app.
+//42 test diff with |
+echo abc | diff file1.txt -
+
+//43 test diff with >
+diff < file1.txt file1.txt -
+
+//44 test diff with <
+diff file1.txt output3.txt > output6.txt
+
+//45 test diff with single quotes
+diff 'file1.txt' output3.txt
+< abc
+> file2.txt
+//46 test diff with double quotes
+diff "file1.txt" output3.txt
+< abc
+> file2.txt
+// 47 test diff with glob
+diff f*;
+
+//48 test diff with ;
+echo abc; diff file1.txt diff file2.txt
+abc
+diff: requires 2 files to be specified
+// 49 test diff with backquotes
+`diff file1.txt output3.txt`
+shell: <: Invalid app.
+// 50 test cd with |
+echo abc | cd
+
+// 51 test cd with <
+cd file2.txt
+cd: file2.txt: Not a directory
+// 52 test cd with >
+cd asfdwe > output7.txt
+cd: asfdwe: No such file or directory
+// 53 test cd with single quotes
+cd 'asdfwe'
+cd: asdfwe: No such file or directory
+// 54 test cd with double quotes
+cd "asssqqw"
+cd: asssqqw: No such file or directory
+// 55 test cd with glob
+cd dir*
+cd: too many arguments
+// 56 test cd with ;
+echo abc; cd aswe;
+abc
+cd: aswe: No such file or directory
+// 57 test cd with backquotes
+`cd ..`
+shell: : Invalid app.
+// 58 test grep with |
+echo abc | grep ab
+abc
+// 59 test grep with <
+grep ab < file1.txt
+abc
+// 60 test grep with >
+grep ab file1.txt > output8.txt
+
+//61 test grep with single quotes
+grep 'ab' file1.txt
+abc
+//62 test grep with double quotes
+grep "ab" file1.txt
+abc
+//63 test grep with glob
+grep ab file1*
+abc
+//64 test grep with ;
+echo abc; grep ab file1.txt
+abc
+abc
+//65 test grep with backquotes
+`grep ab file1.txt`
+shell: abc: Invalid app.
+//66 test split with pipe
+echo abc | split
+
+//67 test split with <
+split < file1.txt
+
+//68 test split with >
+split asdfwe > output9.txt
+split: asdfwe: No such file or directory
+// 69 test split with singlequotes
+split "file1.txt"
+
+// 70 test split with doublequotes
+split 'file1.txt'
+
+//71 test split with glob
+split f*
+
+//72 test split with ;
+echo abc; split file1.txt
+abc
+
+//73 test split with backquotes
+`split file1.txt`
+shell: : Invalid app.
+//74 test cmp with |
+echo abc | cmp file1.txt -
+
+//75 test cmp with <
+cmp < file1.txt file2.txt
+cmp: requires 2 files to be specified
+// 76 test cmp with >
+cmp file1.txt file2.txt > output11.txt
+
+// 77 test cmp with single quotes
+cmp 'file1.txt' file2.txt
+
+//78 test cmp with double quotes
+cmp "file1.txt" file2.txt
+
+//79 test cmp with glob
+cmp f*
+cmp: requires 2 files to be specified
+//80 test cmp with ;
+echo abc; cmp file1.txt file2.txt
+abc
+
+//81 test cmp with backquotes
+`cmp file1.txt file2.txt`
+shell: : Invalid app.

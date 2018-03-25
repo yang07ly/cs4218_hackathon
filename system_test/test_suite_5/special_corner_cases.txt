@@ -1,0 +1,49 @@
+//1) cmd sub in double quoted
+echo "`echo haha`"
+haha
+//2) cmd sub result return double quote
+echo `echo '"haha"'`
+"haha"
+//3) cmd sub in double quote result return double quote
+echo "`echo '"haha"'`" 
+"haha"
+//4) unclosed backquote in single quote
+echo '`echo haha'`echo haha` 
+`echo hahahaha
+//5) cmd sub escape in single quote
+echo '`echo haha`'`echo haha` 
+`echo haha`haha
+//6) single quote does not work in double quote
+echo "'`echo haha`'" 
+'haha'
+//7) globe a wildcard character
+echo "*"*		
+**
+//8) glob name with double quote 
+echo '"haha"'*	
+"haha"*
+//9) glob cmd sub result
+echo `echo multiple`* 	
+multiple_line.txt multiple_line_2.txt
+//10) file name with app and backquote
+cat '`echo named`'* 		
+this is echo named
+//11) cmd sub return file name
+echo haha > `echo file`1.txt;cat file1.txt
+
+haha
+//12) glob only apply to cmd sub last args
+echo `echo file file`*	
+file file1.txt
+//13) remove tab
+ls	*
+'`echo named`.txt'	file1.txt	multiple_line.txt	multiple_line_2.txt	special_corner_cases.txt
+//14) invalid app name with spaces
+"echo   " haha 			
+shell: echo   : Invalid app.
+//15) cmd sub return app
+`echo echo` haha 		
+haha
+//16) glob with multiple cmd sub result
+echo `echo file`*`echo .txt`
+file1.txt
